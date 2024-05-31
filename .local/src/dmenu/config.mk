@@ -2,7 +2,7 @@
 VERSION = 5.3
 
 # paths
-PREFIX = /home/taras/dmenu1
+PREFIX = $(HOME)/.local
 MANPREFIX = $(PREFIX)/share/man
 
 X11INC = /usr/X11R6/include

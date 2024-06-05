@@ -26,7 +26,7 @@ echo "You selected $disk."
 echo ""
 
 # Partitioning
-mkdir -p /mnt
+mkdir -p /mnt /mnt/home
 sgdisk --zap-all "$disk"
 read -p "Size for the EFI partition (e.g. 1024MB):" efi_size
 read -p "Size for the / partition (e.g. 1024MB):" sys_size

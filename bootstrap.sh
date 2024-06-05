@@ -32,9 +32,9 @@ read -p "Size for the EFI partition (e.g. 1024MB):" efi_size
 read -p "Size for the / partition (e.g. 1024MB):" sys_size
 echo Home partition will be the rest of disk
 parted "$disk" mklabel gpt
-parted "$disk" mkpart ESP fat32 0% efi_size
-parted "$disk" mkpart primary ext4 efi_size sys_size
-parted "$disk" mkpart primary ext4 sys_size 100%
+parted "$disk" mkpart ESP fat32 0% $efi_size
+parted "$disk" mkpart primary ext4 $efi_size $sys_size
+parted "$disk" mkpart primary ext4 $sys_size 100%
 
 # Set up main partition
 mkfs.ext4 "${disk}2"

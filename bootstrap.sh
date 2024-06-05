@@ -42,6 +42,7 @@ mount -t ext4 "${disk}2" /mnt
 
 # home partition
 mkfs.ext4 "${disk}3"
+mkdir -p /mnt/home
 mount -t ext4 "${disk}3" /mnt/home
 
 debootstrap --arch=amd64 bookworkm /mnt http://ftp.us.debian.org/debian/

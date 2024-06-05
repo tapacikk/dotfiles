@@ -86,14 +86,10 @@ usermod -aG sudo taras
 echo localhost > /etc/hostname
 echo "auto lo
 iface lo inet loopback
-allow-hotplug eth0
+auto eth0
 iface eth0 inet dhcp
 source-directory /etc/network/interfaces.d" > /etc/network/interfaces
 
-# Desktop
-apt install -y xorg xserver-xorg-video-all xserver-xorg-core xinit fonts-liberation fonts-dejavu fonts-droid-fallback fonts-noto fonts-roboto openbox qterminal xscreensaver pulseaudio
-echo "/dev/sda2 /   ext4    defaults    0   0" > /etc/fstab
-echo "/dev/sda3 /home   ext4    defaults    0   0" > /etc/fstab
 EOT
 
 # Unmount bindings

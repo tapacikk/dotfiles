@@ -112,4 +112,5 @@ if ! shopt -oq posix; then
   fi
 fi
 export EDITOR=vim
-export l="ls -lht"
+alias l="ls -lht"
+export GPG_TTY=$(tty)

@@ -1,3 +1,4 @@
+#!/bin/bash
 # Statusbar
 while true; do
    BAT0=$(cat /sys/class/power_supply/BAT0/capacity)
@@ -8,12 +9,12 @@ done &
 
 
 
+export PATH=$PATH:$HOME/.local/bin
 xcompmgr &
-mons -a &
+nohup mons -a -x $HOME/.local/bin/monhandler.sh > /dev/null 2>&1 &
 setxkbmap -option ctrl:nocaps
 wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
 wal -c
 wal -i $wall
 xwallpaper --zoom $wall
-export PATH=$PATH:$HOME/.local/bin
 exec dwm 

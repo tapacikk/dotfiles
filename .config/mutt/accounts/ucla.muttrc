@@ -1,0 +1,34 @@
+# vim: filetype=neomuttrc
+# muttrc file for account xbopoctt@gmail.com
+set realname = "Khvorost Taras"
+set from = "khvorost@g.ucla.edu"
+set use_from = yes
+set envelope_from = yes
+
+set smtp_url = "smtps://khvorost@g.ucla.edu@smtp.gmail.com:465/"
+set imap_user = "khvorost@g.ucla.edu"
+set folder = "imaps://imap.gmail.com:993"
+set spoolfile = "+INBOX"
+set ssl_force_tls = yes
+
+# G to get mail
+bind index o imap-fetch-mail
+set editor = "vim"
+set charset = "utf-8"
+set record = ''
+set imap_authenticators="oauthbearer:xoauth2"
+set imap_oauth_refresh_command="/home/taras/.local/bin/mutt_oauth2.py /tokens/ucla"
+set smtp_authenticators=${imap_authenticators}
+set smtp_oauth_refresh_command=${imap_oauth_refresh_command}
+
+# Directories
+set header_cache = "/home/taras/.cache/mutt-wizard/ucla/headers"
+set message_cachedir = "/home/taras/.cache/mutt-wizard/ucla/bodies"
+set mbox_type = Maildir
+set hostname = "gmail.com"
+source /home/taras/.local/share/mutt-wizard/switch.muttrc
+#set postponed = "+Drafts"
+#set trash = "+Trash"
+#set record = "+Sent"
+#mailboxes "=INBOX" 
+#mailboxes "=INBOX" "=[Gmail]/All Mail" "=[Gmail]/Drafts" "=[Gmail]/Important" "=[Gmail]/Sent Mail" "=[Gmail]/Spam" "=[Gmail]/Starred" "=[Gmail]/Trash"

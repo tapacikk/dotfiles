@@ -1,0 +1,21 @@
+# vim: filetype=neomuttrc
+# muttrc file for account xbopoctt@icloud.com
+set realname = "Taras Khvorost"
+set from = "xbopoctt@icloud.com"
+set smtp_url = "smtp://xbopoctt@icloud.com@smtp.mail.me.com:587/"
+set smtp_pass="`pass show xbopoctt@icloud.com`"
+set smtp_authenticators = "login"
+alias me xbopoctt <xbopoctt@icloud.com>
+set folder = "/home/taras/.local/share/mail/xbopoctt@icloud.com"
+set header_cache = "/home/taras/.cache/mutt-wizard/xbopoctt_icloud.com/headers"
+set message_cachedir = "/home/taras/.cache/mutt-wizard/xbopoctt_icloud.com/bodies"
+set mbox_type = Maildir
+set hostname = "icloud.com"
+source /home/taras/.local/share/mutt-wizard/switch.muttrc
+set spoolfile = "+INBOX"
+set postponed = "+Drafts"
+set trash = "+Trash"
+set record = "+Sent"
+
+macro index o "<shell-escape>mailsync xbopoctt@icloud.com<enter>" "sync xbopoctt@icloud.com"
+mailboxes "=Deleted Messages" "=Archive" "=Junk" "=Sent Messages" "=INBOX" "=Drafts"

@@ -114,3 +114,4 @@ fi
 export EDITOR=vim
 alias l="ls -lht"
 export GPG_TTY=$(tty)
+alias mutt=neomutt

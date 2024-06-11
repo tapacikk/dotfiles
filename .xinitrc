@@ -10,8 +10,7 @@ done &
 
 
 export PATH=$PATH:$HOME/.local/bin
-xcompmgr &
-nohup mons -a -x $HOME/.local/bin/monhandler.sh > /dev/null 2>&1 &
+picom --corner-radius 10 -b -c &
 setxkbmap -option ctrl:nocaps
 wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
 wal -c

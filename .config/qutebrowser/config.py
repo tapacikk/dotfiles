@@ -190,6 +190,11 @@ config.set('content.javascript.enabled', True, 'chrome://*/*')
 # Type: Bool
 config.set('content.javascript.enabled', True, 'qute://*/*')
 
+# Directory to save downloads to. If unset, a sensible OS-specific
+# default is used.
+# Type: Directory
+c.downloads.location.directory = '/tmp'
+
 # When to show the statusbar.
 # Type: String
 # Valid values:

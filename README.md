@@ -1,7 +1,7 @@
 # dotfiles
 Yes, I now have a linux computer
 
-This repo is supposed to be cloned directly to $HOME
+This repo is supposed to be cloned to some git-controlled (obviously) directory and then stowed
 
 Here there are dotfiles for:
 * vim
@@ -9,6 +9,7 @@ Here there are dotfiles for:
 * dmenu
 * st
 * zsh
+* mutt
 
 ## Don't forget:
 
@@ -19,4 +20,15 @@ sudo update-initramfs -u
 sudo modprobe -r hid_apple; sudo modprobe hid_apple
 ```
 
+### You need to stow this directory:
+```
+cd /dot
+stow *
+```
+### This setup expects you to have pass w/ following password names (for e-mail):
+* xbopoctt@gmail.com
+* xbopoctt@icloud.com
+* ucla\_client\_id
+* ucla\_client\_secret
+Also, set up a token w/ oama
 

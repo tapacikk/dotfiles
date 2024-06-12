@@ -1,0 +1,62 @@
+# Sample minimal config file.  Copy this to ~/.offlineimaprc and edit to
+# get started fast.
+
+[general]
+accounts = Gmail, ucla, icloud
+maxsyncaccounts = 3
+pythonfile = ~/.local/bin/offlineimap.py
+
+[Account Gmail]
+localrepository = Local-gmail
+remoterepository = Remote-gmail
+autorefresh = 10
+
+[Repository Local-gmail]
+type = Maildir
+localfolders = ~/.mail/gmail
+
+[Repository Remote-gmail]
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+type = Gmail
+remoteuser = xbopoctt@gmail.com
+remotepasseval = get_pass("xbopoctt@gmail.com")
+maxconnections = 10
+folderfilter = lambda foldername: foldername in ['INBOX', '[Gmail]/All Mail', '[Gmail]/Sent Mail', '[Gmail]/Drafts', '[Gmail]/Spam', '[Gmail]/Trash']
+
+[Account ucla]
+localrepository = ucla-local
+remoterepository = ucla-remote
+autorefresh = 10
+
+[Repository ucla-local]
+type = Maildir
+localfolders = ~/.mail/ucla
+
+[Repository ucla-remote]
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+type = Gmail
+remoteuser = khvorost@g.ucla.edu
+auth_mechanisms = XOAUTH2
+oauth2_client_id = get_pass("ucla_client_id")
+oauth2_client_secret = get_pass("ucla_client_secret")
+oauth2_request_url = https://accounts.google.com/o/oauth2/token
+oauth2_access_token_eval = get_token("khvorost@g.ucla.edu")
+maxconnections = 10
+folderfilter = lambda foldername: foldername in ['INBOX', '[Gmail]/All Mail', '[Gmail]/Sent Mail', '[Gmail]/Drafts', '[Gmail]/Spam', '[Gmail]/Trash']
+
+[Account icloud]
+localrepository = Local-icloud
+remoterepository = Remote-icloud
+autorefresh = 10
+
+[Repository Local-icloud]
+type = Maildir
+localfolders = ~/.mail/icloud
+
+[Repository Remote-icloud]
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+type = IMAP
+remotehost = imap.mail.me.com
+remoteuser = xbopoctt@icloud.com
+remotepasseval = get_pass("xbopoctt@icloud.com")
+maxconnections = 10

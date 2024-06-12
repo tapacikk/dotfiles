@@ -1,5 +1,4 @@
-# dotfiles
-Yes, I now have a linux computer
+# dotfiles Yes, I now have a linux computer
 
 This repo is supposed to be cloned to some git-controlled (obviously) directory and then stowed
 
@@ -23,7 +22,9 @@ sudo modprobe -r hid_apple; sudo modprobe hid_apple
 ### You need to stow this directory:
 ```
 cd /dot
-stow *
+stow -t /home/taras -d . .local --adopt
+stow -t /home/taras -d . .config --adopt
+stow -t /home/taras -d . . --adopt
 ```
 ### This setup expects you to have pass w/ following password names (for e-mail):
 * xbopoctt@gmail.com

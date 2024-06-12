@@ -1,5 +1,0 @@
-2024/06/12-10:23:15.844 14113 Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_developers.google.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/06/12-10:23:48.548 108f3 Level-0 table #5: started
-2024/06/12-10:23:48.558 108f3 Level-0 table #5: 1834 bytes OK
-2024/06/12-10:23:48.564 108f3 Delete type=0 #3
-2024/06/12-10:23:48.564 108f3 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

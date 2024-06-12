@@ -5,4 +5,5 @@
 .terminfo
 .ssh
 .local/share/xorg
+.local/share/qutebrowser/*
 **/__pycache__/

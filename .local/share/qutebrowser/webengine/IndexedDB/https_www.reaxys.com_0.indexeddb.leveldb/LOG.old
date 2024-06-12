@@ -1,5 +1,0 @@
-2024/06/11-21:19:02.877 6236 Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_www.reaxys.com_0.indexeddb.leveldb/MANIFEST-000001
-2024/06/11-21:20:45.632 6aa1 Level-0 table #5: started
-2024/06/11-21:20:45.642 6aa1 Level-0 table #5: 1252 bytes OK
-2024/06/11-21:20:45.647 6aa1 Delete type=0 #3
-2024/06/11-21:20:45.648 6aa1 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

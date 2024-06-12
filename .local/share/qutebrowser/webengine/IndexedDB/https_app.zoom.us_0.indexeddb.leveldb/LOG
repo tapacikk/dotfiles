@@ -1,0 +1,5 @@
+2024/06/12-10:15:09.081 108f3 Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_app.zoom.us_0.indexeddb.leveldb/MANIFEST-000001
+2024/06/12-10:20:39.940 14113 Level-0 table #5: started
+2024/06/12-10:20:39.952 14113 Level-0 table #5: 4293 bytes OK
+2024/06/12-10:20:39.958 14113 Delete type=0 #3
+2024/06/12-10:20:39.959 14113 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

@@ -1,0 +1,3 @@
+[submodule "libshlist"]
+	path = libshlist
+	url = https://github.com/Ventto/libshlist.git

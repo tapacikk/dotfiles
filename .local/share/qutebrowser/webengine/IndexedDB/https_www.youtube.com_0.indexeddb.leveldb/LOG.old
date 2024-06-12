@@ -1,0 +1,5 @@
+2024/06/12-12:37:48.606 4b23e Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_www.youtube.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/06/12-13:21:38.558 4d52a Level-0 table #5: started
+2024/06/12-13:21:38.576 4d52a Level-0 table #5: 162182 bytes OK
+2024/06/12-13:21:38.583 4d52a Delete type=0 #3
+2024/06/12-13:21:38.584 4d52a Manual compaction at level-0 from (begin) .. (end); will stop at (end)

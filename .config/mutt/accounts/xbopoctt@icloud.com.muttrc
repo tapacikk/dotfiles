@@ -4,7 +4,7 @@
 set realname = "Taras Khvorost"
 set from = "xbopoctt@icloud.com"
 alias me xbopoctt <xbopoctt@icloud.com>
-source /home/taras/.local/share/mutt-wizard/switch.muttrc
+source /home/taras/.config/mutt/mw_switch
 
 # Send mail
 set smtp_url = "smtp://xbopoctt@icloud.com@smtp.mail.me.com:587/"

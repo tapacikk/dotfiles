@@ -1,6 +1,6 @@
 # vim: filetype=neomuttrc
 # muttrc file for account xbopoctt@gmail.com
-source /home/taras/.local/share/mutt-wizard/switch.muttrc
+source /home/taras/.config/mutt/mw_switch
 
 # General 
 set realname = "Khvorost Taras"
@@ -24,4 +24,4 @@ set hostname = "gmail.com"
 set postponed = "+Drafts"
 set trash = "+Trash"
 set record = "+Sent"
-mailboxes "=INBOX" "=[Gmail]/All Mail" "=[Gmail]/Drafts" "=[Gmail]/Sent Mail" "=[Gmail]/Spam"  "=[Gmail]/Trash"
+mailboxes "=INBOX" "=[Gmail].All Mail" "=[Gmail].Drafts" "=[Gmail].Sent Mail" "=[Gmail].Spam"  "=[Gmail].Trash"

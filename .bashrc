@@ -116,4 +116,4 @@ alias l="ls -lht"
 export GPG_TTY=$(tty)
 alias mutt=neomutt
 alias dict=sdcv
-alias chatgpt="OPENAI_API_KEY=`pass show aopenaikey` chatgpt"
+alias gs="git status"

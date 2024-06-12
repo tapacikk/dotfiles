@@ -1,5 +1,5 @@
 source /home/taras/.config/mutt/mw_defaults
-source /home/taras/.config/mutt/accounts/xbopoctt@gmail.com.muttrc
+source /home/taras/.config/mutt/accounts/ucla.muttrc
 macro index,pager i1 '<sync-mailbox><enter-command>source /home/taras/.config/mutt/accounts/ucla.muttrc<enter><change-folder>!<enter>;<check-stats>' "switch to khvorost@g.ucla.edu"
 macro index,pager i2 '<sync-mailbox><enter-command>source /home/taras/.config/mutt/accounts/xbopoctt@gmail.com.muttrc<enter><change-folder>!<enter>;<check-stats>' "switch to xbopoctt@gmail.com"
 macro index,pager i3 '<sync-mailbox><enter-command>source /home/taras/.config/mutt/accounts/xbopoctt@icloud.com.muttrc<enter><change-folder>!<enter>;<check-stats>' "switch to xbopoctt@icloud.com"

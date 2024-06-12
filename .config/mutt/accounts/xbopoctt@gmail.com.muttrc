@@ -1,6 +1,6 @@
 # vim: filetype=neomuttrc
 # muttrc file for account xbopoctt@gmail.com
-source /home/taras/.local/share/mutt-wizard/switch.muttrc
+source /home/taras/.config/mutt/mw_switch
 # General
 set realname = "Khvorost Taras"
 set from = "xbopoctt@gmail.com"

@@ -11,9 +11,7 @@
 .local/bin/tg
 .local/bin/ff
 .local/share/recently-used.xbel
-
 .local/share/TelegramDesktop/
-
 .local/share/applications
-
 .local/share/dbus-1
+.local/share/icons

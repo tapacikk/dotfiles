@@ -7,9 +7,7 @@ alias me xbopoctt <xbopoctt@icloud.com>
 source /home/taras/.config/mutt/mw_switch
 
 # Send mail
-set smtp_url = "smtp://xbopoctt@icloud.com@smtp.mail.me.com:587/"
-set smtp_pass="`pass show xbopoctt@icloud.com`"
-set smtp_authenticators = "login"
+set sendmail = /usr/bin/msmtp -a gmail
 
 # Cache
 set header_cache = "/home/taras/.cache/mutt-wizard/xbopoctt_icloud.com/headers"

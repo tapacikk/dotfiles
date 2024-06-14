@@ -33,3 +33,21 @@ stow -t /home/taras -d . . --adopt
 * ucla\_client\_secret
 Also, set up a token w/ oama
 
+### Locking
+put the following in /etc/systemd/system/slock@.service:
+
+```
+[Unit]
+Description=Lock X session using slock for user %i
+Before=sleep.target
+
+[Service]
+User=%i
+Environment=DISPLAY=:0
+ExecStartPre=/usr/bin/xset dpms force suspend
+ExecStart=/home/taras/.local/bin/slock
+
+[Install]
+WantedBy=sleep.target
+```
+

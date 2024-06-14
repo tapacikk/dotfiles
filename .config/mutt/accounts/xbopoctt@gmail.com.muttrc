@@ -7,9 +7,7 @@ set from = "xbopoctt@gmail.com"
 alias me xbopoctt <xbopoctt@gmail.com>
 
 # Send mail
-set smtp_url = "smtps://xbopoctt@gmail.com@smtp.gmail.com:465/"
-set smtp_pass="`pass show xbopoctt@gmail.com`"
-set smtp_authenticators = "login"
+set sendmail = /usr/bin/msmtp -a gmail
 
 # Cache
 set folder = "/home/taras/.mail/gmail"

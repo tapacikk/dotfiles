@@ -3,7 +3,7 @@
 
 /* appearance */
 static const unsigned int borderpx  = 5;        /* border pixel of windows */
-static const unsigned int gappx     = 15;        /* gaps between windows */
+static const unsigned int gappx     = 18;        /* gaps between windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
@@ -68,6 +68,8 @@ static const char *voldowncmd[]  = { "amixer", "-q", "sset", "Master,0", "1-", "
 static const char *volupcmd[]  = { "amixer", "-q", "sset", "Master,0", "1+", "unmute", NULL };
 static const char *mutecmd[]  = { "amixer", "-q", "sset", "Master,0", "toggle", NULL };
 static const char *scrot[]  = { "scrot", "/tmp/%Y-%m-%d_$wx$h.png", "-s", NULL };
+static const char *scrotclip[]  = { "scrot", "-s", "-e", "'xclip -selection clipboard -t image/png 0-i $f'" , NULL };
+
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -89,6 +91,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY|ShiftMask,             XK_r,  	   togglefloating, {0} },
 	{ MODKEY,                       XK_s,  	   spawn,          {.v = scrot} },
+	{ MODKEY|ShiftMask,             XK_s,  	   spawn,          {.v = scrotclip} },
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY,			            XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_Tab,    view,           {0} },

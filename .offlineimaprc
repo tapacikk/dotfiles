@@ -7,9 +7,10 @@ maxsyncaccounts = 3
 pythonfile = ~/.local/bin/offlineimap.py
 
 [Account Gmail]
+autorefresh = 0.5
+quick = 10
 localrepository = Local-gmail
 remoterepository = Remote-gmail
-autorefresh = 10
 
 [Repository Local-gmail]
 type = Maildir
@@ -17,6 +18,8 @@ localfolders = ~/.mail/gmail
 
 [Repository Remote-gmail]
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+keepalive=60
+holdconnection=yes
 type = Gmail
 remoteuser = xbopoctt@gmail.com
 remotepasseval = get_pass("xbopoctt@gmail.com")
@@ -24,9 +27,10 @@ maxconnections = 10
 folderfilter = lambda foldername: foldername in ['INBOX', '[Gmail]/All Mail', '[Gmail]/Sent Mail', '[Gmail]/Drafts', '[Gmail]/Spam', '[Gmail]/Trash']
 
 [Account ucla]
+autorefresh = 0.5
+quick = 10
 localrepository = ucla-local
 remoterepository = ucla-remote
-autorefresh = 10
 
 [Repository ucla-local]
 type = Maildir
@@ -35,6 +39,8 @@ localfolders = ~/.mail/ucla
 [Repository ucla-remote]
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 type = Gmail
+keepalive=60
+holdconnection=yes
 remoteuser = khvorost@g.ucla.edu
 auth_mechanisms = XOAUTH2
 oauth2_client_id = get_pass("ucla_client_id")
@@ -46,14 +52,17 @@ folderfilter = lambda foldername: foldername in ['INBOX', '[Gmail]/All Mail', '[
 
 [Account icloud]
 localrepository = Local-icloud
+autorefresh = 0.5
+quick = 10
 remoterepository = Remote-icloud
-autorefresh = 10
 
 [Repository Local-icloud]
 type = Maildir
 localfolders = ~/.mail/icloud
 
 [Repository Remote-icloud]
+keepalive=60
+holdconnection=yes
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 type = IMAP
 remotehost = imap.mail.me.com

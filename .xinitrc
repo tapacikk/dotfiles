@@ -12,14 +12,9 @@ while true; do
        STATUS=$(echo "$CMUSDATA" | grep -w '^status' | awk '{gsub("status ", "");print}')
        SHUFFLE=$(echo "$CMUSDATA" | grep -w '^set shuffle' | awk '{gsub("set shuffle ", "");print}')
        if [ "$STATUS" = "playing" ]; then
-	STATUS="PLA"
+	STATUS=">"
        else
-	STATUS="PAU"
-       fi
-       if [ "$SHUFFLE" = "true" ]; then
-	SHUFFLE=" S"
-       else
-	SHUFFLE=""
+	STATUS="|"
        fi
        MUSIC="$STATUS [$ARTIST][$TRACK]"
     else
@@ -32,10 +27,10 @@ done &
 
 export PATH=$PATH:$HOME/.local/bin
 xcompmgr &
-mons -a &
 setxkbmap -option ctrl:nocaps
 wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
 wal -c
 wal -i $wall
 xwallpaper --zoom $wall
+xss-lock -- slock &
 exec dwm 

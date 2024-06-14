@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 from subprocess import check_output
 import subprocess
+import sys
+sys.path.append('/home/taras/.local/bin')
 
 def get_pass(account):
     return check_output("pass " + account, shell=True).splitlines()[0]

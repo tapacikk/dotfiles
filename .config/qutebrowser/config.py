@@ -79,7 +79,7 @@ config.set('content.cookies.accept', 'all', 'devtools://*')
 #   - js-array-at
 #   - misc-krunker
 #   - misc-mathml-darkmode
-c.content.site_specific_quirks.skip = ['ua-slack']
+#c.content.site_specific_quirks.skip = ['ua-slack']
 
 # Value to send in the `Accept-Language` header. Note that the value
 # read from JavaScript is always the global value.
@@ -227,6 +227,8 @@ c.zoom.default = '150%'
 # "px" suffix.
 # Type: String
 c.fonts.default_size = '20pt'
+
+config.bind('s', 'set-cmd-text -s :open -t https://scholar.google.com/scholar?q=')
 
 # Bindings for normal mode
 config.bind('M', 'hint links spawn mpv {hint-url}')

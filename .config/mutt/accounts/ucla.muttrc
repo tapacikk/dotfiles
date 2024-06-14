@@ -7,14 +7,13 @@ set realname = "Khvorost Taras"
 set from = "khvorost@g.ucla.edu"
 set use_from = yes
 set envelope_from = yes
+set sendmail = "/usr/bin/msmtp -a ucla"
 
-set smtp_url = "smtps://khvorost@g.ucla.edu@smtp.gmail.com:465/"
 set folder = "/home/taras/.mail/ucla
 set spoolfile = "+INBOX"
 set ssl_force_tls = yes
 
-# G to get mail
-bind index o imap-fetch-mail
+macro index o "<shell-escape>offlineimap -o -q -a ucla<enter>" "sync xbopoctt@gmail.com"
 
 # Directories
 set header_cache = "/home/taras/.cache/mutt-wizard/ucla/headers"

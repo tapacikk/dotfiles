@@ -117,3 +117,5 @@ export GPG_TTY=$(tty)
 alias mutt=neomutt
 alias dict=sdcv
 alias gs="git status"
+export OPENAI_API_KEY=$(cat /tokens/openai)
+alias wifi="systemctl restart iwd"

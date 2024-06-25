@@ -7,21 +7,28 @@ while true; do
        CMUSDATA=$(cmus-remote -Q)
        ARTIST=$(echo "$CMUSDATA" | grep -w '^tag artist' | awk '{gsub("tag artist ", "");print}')
        TRACK=$(echo "$CMUSDATA" | grep -w '^tag title' | awk '{gsub("tag title ", "");print}')
-       POSITION=$(echo "$CMUSDATA" | grep -w '^position' | awk '{gsub("position ", "");print}')
-       DURATION=$(echo "$CMUSDATA" | grep -w '^duration' | awk '{gsub("duration ", "");print}')
        STATUS=$(echo "$CMUSDATA" | grep -w '^status' | awk '{gsub("status ", "");print}')
-       SHUFFLE=$(echo "$CMUSDATA" | grep -w '^set shuffle' | awk '{gsub("set shuffle ", "");print}')
        if [ "$STATUS" = "playing" ]; then
 	STATUS=">"
        else
-	STATUS="|"
+	STATUS=
        fi
-       MUSIC="$STATUS [$ARTIST][$TRACK]"
+       MUSIC="$STATUS [$ARTIST][$TRACK]"\ \|
     else
        MUSIC=
     fi
-   xsetroot -name "$MUSIC | $BAT0% | $BAT1% | $(date +"%F %R" )"
+   if ps -C iwd > /dev/null; then
+    connected_network=$(iwctl station wlan0 show | grep "Connected network " | cut  -d" " -f19)
+       if ps -C openconnect > /dev/null; then
+            connected_network=$connected_network\(chemvpn\)
+       fi
+    connected_network=$connected_network\ \|
+   else
+    connected_network=
+   fi
+   xsetroot -name "$connected_network $MUSIC $BAT0% | $BAT1% | $(date +"%F %R" )"
    sleep 1
+
 done &
 
 

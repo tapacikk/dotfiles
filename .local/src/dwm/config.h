@@ -8,7 +8,7 @@ static const unsigned int snap      = 32;       /* snap pixel */
 static const int swallowfloating    = 0;        /* 1 means swallow floating windows by default */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-static const char *fonts[]          = { "JetBrains Mono:size=20", "JoyPixels:pixelsize=15:antialias=true:autohint=true"};
+static const char *fonts[]          = { "JetBrains Mono:size=20", "JetBrains Regular:pixelsize=15:antialias=true:autohint=true"};
 static const char dmenufont[]       = "JetBrains Mono:size=20";
 static char normbgcolor[]           = "#222222";
 static char normbordercolor[]       = "#444444"; static char normfgcolor[]           = "#bbbbbb";
@@ -22,7 +22,7 @@ static char *colors[][3] = {
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8" };
+static const char *tags[] = { "1:sh", "2:web", "3:chem", "4:mutt", "5:cmus", "6:tg", "7", "8", "9:top" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -64,9 +64,9 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont}
 static const char *termcmd[]  = { "st", NULL };
 static const char *brupcmd[]  = { "brightnessctl", "set", "5%+", NULL };
 static const char *brdowncmd[]  = { "brightnessctl", "s", "5%-", NULL };
-static const char *voldowncmd[]  = { "amixer", "-q", "sset", "Master,0", "1-", "unmute", NULL };
-static const char *volupcmd[]  = { "amixer", "-q", "sset", "Master,0", "1+", "unmute", NULL };
-static const char *mutecmd[]  = { "amixer", "-q", "sset", "Master,0", "toggle", NULL };
+static const char *voldowncmd[]  = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL };
+static const char *volupcmd[]  = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%", NULL };
+static const char *mutecmd[]  = { "pactl", "set-sink-mute", "@DEFAULT_SINK@", "toggle", NULL };
 static const char *scrot[]  = { "scrot", "/tmp/%Y-%m-%d_$wx$h.png", "-s", NULL };
 static const char *scrotclip[]  = { "scrot", "-s", "-e", "'xclip -selection clipboard -t image/png 0-i $f'" , NULL };
 
@@ -109,6 +109,7 @@ static Key keys[] = {
 	TAGKEYS(                        XK_6,                      5)
 	TAGKEYS(                        XK_7,                      6)
 	TAGKEYS(                        XK_8,                      7)
+	TAGKEYS(                        XK_9,                      8)
 	{ MODKEY|ShiftMask,		        XK_q,      quit,           {0} },
 };
 

@@ -15,3 +15,15 @@
 .local/share/applications
 .local/share/dbus-1
 .local/share/icons
+.local/src/chimera
+.local/bin/chimera*
+.local/share/licenses
+.local/bin/dwm
+.local/src/dwm/dwm
+.local/src/dwm/dwm.o
+.local/bin/chem
+.local/share/iwctl/history
+.local/src/chemcraft
+.local/share/fonts
+.local/share/jupyter
+.local/src/rcfiles

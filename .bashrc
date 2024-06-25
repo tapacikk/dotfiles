@@ -115,7 +115,18 @@ export EDITOR=vim
 alias l="ls -lht"
 export GPG_TTY=$(tty)
 alias mutt=neomutt
-alias dict=sdcv
 alias gs="git status"
 export OPENAI_API_KEY=$(cat /tokens/openai)
 alias wifi="systemctl restart iwd"
+dict() {
+    sdcv -nc "$1" | less
+}
+
+function yy() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}

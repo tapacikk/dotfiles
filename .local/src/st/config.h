@@ -5,8 +5,10 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "DejaVuSansMono-Bold:pixelsize=28:antialias=true:autohint=true";
-static char *font2[] = { "JoyPixels:pixelsize=18:antialias=true:autohint=true" };
+ static char *font = "FiraCode-SemiBold:pixelsize=28:antialias=true:autohint=true";
+//static char *font = "JetBrainsMono-Regular:pixelsize=28:antialias=true:autohint=true";
+static char *font2[] = { "FiraCode-SemiBold:pixelsize=18:antialias=true:autohint=true" };
+//static char *font2[] = { "Symbola_hint:pixelsize=18:antialias=true:autohint=true" };
 static int borderpx = 15;
 
 /*

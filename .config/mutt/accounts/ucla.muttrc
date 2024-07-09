@@ -1,5 +1,5 @@
 # vim: filetype=neomuttrc
-# muttrc file for account xbopoctt@gmail.com
+# muttrc file for account khvorost@g.ucla.edu
 source /home/taras/.config/mutt/mw_switch
 set signature=/home/taras/.config/mutt/sig
 
@@ -14,7 +14,7 @@ set folder = "/home/taras/.mail/ucla
 set spoolfile = "+INBOX"
 set ssl_force_tls = yes
 
-macro index o "<shell-escape>offlineimap -o -q -a ucla<enter>" "sync xbopoctt@gmail.com"
+macro index o "<shell-escape>/usr/bin/offlineimap -o -q -a ucla<enter>" "sync xbopoctt@gmail.com"
 
 # Directories
 set header_cache = "/home/taras/.cache/mutt-wizard/ucla/headers"

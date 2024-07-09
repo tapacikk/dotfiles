@@ -27,3 +27,6 @@
 .local/share/fonts
 .local/share/jupyter
 .local/src/rcfiles
+.local/var/oama/khvorost@g.ucla.edu.oama
+.local/share/iwctl/history
+

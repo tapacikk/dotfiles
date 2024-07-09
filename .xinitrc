@@ -9,11 +9,11 @@ while true; do
        TRACK=$(echo "$CMUSDATA" | grep -w '^tag title' | awk '{gsub("tag title ", "");print}')
        STATUS=$(echo "$CMUSDATA" | grep -w '^status' | awk '{gsub("status ", "");print}')
        if [ "$STATUS" = "playing" ]; then
-	STATUS=">"
-       else
-	STATUS=
+            STATUS=">"
+           else
+            STATUS=
        fi
-       MUSIC="$STATUS [$ARTIST][$TRACK]"\ \|
+       MUSIC="$STATUS [$ARTIST][$TRACK]"\
     else
        MUSIC=
     fi
@@ -26,7 +26,7 @@ while true; do
    else
     connected_network=
    fi
-   xsetroot -name "$connected_network $MUSIC $BAT0% | $BAT1% | $(date +"%F %R" )"
+   xsetroot -name "$connected_network[$BAT0%/$BAT1%] $(date +"%F %R" )"
    sleep 1
 
 done &
@@ -34,7 +34,7 @@ done &
 
 export PATH=$PATH:$HOME/.local/bin
 xcompmgr &
-setxkbmap -option ctrl:nocaps
+#########setxkbmap -option ctrl:nocaps
 wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
 wal -c
 wal -i $wall

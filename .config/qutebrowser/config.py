@@ -211,19 +211,11 @@ c.tabs.favicons.show = 'always'
 #   - right
 c.tabs.position = 'left'
 
-# When to show the tab bar.
-# Type: String
-# Valid values:
-#   - always: Always show the tab bar.
-#   - never: Always hide the tab bar.
-#   - multiple: Hide the tab bar if only one tab is open.
-#   - switching: Show the tab bar when switching tabs.
-c.tabs.show = 'switching'
 
 # Width (in pixels or as percentage of the window) of the tab bar if
 # it's vertical.
 # Type: PercOrInt
-c.tabs.width = '20%'
+c.tabs.width = '10%'
 
 # Default zoom level.
 # Type: Perc
@@ -241,3 +233,16 @@ config.bind('M', 'hint links spawn mpv {hint-url}')
 config.bind('Z', 'hint links spawn st -e yt-dlp {hint-url} -P /tmp')
 config.bind('s', 'set-cmd-text -s :open -t https://scholar.google.com/scholar?q=')
 config.bind('t', 'set-cmd-text -s :open -t')
+
+# Theme
+import everforest
+everforest.set(c, 'dark', 'hard') # options are dark/light and hard/medium/soft
+
+# When to show the tab bar.
+# Type: String
+# Valid values:
+#   - always: Always show the tab bar.
+#   - never: Always hide the tab bar.
+#   - multiple: Hide the tab bar if only one tab is open.
+#   - switching: Show the tab bar when switching tabs.
+c.tabs.show = 'always'

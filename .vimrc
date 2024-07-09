@@ -20,3 +20,8 @@ nnoremap ;e :e<Space>
 nnoremap ;; :
 nnoremap 11 :!
 nnoremap <C-t> <C-z>
+nnoremap ;n :NERDTreeToggle<CR>
+let NERDTreeWinSize=20
+let NERDTreeMinimalUI=1
+let NERDTreeMinimalMenu=1
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+rsync -e ssh -a bridges2.psc.edu:/ocean/projects/che230036p/khvorost/azo /home/taras/work/bri/ \
+--exclude="*.chk" \
+--exclude="*.rwf" \
+--exclude="*.fchk" \
+--progress \
+--update \
+
+

@@ -130,3 +130,6 @@ function yy() {
 	fi
 	rm -f -- "$tmp"
 }
+export GAUSS_SCRDIR=/tmp
+export GAUSS_EXEDIR=$HOME/.local/src/g16
+alias ca="source $HOME/miniconda3/bin/activate; conda activate vpt"

@@ -1,4 +1,6 @@
-# dotfiles Yes, I now have a linux computer
+# dotfiles 
+
+## Yes, I now have a linux computer
 
 This repo is supposed to be cloned to some git-controlled (obviously) directory and then stowed
 

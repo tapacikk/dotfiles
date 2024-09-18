@@ -7,3 +7,5 @@ alias t="tmux set status"
 export PATH=$PATH:~/.local/bin
 alias l="ls -lht"
 
+
+if [ -e /home/taras/.nix-profile/etc/profile.d/nix.sh ]; then . /home/taras/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

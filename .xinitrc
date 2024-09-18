@@ -18,17 +18,16 @@ while true; do
        MUSIC=
     fi
    if ps -C iwd > /dev/null; then
-    connected_network=$(iwctl station wlan0 show | grep "Connected network " | cut  -d" " -f19)
+    connected_network="[󰤨 $(iwctl station wlan0 show | grep "Connected network " | cut  -d" " -f19)]"
        if ps -C openconnect > /dev/null; then
-            connected_network=$connected_network\(chemvpn\)
+            connected_network="[󰤨 $connected_network\(chemvpn\)]"
        fi
-    connected_network=$connected_network\ \|
+    connected_network=$connected_network
    else
     connected_network=
    fi
-   xsetroot -name "$connected_network[$BAT0%/$BAT1%] $(date +"%F %R" )"
+   xsetroot -name "$connected_network[$BAT0%/$BAT1%]$(date '+[%a,%d-%b][%I:%M]')"
    sleep 1
-
 done &
 
 

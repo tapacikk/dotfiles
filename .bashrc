@@ -132,4 +132,11 @@ function yy() {
 }
 export GAUSS_SCRDIR=/tmp
 export GAUSS_EXEDIR=$HOME/.local/src/g16
-alias ca="source $HOME/miniconda3/bin/activate; conda activate vpt"
+alias  ca="source $HOME/miniconda3/bin/activate; conda activate vpt"
+export PATH=$PATH:/home/taras/.local/src/neci/build/bin
+export PATH=/opt/OpenMolcas:$PATH
+
+alias systemctl="sudo systemctl"
+
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6
+

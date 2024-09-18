@@ -235,8 +235,8 @@ config.bind('s', 'set-cmd-text -s :open -t https://scholar.google.com/scholar?q=
 config.bind('t', 'set-cmd-text -s :open -t')
 
 # Theme
-import everforest
-everforest.set(c, 'dark', 'hard') # options are dark/light and hard/medium/soft
+#import everforest
+#everforest.set(c, 'dark', 'hard') # options are dark/light and hard/medium/soft
 
 # When to show the tab bar.
 # Type: String

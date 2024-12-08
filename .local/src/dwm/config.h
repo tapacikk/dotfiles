@@ -31,6 +31,7 @@ static const Rule rules[] = {
 	 */
 	/* class                instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
 	{ "St",                 NULL,     NULL,           0,         0,          1,           0,        -1 },
+	{ "St",                 NULL,     "float_term",   0,         1,          1,           0,        -1 },
 	{ NULL,                 NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
 
@@ -62,6 +63,9 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont};
 static const char *termcmd[]  = { "st", NULL };
+static const char *floattermcmd[]  = { "st", "-t", "float_term", NULL };
+static const char *notescmd[]  = { "st", "-t", "float_term", "-e", "notetaker", NULL };
+static const char *calccmd[]  = { "st", "-t", "float_term", "-e", "notetaker", NULL };
 static const char *brupcmd[]  = { "brightnessctl", "set", "5%+", NULL };
 static const char *brdowncmd[]  = { "brightnessctl", "s", "5%-", NULL };
 static const char *voldowncmd[]  = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%", NULL };
@@ -84,8 +88,8 @@ static Key keys[] = {
 	{ MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
 	{ MODKEY,                       XK_g,      togglebar,      {0} },
 	{ MODKEY,                       XK_f,	   zoom,           {0} },
-	{ MODKEY,		                XK_w,      killclient,     {0} },
-	{ MODKEY|ShiftMask,	            XK_q,      quit,           {0} },
+	{ MODKEY,	                XK_w,      killclient,     {0} },
+	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_e,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[2]} },
@@ -93,14 +97,16 @@ static Key keys[] = {
 	{ MODKEY,                       XK_s,  	   spawn,          {.v = scrot} },
 	{ MODKEY|ShiftMask,             XK_s,  	   spawn,          {.v = scrotclip} },
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,			            XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = floattermcmd } },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
-    { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-	{ MODKEY,			            XK_equal,  setgaps,	   {.i = -1 } },
-	{ MODKEY,			            XK_minus,  setgaps,	   {.i = +1 } },
-	{ MODKEY|ShiftMask,		        XK_equal,  setgaps,	   {.i =  0 } },
+        { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+	{ MODKEY,                       XK_equal,  setgaps,	   {.i = -1 } },
+	{ MODKEY,			XK_minus,  setgaps,	   {.i = +1 } },
+	{ MODKEY|ShiftMask,		XK_equal,  setgaps,	   {.i =  0 } },
 	{ MODKEY,                       XK_F5,     xrdb,           {.v = NULL } },
+	{ MODKEY,                       XK_n,      spawn,          {.v = notescmd } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)

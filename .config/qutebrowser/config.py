@@ -219,14 +219,14 @@ c.tabs.width = '10%'
 
 # Default zoom level.
 # Type: Perc
-c.zoom.default = '150%'
+c.zoom.default = '100%'
 
 # Default font size to use. Whenever "default_size" is used in a font
 # setting, it's replaced with the size listed here. Valid values are
 # either a float value with a "pt" suffix, or an integer value with a
 # "px" suffix.
 # Type: String
-c.fonts.default_size = '20pt'
+c.fonts.default_size = '14pt'
 
 # Bindings for normal mode
 config.bind('M', 'hint links spawn mpv {hint-url}')
@@ -246,3 +246,18 @@ config.bind('t', 'set-cmd-text -s :open -t')
 #   - multiple: Hide the tab bar if only one tab is open.
 #   - switching: Show the tab bar when switching tabs.
 c.tabs.show = 'always'
+
+# DRACULA THEME
+import dracula.draw
+
+# Load existing settings made via :set
+config.load_autoconfig()
+
+dracula.draw.blood(c, {
+    'spacing': {
+        'vertical': 6,
+        'horizontal': 8
+    }
+})
+
+config.set("colors.webpage.darkmode.enabled", True)

@@ -1,7 +1,0 @@
-# Sources file built for nala
-
-deb https://la.mirrors.clouvider.net/debian/ bookworm main
-deb https://mirror.timkevin.us/debian/ bookworm main
-deb https://mirrors.ocf.berkeley.edu/debian/ bookworm main
-deb http://mirror.keystealth.org/debian/ bookworm main
-

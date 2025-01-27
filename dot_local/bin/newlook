@@ -1,8 +1,0 @@
-#!/bin/bash
-wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
-wal -c
-wal -i $wall
-xwallpaper --maximize $wall
-xdotool key Alt+F5
-kill $(pgrep xcompmgr)
-xcompmgr &

@@ -1,5 +1,0 @@
-2025/01/29-17:17:05.940 1572c Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_wallpapers.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/01/29-17:17:10.419 15728 Level-0 table #5: started
-2025/01/29-17:17:10.429 15728 Level-0 table #5: 338 bytes OK
-2025/01/29-17:17:10.437 15728 Delete type=0 #3
-2025/01/29-17:17:10.437 15728 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

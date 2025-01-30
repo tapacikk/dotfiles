@@ -1,5 +1,0 @@
-2025/01/29-21:39:55.291 75cc Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_www.ultrabookreview.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/01/29-21:40:03.167 75cb Level-0 table #5: started
-2025/01/29-21:40:03.173 75cb Level-0 table #5: 356 bytes OK
-2025/01/29-21:40:03.182 75cb Delete type=0 #3
-2025/01/29-21:40:03.183 75cb Manual compaction at level-0 from (begin) .. (end); will stop at (end)

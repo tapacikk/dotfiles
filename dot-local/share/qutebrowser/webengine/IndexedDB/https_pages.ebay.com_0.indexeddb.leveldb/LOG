@@ -1,5 +1,0 @@
-2025/01/30-10:13:58.436 87ee Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_pages.ebay.com_0.indexeddb.leveldb/MANIFEST-000001
-2025/01/30-10:14:03.091 87ed Level-0 table #5: started
-2025/01/30-10:14:03.100 87ed Level-0 table #5: 1218 bytes OK
-2025/01/30-10:14:03.108 87ed Delete type=0 #3
-2025/01/30-10:14:03.109 87ed Manual compaction at level-0 from (begin) .. (end); will stop at (end)

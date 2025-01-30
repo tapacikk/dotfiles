@@ -33,10 +33,7 @@ done &
 
 export PATH=$PATH:$HOME/.local/bin
 xcompmgr &
-#########setxkbmap -option ctrl:nocaps
-wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
 wal -c
-wal -i $wall
+wal -i $HOME/.local/wall
 xwallpaper $wall
-xss-lock -- slock &
 exec dwm 

@@ -1,0 +1,5 @@
+2025/01/29-21:38:51.139 750d Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_ad.doubleclick.net_0.indexeddb.leveldb/MANIFEST-000001
+2025/01/29-21:38:57.289 75d5 Level-0 table #5: started
+2025/01/29-21:38:57.327 75d5 Level-0 table #5: 346 bytes OK
+2025/01/29-21:38:57.337 75d5 Delete type=0 #3
+2025/01/29-21:38:57.337 75d5 Manual compaction at level-0 from (begin) .. (end); will stop at (end)

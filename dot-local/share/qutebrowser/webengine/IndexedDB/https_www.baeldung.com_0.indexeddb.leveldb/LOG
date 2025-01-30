@@ -1,0 +1,8 @@
+2025/01/29-20:59:45.885 1b54 Reusing MANIFEST /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_www.baeldung.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/01/29-20:59:45.885 1b54 Recovering log #10
+2025/01/29-20:59:45.886 1b54 Reusing old log /home/taras/.local/share/qutebrowser/webengine/IndexedDB/https_www.baeldung.com_0.indexeddb.leveldb/000010.log 
+2025/01/29-21:00:05.524 2fa3 Level-0 table #14: started
+2025/01/29-21:00:05.524 2fa3 Level-0 table #14: 0 bytes OK
+2025/01/29-21:00:05.535 2fa3 Delete type=0 #10
+2025/01/29-21:00:05.536 2fa3 Manual compaction at level-0 from (begin) .. (end); will stop at (end)
+2025/01/29-21:00:05.536 2fa3 Manual compaction at level-1 from (begin) .. (end); will stop at (end)

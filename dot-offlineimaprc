@@ -14,7 +14,7 @@ remoterepository = Remote-gmail
 
 [Repository Local-gmail]
 type = Maildir
-localfolders = ~/.mail/gmail
+localfolders = $HOME/mail/gmail
 
 [Repository Remote-gmail]
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
@@ -34,7 +34,7 @@ remoterepository = ucla-remote
 
 [Repository ucla-local]
 type = Maildir
-localfolders = ~/.mail/ucla
+localfolders = $HOME/mail/ucla
 
 [Repository ucla-remote]
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
@@ -58,7 +58,7 @@ remoterepository = Remote-icloud
 
 [Repository Local-icloud]
 type = Maildir
-localfolders = ~/.mail/icloud
+localfolders = $HOME/mail/icloud
 
 [Repository Remote-icloud]
 keepalive=60

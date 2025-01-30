@@ -33,7 +33,5 @@ account icloud
    tls on
    tls_trust_file /etc/ssl/certs/ca-certificates.crt
 
-
-
 # Set a default account
 account default: ucla

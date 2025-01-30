@@ -1,0 +1,58 @@
+#!/usr/bin/python3
+import os
+import argparse
+
+
+def parse_arguments():
+    #Parse args
+    parser = argparse.ArgumentParser(prog='fcf',
+                                     description='Parse Gaussian FCF output')
+    parser.add_argument('FCFfile', type=open,
+                        help='''FCF output from Gaussian''')
+    parser.add_argument('DipStr', type=float, 
+                        help='Dipole strength of the original transition. Locate it in the ES freq file')
+    args = parser.parse_args()
+    return args
+
+def parse_file(args):
+    started = 0
+    first = 0
+    second = 0
+    result = {}
+    text = [x for x in args.FCFfile if x]
+    for line in text:
+        if not line.split():
+            continue
+        if 'Energy of the 0-0 transition:' in line:
+            started = 1
+        if started and 'Energy =' in line:
+            prev_key = line.split(':')[1].lstrip(' |0>').lstrip(' -> ').strip()
+            result[prev_key] = [float(line.split()[2])]
+            second = 1
+            continue
+        if second:
+            dip_str = line.split()[-1].rstrip(')')
+            if not dip_str:
+                dip_str = line.split()[-2].rstrip(')')
+            result[prev_key].append(round(float(dip_str)/args.DipStr,4))
+            second = 0
+    result = dict(sorted(result.items(), key=lambda item: item[1][1]))
+    return result
+
+
+def print_fcf(fcf):
+    print('final_state', 'rel_energy(cm-1)', 'FCF', sep=',')
+    for k,v in reversed(list(fcf.items())):
+        print(k,v[0],v[1],sep=',')
+       
+
+def main():
+    args = parse_arguments()
+    fcf = parse_file(args)
+    print_fcf(fcf)
+
+
+if __name__ == '__main__':
+    main()
+        
+

@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+import os
+import sys
+from argparse import ArgumentTypeError, ArgumentParser, FileType
+import tempfile
+import subprocess
+import pandas
+from matplotlib import pyplot as plt
+
+VERSION = 0.4
+
+
+BOILERPLATE='''#!/usr/bin/env python3
+from matplotlib import pyplot as plt
+import pandas
+import tempfile
+ax = plt.gca()
+'''
+ORCA_PART='''
+with open('{args.orca}', 'r') as f:
+    text = [_ for _ in f if _]
+temp_csv = tempfile.NamedTemporaryFile(mode='w')
+with open(temp_csv.name, 'w') as f:
+    for l in text:
+        print(','.join(l.split('\t\t')), file=f, end='')
+with open(temp_csv.name, 'r') as f:
+    spectrum=pandas.read_csv(f)
+
+zi = spectrum.idxmax(axis=0)['\tTotalSpectrum']
+max_intensity = float(spectrum['\tTotalSpectrum'].iloc[[zi]])
+
+spectrum['Energy'] = spectrum['Energy'] - float(spectrum['Energy'].iloc[[zi]])
+for data in ('\tTotalSpectrum', 'IntensityFC', 'IntensityHT'):
+    spectrum[data] = spectrum[data] / max_intensity
+plt.plot(spectrum["Energy"], spectrum["\tTotalSpectrum"], label='total_orca')
+plt.plot(spectrum["Energy"], spectrum["IntensityHT"], label='ht_orca')
+'''
+FREQS_PART=''
+EZFCF_PART=''
+GAUSSIAN_PART=''
+SCRIPT_FINALE='''
+ax.set_xlim(-2000, 10)
+ax.set_ylim(0, 0.08)
+plt.legend()
+plt.show()
+'''
+
+def parse_arguments():
+    global VERSION
+    def is_spectrum(spec_file):
+        with open(spec_file, 'r') as f:
+            fline = f.readline()
+            if 'IntensityFC' not in fline:
+                raise ArgumentTypeError('Wrong file supplied. \
+                                         Only ESD.spectrum files are supported')
+        return os.path.abspath(spec_file)
+
+    parser = ArgumentParser(prog='esd',
+                            description='ESD: parse the output \
+                            spectrum of the ORCA 6.0.1 ESD module\n\
+                            outputs in matplotlib script')
+
+    parser.add_argument('--orca',
+                        help='''Output file of the ESD module''',
+                        type=is_spectrum)
+
+    parser.add_argument('--version',
+                        action='version',
+                        version='%(prog)s '+str(VERSION))
+
+    parser.add_argument('-o',
+                        nargs='?',
+                        type=FileType('w'),
+                        metavar='OUTFILE',
+                        default=sys.stdout,
+                        help='Defaults to STDOUT')
+
+    parser.add_argument('-u',
+                        choices=['cm', 'nm'],
+                        metavar='UNIT',
+                        default='cm',
+                        help='Units of the spectrum INPUT\
+                              Default cm-1\
+                              Output is always in cm-1')
+
+    parser.add_argument('--exec',
+                        action='store_true',
+                        help='Execute produced code right away.')
+
+    parser.add_argument('--freqs',
+                        help='Parse the frequencies from the output and add \
+                              them to the graph as vertical lines',
+                        metavar="ORCA_OUTPUT")
+
+    parser.add_argument('--ezfcf', 
+                        help='ezfcf.spectrum_duchynsky file \
+                             to parse and add onto the graph',
+                        type=os.path.abspath)
+
+    parser.add_argument('--g16', 
+                        help='gaussian input w/ fcfs',
+                        type=os.path.abspath)
+
+    args = parser.parse_args()
+    if args.exec and args.o == sys.stdout:
+        args.o = tempfile.NamedTemporaryFile(mode='w')
+    return args
+
+def parse_gaussian_spectrum(args):
+    global GAUSSIAN_PART
+    if not os.path.isfile(args.g16):
+        raise FileNotFoundError
+    GAUSSIAN_PART=f'''
+with open('fcf1.log', 'r') as f:
+    text_g16 = f.readlines()
+flag=0
+energs, vbrs = [], []
+for l in text_g16:
+    if 'Information on Transitions' in l:
+        flag = 1
+    elif 'Final Spectrum' in l:
+        flag = 0
+    if not flag or not l.split(): continue
+    if l.split('=')[0].strip() == 'Energy' and flag:
+        energs.append(l.split()[2])
+    if 'Intensity' in l and flag:
+        vbrs.append(l.split('=')[-1].strip().rstrip(')').strip())
+temp_csv_g16 = tempfile.NamedTemporaryFile(mode='w')
+with open(temp_csv_g16.name, 'w') as f:
+    f.write('cm,intensity\\n')
+    for e,i in zip(energs,vbrs):
+        print(','.join((e,i)), file=f)
+    f.flush()
+with open(temp_csv_g16.name, 'r') as f:
+    df_fcf=pandas.read_csv(f)
+df_fcf.intensity = df_fcf.intensity / max(df_fcf.intensity)
+plt.vlines(0, ymin=0, ymax=0, color='m', label='g16_fcf')
+for idx,row in df_fcf.iterrows():
+    plt.vlines(row.cm, linestyle='-', ymin=0, ymax=row.intensity, linewidth=1.5, color='m')
+'''
+
+def parse_ezfcf_spectrum(args):
+    global EZFCF_PART
+    # check if exists
+    if not os.path.isfile(args.ezfcf):
+        raise FileNotFoundError
+    EZFCF_PART=f'''
+# EZFCF PART
+with open('{args.ezfcf}', 'r') as f:
+    text_ezfcf = f.readlines()
+temp_csv_fcf = tempfile.NamedTemporaryFile(mode='w')
+with open(temp_csv_fcf.name, 'w') as f:
+    f.write('ev,intensity\\n')
+    for l in text_ezfcf:
+        f.write(','.join(l.split()[:2])+'\\n')
+with open(temp_csv_fcf.name, 'r') as f:
+    df_fcf=pandas.read_csv(f)
+df_fcf.ev = df_fcf.ev - float(df_fcf.ev.iloc[[0]])
+df_fcf.ev = -(df_fcf.ev * 8065.541154) #convert to cm-1
+zi = float(df_fcf.intensity.iloc[[0]])
+df_fcf.intensity = df_fcf.intensity / zi
+plt.vlines(0, ymin=0, ymax=0, color='r', label='ezfcf')
+for idx,row in df_fcf.iterrows():
+    plt.vlines(row.ev, linestyle='-', ymin=0, ymax=row.intensity, linewidth=1.5, color='r')
+'''
+
+def parse_orca_freqs(args):
+    global FREQS_PART
+    freqs = []
+    flag = 0
+    with open(args.freqs, 'r') as f:
+        for l in f:
+            if 'NORMAL MODES' in l and flag:
+                break
+            if 'VIBRATIONAL FREQUENCIES' in l:
+                flag = 1
+            if flag:
+                freqs.append(l)
+    freqs = freqs[11:-3]
+    freqs = list([float(l.split()[-2]) for l in freqs])
+    FREQS_PART = f'''{freqs=}
+for i, f in enumerate(freqs):
+    plt.vlines(-f, linestyle='--', ymin=0, ymax=0.075, linewidth=0.5)
+    ax.text(-f, 0.075, 'v = %s'%(i+1), color='blue', fontsize=7, rotation='vertical', ha='center')'''
+    return freqs
+
+
+def write_script(args):
+    """
+    Writes a python/matplotlib script with the data from spec_file
+    """
+    global BOILERPLATE, ORCA_PART, FREQS_PART, EZFCF_PART, GAUSSIAN_PART
+    print(BOILERPLATE, file=args.o)
+    if args.orca:
+        print(ORCA_PART, file=args.o)
+    if args.freqs:
+        print(FREQS_PART, file=args.o)
+    if args.ezfcf:
+        print(EZFCF_PART, file=args.o)
+    if args.g16:
+        print(GAUSSIAN_PART, file=args.o)
+    print(SCRIPT_FINALE, file=args.o)
+    if args.exec:
+        args.o.flush()
+
+
+def main():
+    args = parse_arguments()
+    if args.freqs:
+        parse_orca_freqs(args)
+    if args.ezfcf:
+        parse_ezfcf_spectrum(args)
+    if args.g16:
+        parse_gaussian_spectrum(args)
+    write_script(args)
+    if args.exec:
+        p = subprocess.run(['python3', str(args.o.name)])
+        
+if __name__ == '__main__':
+    main()

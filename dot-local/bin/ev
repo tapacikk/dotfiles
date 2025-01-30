@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+
+def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('eV', type=float, help='Energy in eV to convert into nm')
+    args = parser.parse_args()
+    plank = 6.62607015e-34
+    c = 299792458
+    wavelength =round((plank*c)/(float(args.eV)*1.602177e-19)*10e8, 2)
+    cm = round(1/wavelength * 10e6, 2)
+    print(wavelength, 'nm')
+    print(cm, 'cm-1')
+    print(args.eV * 96.48530749925793, 'kJ/mol')
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,7 @@
+#!/bin/bash
+wal -c
+wal -i $HOME/.local/wall
+xwallpaper $wall
+xdotool key Alt+F5
+kill $(pgrep xcompmgr)
+xcompmgr &

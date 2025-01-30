@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+import os 
+import argparse
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('gfile', help='Gaussian output file', type=open)
+    parser.add_argument('-e', help='Only print excited states', action='store_true')
+    parser.add_argument('-dip', nargs=1, help='Parse the dipstr', type=int)
+    parser.add_argument('-thermo', action='store_true', help='Parse thermo data')
+    args = parser.parse_args()
+    args.text = args.gfile.readlines()
+    args.gfile.close()
+    return args
+
+
+def parse_file(args):
+    print('state_num', 'from->to', 'coeff**2', 'eV', 'nm', 'f', '<S**2>', sep=',')
+    started = 0
+    count = 0
+    res = {}
+    for line in args.text:
+        w = line.split()
+        if 'Excitation energies and oscillator strengths:' in line:
+            started = 1
+            count += 1
+            res[count] = []
+        if '************************************************************'in line and started:
+            started = 0
+        if not started:
+            continue
+        if 'Excited State' in line:
+            state_num, from_to_str, coeff, eV, nm, f, S_2 = w[2].rstrip(':'), '', '', w[4], w[6], w[8].lstrip('f='), w[9].lstrip('<S**2>=')
+            res[count].append(','.join([state_num, from_to_str, coeff, eV, nm, f, S_2]))
+        if '->' in line:
+            if args.e:
+                continue
+            from_to_str = ''.join([w[0], w[1], w[2]])
+            coeff = str(float(w[-1])**2)
+            res[count].append(','.join([state_num, from_to_str, coeff, eV, nm, f, S_2]))
+    for line in res[count]:
+        print(line)
+
+
+def parse_dip(args):            
+    started = 0
+    count = 0
+    res = {}
+    for line in args.text:
+        w = line.split()
+        if 'Ground to excited state transition electric dipole moments (Au):' in line:
+            started = 1
+            count += 1
+            continue
+        if 'velocity' in line and started:
+            started = 0
+        if not started or w[0] == 'state':
+            continue
+        res[int(w[0])] = w[-2]
+    print(res[args.dip])
+
+
+def parse_thermo(args):            
+    e, zpe, g = 0, 0, 0
+    started = 0
+    res = []
+    for line in args.text:
+        w = line.split()
+        if 'Zero-point correction=' in line:
+            zpe = w[-2]
+        if 'Sum of electronic and thermal Free Energies=' in line:
+            g = w[-1]
+        if 'SCF Done:' in line:
+            res.append(w[4])
+    e = res.pop()
+    print(e, zpe, g, sep=',')
+
+
+def main():
+    args = parse_arguments()
+    if args.thermo:
+        parse_thermo(args)
+        return
+    if args.dip:
+        args.dip = args.dip[0]
+        parse_dip(args)
+        return
+    parse_file(args)
+
+
+if __name__ == '__main__':
+    main()

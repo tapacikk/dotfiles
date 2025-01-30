@@ -1,0 +1,76 @@
+#!/usr/bin/python3
+import os 
+import argparse
+import sys
+import subprocess
+
+
+def parse_arguments():
+    #Parse args
+    parser = argparse.ArgumentParser(
+                            prog='sqchem',
+                            description='Create a slurm job of the\
+                                    QChem inputfile',
+                            epilog='Please note that this script\
+                                     does not submit the job')
+    parser.add_argument('inputfile', type=open,
+                        help='''QChem input file''')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default=sys.stdout,
+                        help='File to write the slurm job to.\
+                              Defaults to STDOUT')
+    parser.add_argument('-t', default=12, type=int, metavar='HOURS',
+                        help='Time (in hours) for the calculation')
+    parser.add_argument('-s', type=str, metavar='SCRATCH_DIR_NAME', default='',
+                        help='Name of the scratch dir')
+    parser.add_argument('-m', default=00, type=int, metavar='MINUTES',
+                        help='Time (in minutes) for the calculation')
+    parser.add_argument('-c', default=128, type=int,
+                        help='Number of cores to use. Default 128')
+    parser.add_argument('-d', action='store_true',
+                        help='Use debug queue')
+    parser.add_argument('-R', action='store_true',
+                        help='Specify to submit the calculation')
+    args = parser.parse_args()
+    args.inputfile.close()
+    args.outname = os.path.splitext(os.path.basename(args.inputfile.name))[0]
+    args.submitdir = os.path.dirname(os.path.abspath(args.inputfile.name))
+    if args.d:
+        args.t = 0
+        args.m = args.m if args.m else 28
+    if args.s:
+        if os.path.isdir(os.path.join(os.environ['SCRATCH'], "qchem", args.s)):
+            raise Exception(f'Directory {os.path.join(os.environ["SCRATCH"], "qchem", args.s)} already exists!')
+    return args
+
+def create_script(args):
+    HOME=os.environ['HOME']
+    queue = 'debug' if args.d else 'regular'
+    args.basename = os.path.basename(args.inputfile.name)
+    print(
+        '#!/bin/bash',
+        f'#SBATCH -A m3200',
+        f'#SBATCH --output={args.basename}.slurm',
+        f'#SBATCH --qos={queue}',
+        f'#SBATCH --nodes=1',
+        f'#SBATCH --ntasks-per-node=64',
+        f'#SBATCH -t {args.t}:{args.m}:00',
+        f'#SBATCH -C cpu',
+        'export QCSCRATCH=/pscratch/sd/t/taras/qchem',
+        'module load qchem/6.0.0',
+        'set echo',
+        f'cd {args.submitdir}',
+        f"QCLOCALSCR=/pscratch/sd/t/taras/qchem qchem -slurm -np 1 -nt 64 {args.basename} {os.path.splitext(args.basename)[0]+'.out'} {args.s}",
+        f"rm {args.basename}.slurm",
+        '', file=args.o, sep='\n')
+
+def main():
+    args = parse_arguments()
+    create_script(args)
+    args.o.close()
+    if args.R and args.o != sys.stdout:
+        subprocess.run(['sbatch', args.o.name])
+
+if __name__ == '__main__':
+    main()
+

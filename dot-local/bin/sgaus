@@ -1,0 +1,66 @@
+#!/usr/bin/python3
+import os 
+import argparse
+import sys
+
+
+def parse_arguments():
+    #Parse args
+    parser = argparse.ArgumentParser(
+                            prog='sgaus',
+                            description='Create a slurm job of the\
+                                    Gaussian inputfile',
+                            epilog='Please note that this script\
+                                     does not submit the job')
+    parser.add_argument('inputfile', type=open,
+                        help='''Gaussian input file''')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default=sys.stdout,
+                        help='File to write the slurm job to.\
+                              Defaults to STDOUT')
+    parser.add_argument('-t', default=10, type=int, metavar='HOURS',
+                        help='Time (in hours) for the calculation')
+    parser.add_argument('-c', default=16, type=int,
+                        help='Number of cores to use. Default 16')
+    parser.add_argument('-highp', action='store_true',
+                        help='Use AA nodes')
+    args = parser.parse_args()
+    args.inputfile.close()
+    args.l = f'#$ -l h_data=2448M,h_vmem=19584.0M,\
+h_rt={args.t*60*60},s_rt=86390,arch=intel*'
+    if args.highp:
+        args.l = f'#$ -l h_data=5G,h_rt={args.t}:00:00,highp'
+    args.outname = os.path.splitext(os.path.basename(args.inputfile.name))[0]
+    args.submitdir = os.path.dirname(os.path.abspath(args.inputfile.name))
+    return args
+
+def create_script(args):
+    args.basename = os.path.basename(args.inputfile.name)
+    print('#!/bin/bash -le', file=args.o)
+    print('#$ -cwd', file=args.o)
+    print(args.l, file=args.o)
+    print(f'#$ -pe shared* {args.c}', file=args.o)
+    print('#$ -j y', file=args.o)
+    print(f'#$ -o joblog.{args.outname}.$JOB_ID', file=args.o)
+    print(f'#$ -M $USER@mail', file=args.o)
+    print('#$ -m bea', file=args.o)
+    print('''
+. /u/local/Modules/default/init/modules.sh
+module load gaussian/g16_sse4
+exe=`which g16`
+export GAUSS_SCRDIR=$TMPDIR
+set echo''', file=args.o)
+    print(f'cd {args.submitdir}', file=args.o)
+    print(f'/usr/bin/time -v -a $exe < {args.basename} >', end='')
+    print(f" {os.path.splitext(args.basename)[0]+'.out'} &", file=args.o)
+    print('wait', file=args.o)
+
+
+def main():
+    args = parse_arguments()
+    create_script(args)
+    args.o.close()
+
+
+if __name__ == '__main__':
+    main()

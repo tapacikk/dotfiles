@@ -1,0 +1,150 @@
+#!/usr/bin/python3
+import os 
+import argparse
+
+def parse_arguments():
+    parser = argparse.ArgumentParser()
+    def qfile(x):
+        with open(x, 'r') as f:
+            return f.readlines()
+    parser.add_argument('qfile', 
+                        type=qfile, 
+                        help='QChem output file to parse')
+    args = parser.parse_args()
+    return args
+
+
+def parse_orbital_dict(args):
+    alpha_block = 0
+    beta_block = 0
+    i = 0
+    orb_num = 1
+    args.alpha = {}
+    args.beta = {}
+    start = 0
+    for l in args.qfile:
+        if 'Total ccman2 time:' in l:
+            start = 1
+        if not start: continue
+        if '-- Occupied --' in l and 'Beta MOs, Restricted' in prev_l:
+            alpha_block = 0
+            beta_block = 1
+            i = 1
+            orb_num = 1
+        if beta_block and "--------------------------------------" in l:
+            beta_block = 0
+        if '-- Virtual --'  in l: 
+            continue
+        if alpha_block or beta_block:
+            if i == 0:
+                i += 1
+                continue
+            else:
+                num_orbs_in_line = int(len(l.split())/2)
+                for _ in range(num_orbs_in_line):
+                    if alpha_block:
+                        if 'Beta MOs' in l: continue
+                        args.alpha[' '.join(l.split()[_*2:_*2+2])] = orb_num
+                    elif beta_block:
+                        if '-- Occupied --' in l: continue
+                        args.beta[' '.join(l.split()[_*2:_*2+2])] = orb_num
+                    orb_num += 1
+                i = 0
+        if '-- Occupied --' in l and 'Alpha MOs, Restricted' in prev_l:
+           alpha_block = 1 
+        prev_l = l
+
+
+def parse_qfile(args):
+    # Find the excited states block
+    mult = 0
+    irrep = ''
+    method = ''
+    trans_num = ''
+    orb_block = 0
+    orbs = {}
+    state_name = ''
+
+    for l in args.qfile:
+        sp = l.split()
+
+        if not sp: continue #empty lines
+
+        if 'Solving for ' in l and 'states' in l:
+            mult = '1' if sp[-2] == 'singlet' else '3'
+            irrep = sp[3]
+            method = sp[2]
+
+        if sp[0] == 'Summary':
+            #PRINT ORBITALS
+            for k, v in orbs.items():
+                v = ' '.join(v)
+
+                initial, final = v.split('->')
+                initial, final = initial.strip(), final.strip()
+                initial_real = 'infty' if 'infty' in initial else ''
+                final_real = 'infty' if 'infty' in final else ''
+                final_l = []
+                initial_l = []
+
+                if 'infty' not in final:
+                    for i in range(0, len(final.split()), 3):
+                        final_l.append(final.split()[i:i+3])
+                    for orb in final_l:
+                        if orb[-1] == 'A':
+                            key = ' '.join([orb[0], orb[1]])
+                            key = key.replace('(', '').replace(')', '')
+                            final_real += str(args.alpha[key])+'A '
+                        if orb[-1] == 'B':
+                            key = ' '.join([orb[0], orb[1]])
+                            key = key.replace('(', '').replace(')', '')
+                            final_real += str(args.beta[key])+'B '
+
+
+                if 'infty' not in initial:
+                    for i in range(0, len(initial.split()), 3):
+                        initial_l.append(final.split()[i:i+3])
+                    for orb in initial_l:
+                        if orb[-1] == 'A':
+                            key = ' '.join([orb[0], orb[1]])
+                            key = key.replace('(', '').replace(')', '')
+                            initial_real += str(args.alpha[key])+'A '
+                        if orb[-1] == 'B':
+                            key = ' '.join([orb[0], orb[1]])
+                            key = key.replace('(', '').replace(')', '')
+                            initial_real += str(args.beta[key])+'B '
+                
+                
+                print(state_name, '"'+initial_real+'->'+final_real+'"', float(k)**2, eV, sep=',')
+            orb_block = 0
+
+        if orb_block:
+            orbs[sp[0]] = sp[1:]
+
+        if sp[0] == 'Amplitude':
+            orb_block = 1
+
+        if ' transition' in l:
+            trans_num = sp[-1].split('/')[0]
+            state_name = irrep+'_'+trans_num+'_'+mult
+
+        if 'Excitation energy' in l:
+            eV = ''.join(sp[-2:])[:-3]
+            #PRINT TRANSITION INFO
+            print(state_name, '','', eV, sep=',')
+            orbs = {}
+        # END OF FILE
+        if method+' calculation:' in l:
+            orb_block = 0
+
+
+def main():
+    args = parse_arguments()
+    parse_orbital_dict(args)
+    print('state_name', 'from->to', 'amp', 'e(eV)',sep=',')
+    parse_qfile(args)
+
+
+if __name__ == '__main__':
+    main()
+

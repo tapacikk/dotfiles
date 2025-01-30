@@ -1,0 +1,57 @@
+#!/usr/bin/python3
+import os
+import argparse
+import sys
+
+
+def parse_arguments():
+    #Parse args
+    parser = argparse.ArgumentParser(prog='fcf',
+                                     description='Create FCF input')
+    parser.add_argument('gs_chk', type=open,
+                        help='''Path to chk file with ground state frequencies''')
+    parser.add_argument('es_chk', type=open,
+                        help='''Path to chk file with excited state frequencies''')
+    parser.add_argument('-ch', default=0, type=int, metavar='CHARGE',
+                        help='Carge of the system. Default 0')
+    parser.add_argument('-s', default=1, type=int, metavar='MULTIPLICITY',
+                        help='Multiplicity of the system. Default 1')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default=sys.stdout,
+                        help='File to write gaussian input to\
+                              Defaults to STDOUT')
+    args = parser.parse_args()
+    args.init_state_chk.close()
+    args.fin_state_chk.close()
+    return args
+
+
+def create_input(args):
+    #BEGIN PRINTING FILE
+    if args.o != sys.stdout:
+        outname = os.path.splitext(os.path.basename(args.o.name))[0]
+        print(f'%rwf={outname}.rwf', file=args.o)
+        print(f'%chk={outname}.chk', file=args.o)
+    print('%NoSave', file=args.o)
+    print('%oldchk=', args.init_state_chk.name, sep='', file=args.o)
+    print('# Geom=check Freq=(fc,readfc,readfcht) NoSymm', file=args.o)
+    print('', 'FCF', '', sep='\n', file=args.o)
+    print(args.ch, args.s, file=args.o)
+    print('', 'Transition=Emission Print=(AssignThresh=0.00001) Initial=(Source=Chk) Final=(Source=Chk)', '', file=args.o, sep='\n')
+    print('! Initial state chk goes here as explicitly indicated above', file=args.o)
+    print(args.fin_state_chk.name, sep='\n', file=args.o)
+    print('! Final state chk goes here as explicitly indicated above', file=args.o)
+    print(args.init_state_chk.name,file=args.o)
+    print('', file=args.o)
+    args.o.close()
+
+
+def main():
+    args = parse_arguments()
+    create_input(args)
+
+
+if __name__ == '__main__':
+    main()
+        
+

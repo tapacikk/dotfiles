@@ -260,4 +260,3 @@ dracula.draw.blood(c, {
     }
 })
 
-config.set("colors.webpage.darkmode.enabled", True)

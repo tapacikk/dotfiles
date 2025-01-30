@@ -37,6 +37,6 @@ xcompmgr &
 wall=$(find -L $HOME/.local/wall -type f | shuf -n1)
 wal -c
 wal -i $wall
-xwallpaper --zoom $wall
+xwallpaper $wall
 xss-lock -- slock &
 exec dwm 

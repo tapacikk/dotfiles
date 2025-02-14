@@ -23,9 +23,12 @@ def parse_arguments():
                         help='Plot Spin-Orbit states. Default off')
     parser.add_argument('-py', action='store_true',
                         help='Output in python format')
+    parser.add_argument('-mcd', action='store_true',
+                        help='Create the matricies files for mcd code')
     args = parser.parse_args()
     args.filename = args.rassi_output.name
     return args
+
 
 def get_roots(args):
     roots = {}
@@ -99,9 +102,84 @@ def print_spectrum(args):
               file=args.o)
     print('}', file=args.o)
 
+def get_matricies(args):
+    roots = {}
+    prop_lines = ['ANGMOM', 'MLTPL', 'AMFI']
+    parsing_prop = 1
+    spin_started = 0
+    args.properties = {}
+    for line in args.rassi_output:
+        if 'Spin-orbit properties section' in line:
+            spin_started = 1
+            continue
+        if not spin_started or not line.split(): continue
+        if 'PROPERTY' in line:
+            current_prop = line.split('PROPERTY:')[1].split()[0]
+            dimention = line.split()[-1]
+            if current_prop in prop_lines :
+                args.properties[current_prop+dimention] = parse_property(args)
+    print_matricies(args)
+
+
+def parse_property(args):
+    '''
+    receives file object, advances its pointer by parsing the matrix
+    '''
+    result = []
+    for _ in range(int(len(args.roots)/2)):
+        row1, row2 = [], []
+        args.rassi_output.readline() #empty line
+        args.rassi_output.readline() #states
+        for _ in args.roots:
+            i,j = args.rassi_output.readline().split(')   (')
+            row1.append(i.split('(')[1])
+            row2.append(j.rstrip(')\n'))
+        result.append(row1)
+        result.append(row2)
+    return result
+
+
+def print_matricies(args):
+    """
+    Print the results of get_matricies
+    """
+    #check if the files exist already
+    ask = False
+    file_list = {'spin-1.txt':'AMFI1',
+                 'spin-2.txt':'AMFI2',
+                 'spin-3.txt':'AMFI3',
+                 'dipole-1.txt':'MLTPL1',
+                 'dipole-2.txt':'MLTPL2',
+                 'dipole-3.txt':'MLTPL3',
+                 'angmom-1.txt':'ANGMOM1',
+                 'angmom-2.txt':'ANGMOM2',
+                 'angmom-3.txt':'ANGMOM3'}
+    for file in file_list:
+        if os.path.isfile(file):
+            ask = True
+    if ask:
+        while True:
+            user_input = input("The file(s) already exist. Overwrite? (y/N): ")
+            if user_input.lower() in ["yes", "y"]:
+                break
+            elif user_input.lower() in ["no", "n"]:
+                exit(0)
+            else:
+                continue
+    for file in file_list:
+        with open(file, 'w') as f:
+            f.write('#NROW NCOL REAL IMAG\n')
+            for idx1, i in enumerate(args.properties[file_list[file]]):
+                for idx2, j in enumerate(i):
+                    front = ' '*(4-len(str(idx1)))+str(idx1)+' '*(4-len(str(idx1)))+str(idx2)
+                    print(front, j, file=f)
+    exit(0)
+
 def main():
     args = parse_arguments()
     roots = get_roots(args)
+    if args.mcd:
+        get_matricies(args)
     get_spectrum(args)
     args.rassi_output.close()
     print_spectrum(args)

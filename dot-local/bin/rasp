@@ -26,6 +26,8 @@ def parse_arguments():
     parser.add_argument('-mcd', action='store_true',
                         help='Create the matricies files for mcd code')
     args = parser.parse_args()
+    if args.mcd:
+       args.so = True 
     args.filename = args.rassi_output.name
     return args
 
@@ -126,12 +128,13 @@ def parse_property(args):
     receives file object, advances its pointer by parsing the matrix
     '''
     result = []
-    for _ in range(int(len(args.roots)/2)):
+    for _ in range(int(len(args.roots)/2)): #matrix blocks
         row1, row2 = [], []
         args.rassi_output.readline() #empty line
         args.rassi_output.readline() #states
-        for _ in args.roots:
-            i,j = args.rassi_output.readline().split(')   (')
+        for b in args.roots:
+            line = args.rassi_output.readline()
+            i,j = line.split(')   (')
             row1.append(i.split('(')[1])
             row2.append(j.rstrip(')\n'))
         result.append(row1)
@@ -168,11 +171,15 @@ def print_matricies(args):
                 continue
     for file in file_list:
         with open(file, 'w') as f:
-            f.write('#NROW NCOL REAL IMAG\n')
+            f.write(' #NROW NCOL REAL IMAG\n')
             for idx1, i in enumerate(args.properties[file_list[file]]):
                 for idx2, j in enumerate(i):
-                    front = ' '*(4-len(str(idx1)))+str(idx1)+' '*(4-len(str(idx1)))+str(idx2)
-                    print(front, j, file=f)
+                    print("{:4.0f}".format(idx2+1), file=f, end='')
+                    print("{:4.0f}".format(idx1+1), file=f, end='')
+                    real, imag = map(float, j.split(','))
+                    print("{:26.16E}".format(real), end='', file=f)
+                    print("{:26.16E}".format(imag), file=f)
+                    #print(real, imag, file=f)
     exit(0)
 
 def main():

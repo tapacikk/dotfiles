@@ -100,7 +100,8 @@ def print_spectrum(args):
     for k, v in args.spectrum.items():
         print(' '*4, f"'{k}' : ", 
               '{', 
-              f"'energy_{args.units}': {v[0]}, 'oscillator_strength': {v[1]},", 
+              f"'energy_{args.units}': {v[0]}, 'oscillator_strength': {v[1]}", 
+              '},',
               file=args.o)
     print('}', file=args.o)
 
@@ -156,7 +157,8 @@ def print_matricies(args):
                  'dipole-3.txt':'MLTPL3',
                  'angmom-1.txt':'ANGMOM1',
                  'angmom-2.txt':'ANGMOM2',
-                 'angmom-3.txt':'ANGMOM3'}
+                 'angmom-3.txt':'ANGMOM3',
+                 'energies.txt':''}
     for file in file_list:
         if os.path.isfile(file):
             ask = True
@@ -169,7 +171,13 @@ def print_matricies(args):
                 exit(0)
             else:
                 continue
+    with open('energies.txt', 'w') as f:
+        print('#', len(args.roots), '(atomic units)', file=f)
+        for root in args.roots.values():
+            print("{:15.8f}".format(root), file=f)
+            #print(root, file=f)
     for file in file_list:
+        if file == 'energies.txt': continue
         with open(file, 'w') as f:
             f.write(' #NROW NCOL REAL IMAG\n')
             for idx1, i in enumerate(args.properties[file_list[file]]):

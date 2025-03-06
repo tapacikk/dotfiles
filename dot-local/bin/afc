@@ -1,0 +1,99 @@
+#!/usr/bin/env python3
+# Info:
+# Original script by Taras Khvorost April 2024
+# Modified by Ryan Choi Feb 2024
+"""
+Program for calculation of anharmonic freqs and "anharmonic fcfs" from Gaussian outputs and Anne McCoy's code vpt program
+"""
+import argparse
+import sys
+import os
+import code
+from Psience.VPT2 import VPTAnalyzer
+
+def existing_file(path):
+    if os.path.isfile(path):
+        return os.path.abspath(path)
+    else:
+        raise FileNotFoundError('bad fchk path')
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog='afc',
+                                     description='Anharmonic Frank-Condon')
+    parser.add_argument('harm', type=existing_file,
+                        metavar='HARMONIC_OUTPUT',
+                        help='''.csv file from Gaussian or .xml.out file from ezfcf''')
+    parser.add_argument('harmtype', choices=('g16', 'ezfcf'),
+                        metavar='HARMONIC_TYPE',
+                        help='''G16 or EZFCF harmonic file''')
+    parser.add_argument('vpttxt', type=existing_file,
+                        metavar='VPT_OUTPUT_TXT',
+                        help='''.txt output of VPT file''')
+    parser.add_argument('vpthdf5', type=existing_file,
+                        metavar='VPT_OUTPUT_HDF5',
+                        help='''.hdf5 output of VPT file''')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default=sys.stdout,
+                        help='file to write output to.\nDefaults to STDOUT')
+    args = parser.parse_args()
+    return args
+
+
+def parse_gaussian(args):
+    pass
+
+def parse_ezfcf(args):
+    with open(args.harm, 'r') as f:
+        ezfcf_text = f.readlines()
+
+def parse_harmonic(args):
+    if args.harmtype == 'g16':
+        return parse_gaussian(args)
+    return parse_ezfcf(args)
+
+def parse_vpt_output(args):
+    with open(args.vpttxt, 'r') as f:
+        vpt_text = f.readlines()
+    flag, prev_line, states, states_clean = 0, '', [], {}
+    # parse DOF and NATOMS:
+    for l in vpt_text:
+        if '::> States' in prev_line:
+            args.DOF = len(l.split('[[')[1].split())
+            args.NATOMS = int((args.DOF + 6)/3)
+            break
+        prev_line = l
+    # parse states (with energies), zpe_anharm and zpe_harm:
+    for l in vpt_text:
+        if '::> Degenerate Energies' in prev_line:
+            flag = 1
+        if 'ZPE' in prev_line.split() and flag:
+            args.ZPE, args.ZPE_HARM = float(l.split()[-3]), float(l.split()[-4])
+        if flag and '0' in l.split():
+            states.append(l.split())
+        prev_line = l
+    # Create a dict with state as key and [harm_e, anham_e] as value
+    for i in states:
+        if i[-1] == '-':
+            states_clean['0'*args.DOF] = [0, 0] # ZPE
+            continue
+        states_clean[''.join(i[:args.DOF]).rstrip('-')] = list(map(float, i[-2:]))
+    states_clean = dict(sorted(states_clean.items(), key=lambda item: item[1][1])) # sort by anham_e
+    args.states_vpt = states_clean
+    return states_clean
+
+def parse_vpt_hdf5(args):
+    analyzer = VPTAnalyzer(args.vpthdf5)
+    code.interact(local=locals())
+    return analyzer
+
+def main():
+    args = parse_arguments()
+    c = parse_vpt_output(args)
+    parse_harmonic(args)
+    for i in c.items():
+        print(i)
+    parse_vpt_hdf5(args)
+
+if __name__ == '__main__':
+    main()

@@ -3,20 +3,21 @@
 # Original script by Taras Khvorost April 2024
 # Modified by Ryan Choi Feb 2024
 """
-Program for calculation of anharmonic freqs and "anharmonic fcfs" from Gaussian outputs and Anne McCoy's code vpt program
+Program for calculation of anharmonic freqs and "anharmonic fcfs" from Gaussian outputs and Anne McCoy's vpt program
 """
 import argparse
 import sys
 import os
 import code
 from Psience.VPT2 import VPTAnalyzer
+import numpy as np
+
 
 def existing_file(path):
     if os.path.isfile(path):
         return os.path.abspath(path)
     else:
         raise FileNotFoundError('bad fchk path')
-
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='afc',
@@ -43,13 +44,35 @@ def parse_arguments():
 def parse_gaussian(args):
     pass
 
+
 def parse_ezfcf(args):
     with open(args.harm, 'r') as f:
         ezfcf_text = f.readlines()
+    #Parse ezFCF ouput, create a datastructure corresponding to the degeneracy blocks
+    flag = 0
+    harm_fcfs = {}
+    # First, parse and create a dict of form state: fcf
+    for l in ezfcf_text:
+        if 'Stick photoelectron spectrum (with Dushinsky rotations)' in l: flag = 1
+        if not flag or len(l.split('->')) == 1: continue
+        stuff, final_state = l.split('->')
+        current_harm_fcf = stuff.split()[2]
+        final_state = final_state.lstrip('(').rstrip('\n').rstrip(')')[2:]
+        if final_state == '0':
+            harm_fcfs['0'*args.DOF] = float(current_harm_fcf)
+            continue
+        vib = [0 for x in range(args.DOF)]
+        for quantum_of_excitation in final_state.split(','):
+            n, mode = quantum_of_excitation.split('v')
+            n, mode = list(map(int, [n, mode]))
+            vib[mode] = n
+        harm_fcfs[''.join(map(str, vib))] = float(current_harm_fcf)
+    return harm_fcfs
 
 def parse_harmonic(args):
     if args.harmtype == 'g16':
-        return parse_gaussian(args)
+        raise NotImplementedError('Gaussian support is not yet implemented!')
+    args.harm_fcfs = parse_ezfcf(args)
     return parse_ezfcf(args)
 
 def parse_vpt_output(args):
@@ -82,18 +105,72 @@ def parse_vpt_output(args):
     args.states_vpt = states_clean
     return states_clean
 
+
 def parse_vpt_hdf5(args):
     analyzer = VPTAnalyzer(args.vpthdf5)
-    code.interact(local=locals())
-    return analyzer
+    # create an array of states degenerate blocks to have same datastruct. as
+    # analyzer.depertrurbed_hams, i.e.  
+    # [ [ [1,1,0,0], [0,0,1,0] ] , 
+    #   [ [0,1,1,0], [0,0,0,1] ] ,...]
+    # states [1,1,0,0] and [0,0,1,0] form a degen. block
+    degenerate_state_blocks_diag, wf_blocks_expansions = [], []
+    degenerate_state_blocks = [state_block for state_block in analyzer.degenerate_states if len(state_block) > 1]
+    # re-diagonalize hams using shift_and_transform_ham with shift=0, collect energies and expantion coefficients
+    for state_block, ham in zip(degenerate_state_blocks, analyzer.deperturbed_hamiltonians):
+        eigvals, wf_block_expansion = analyzer.shift_and_transform_hamiltonian(ham, 0)
+        degenerate_state_blocks_diag.append(list(''.join(map(str, arr)) for arr in state_block))
+        wf_blocks_expansions.append(wf_block_expansion)
+    # blocks_diag and blocks are the same thing, but the former is in the
+    # string format to interface with other parts of the code
+    args.degenerate_state_blocks_diag = degenerate_state_blocks_diag
+    args.wf_blocks_expansions = wf_blocks_expansions
+    return degenerate_state_blocks_diag, wf_blocks_expansions
+
+
+def get_harm_fcf_blocks(args):
+    # organize the hamonic data, so it matches the vpt degen blocks
+    harm_fcf_blocks = []
+    for degenerate_block in args.degenerate_state_blocks_diag:
+        for single_state in degenerate_block:
+            if single_state not in args.harm_fcfs:
+                args.harm_fcfs[single_state] = 0 # if the state from the block is not in the parsed harm_fcfs, just assume it has a 0 fcf
+        harm_fcf_blocks.append(list([args.harm_fcfs[x] for x in degenerate_block]))
+    args.harm_fcf_blocks = harm_fcf_blocks
+    return harm_fcf_blocks
+
+
+def correct_fcfs(args):
+    anharm_fcfs = dict()
+    for coeff_block, fcf_block, state_block in zip(args.wf_blocks_expansions, args.harm_fcf_blocks, args.degenerate_state_blocks_diag):
+        for coeff, state, fcf in zip(coeff_block, state_block, fcf_block):
+            FCF = np.sum(abs(coeff) ** 2 * np.array(fcf_block)**2)
+            anharm_fcfs[state] = FCF
+    args.anharm_fcfs = anharm_fcfs
+    #anharm_fcfs can only have states from the degen blocks, correcting for that
+    corrected_fcfs = dict()
+    for harmonic_state, harmonic_fcf in args.harm_fcfs.items():
+        if harmonic_state in anharm_fcfs:
+            corrected_fcfs[harmonic_state] = anharm_fcfs[harmonic_state]
+            continue
+        else:
+            corrected_fcfs[harmonic_state] = harmonic_fcf
+    args.corrected_fcfs = corrected_fcfs
+
 
 def main():
     args = parse_arguments()
-    c = parse_vpt_output(args)
-    parse_harmonic(args)
-    for i in c.items():
-        print(i)
+    parse_vpt_output(args)
     parse_vpt_hdf5(args)
+    parse_harmonic(args)
+    get_harm_fcf_blocks(args)
+    # at this point we have:
+    # args.harm_fcfs is a {state: harm_fcf}
+    # args.states_vpt is a {state: harm_e, anharm_e}
+    # args.wf_blocks_expansions is a list of blocks with expansions
+    # args.degenerate_state_blocks_diag is a list with blocks of states
+    # args.harm_fcf_blocks is a list with blocks of fcfs matching the degen blocks
+    correct_fcfs(args)
+    code.interact(local=locals())
 
 if __name__ == '__main__':
     main()

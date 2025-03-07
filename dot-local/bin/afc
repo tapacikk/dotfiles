@@ -17,9 +17,9 @@ def existing_file(path):
     if os.path.isfile(path):
         return os.path.abspath(path)
     else:
-        raise FileNotFoundError('bad fchk path')
+        raise FileNotFoundError('bad path for '+path)
 
-def parse_arguments():
+def parse_arguments(custom_arguments=None):
     parser = argparse.ArgumentParser(prog='afc',
                                      description='Anharmonic Frank-Condon')
     parser.add_argument('harm', type=existing_file,
@@ -37,8 +37,9 @@ def parse_arguments():
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
                         metavar='OUTFILE', default=sys.stdout,
                         help='file to write output to.\nDefaults to STDOUT')
-    args = parser.parse_args()
-    return args
+    if custom_arguments == None:
+        return parser.parse_args()
+    return parser.parse_args(custom_arguments)
 
 
 def parse_gaussian(args):
@@ -157,20 +158,30 @@ def correct_fcfs(args):
     args.corrected_fcfs = corrected_fcfs
 
 
-def main():
-    args = parse_arguments()
+def main(custom_arguments=None):
+    """
+    Returns args
+    Namespace explanation:
+     args.harm_fcfs is a {state: harm_fcf}
+     args.anharm_fcfs is a {state: anharm_fcf} note that not all states are here
+     args.corrected_fcfs is a {state: corrected_fcf} 
+     args.states_vpt is a {state: harm_e, anharm_e}
+     args.wf_blocks_expansions is a list of blocks with expansions
+     args.degenerate_state_blocks_diag is a list with blocks of states
+     args.harm_fcf_blocks is a list with blocks of fcfs matching the degen blocks
+    """
+    args = parse_arguments(custom_arguments)
     parse_vpt_output(args)
     parse_vpt_hdf5(args)
     parse_harmonic(args)
     get_harm_fcf_blocks(args)
-    # at this point we have:
-    # args.harm_fcfs is a {state: harm_fcf}
-    # args.states_vpt is a {state: harm_e, anharm_e}
-    # args.wf_blocks_expansions is a list of blocks with expansions
-    # args.degenerate_state_blocks_diag is a list with blocks of states
-    # args.harm_fcf_blocks is a list with blocks of fcfs matching the degen blocks
     correct_fcfs(args)
-    code.interact(local=locals())
+    print('state,harm_e,anharm_e,harm_fcf,anharm_fcf', file=args.o)
+    for state, harmonic_fcf in args.harm_fcfs.items():
+        if state not in args.corrected_fcfs or state not in args.states_vpt: continue
+        print(state, args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf, args.corrected_fcfs[state], sep=',', file=args.o)
+    return args
+
 
 if __name__ == '__main__':
     main()

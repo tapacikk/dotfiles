@@ -8,7 +8,6 @@ Program for calculation of anharmonic freqs and "anharmonic fcfs" from Gaussian 
 import argparse
 import sys
 import os
-import code
 from Psience.VPT2 import VPTAnalyzer
 import numpy as np
 
@@ -43,6 +42,7 @@ def parse_arguments(custom_arguments=None):
 
 
 def parse_gaussian(args):
+    #TODO
     pass
 
 
@@ -154,7 +154,7 @@ def correct_fcfs(args):
             corrected_fcfs[harmonic_state] = anharm_fcfs[harmonic_state]
             continue
         else:
-            corrected_fcfs[harmonic_state] = harmonic_fcf
+            corrected_fcfs[harmonic_state] = harmonic_fcf**2
     args.corrected_fcfs = corrected_fcfs
 
 
@@ -179,7 +179,7 @@ def main(custom_arguments=None):
     print('state,harm_e,anharm_e,harm_fcf,anharm_fcf', file=args.o)
     for state, harmonic_fcf in args.harm_fcfs.items():
         if state not in args.corrected_fcfs or state not in args.states_vpt: continue
-        print(state, args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf, args.corrected_fcfs[state], sep=',', file=args.o)
+        print(state, args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf**2, args.corrected_fcfs[state], sep=',', file=args.o)
     return args
 
 

@@ -6,6 +6,7 @@ import tempfile
 import subprocess
 import pandas
 from matplotlib import pyplot as plt
+import logging
 
 VERSION = 0.4
 
@@ -16,8 +17,7 @@ import pandas
 import tempfile
 ax = plt.gca()
 '''
-ORCA_PART='''
-with open('{args.orca}', 'r') as f:
+ORCA_PART=f'''
     text = [_ for _ in f if _]
 temp_csv = tempfile.NamedTemporaryFile(mode='w')
 with open(temp_csv.name, 'w') as f:
@@ -38,6 +38,19 @@ plt.plot(spectrum["Energy"], spectrum["IntensityHT"], label='ht_orca')
 FREQS_PART=''
 EZFCF_PART=''
 GAUSSIAN_PART=''
+GSA_PART='''
+plt.vlines(0, ymin=0, ymax=0, color='g', label='gsa_fcfs')
+for idx,row in gsa_data.iterrows():
+    if idx == 0:
+        zero = row.anharm_fcf
+    plt.vlines(-row.anharm_e, linestyle='--', ymin=0, ymax=(row.anharm_fcf/zero), linewidth=1.5, color='g')
+'''
+EXP_PART='''
+zi = spectrum.idxmax(axis=0)['normalized']
+spectrum.nm = 1/spectrum.nm * 1e7
+spectrum.nm = spectrum.nm - float(spectrum.nm.iloc[[zi]])
+plt.plot(spectrum.nm, spectrum['normalized'])
+'''
 SCRIPT_FINALE='''
 ax.set_xlim(-2000, 10)
 ax.set_ylim(0, 0.08)
@@ -64,6 +77,12 @@ def parse_arguments():
                         help='''Output file of the ESD module''',
                         type=is_spectrum)
 
+    parser.add_argument('-v', '--verbose',
+                        help="Print all the .csv files generated to stdout",
+                        action="store_const", 
+                        dest="loglevel", 
+                        const=logging.INFO)
+
     parser.add_argument('--version',
                         action='version',
                         version='%(prog)s '+str(VERSION))
@@ -74,14 +93,6 @@ def parse_arguments():
                         metavar='OUTFILE',
                         default=sys.stdout,
                         help='Defaults to STDOUT')
-
-    parser.add_argument('-u',
-                        choices=['cm', 'nm'],
-                        metavar='UNIT',
-                        default='cm',
-                        help='Units of the spectrum INPUT\
-                              Default cm-1\
-                              Output is always in cm-1')
 
     parser.add_argument('--exec',
                         action='store_true',
@@ -101,17 +112,40 @@ def parse_arguments():
                         help='gaussian input w/ fcfs',
                         type=os.path.abspath)
 
+    parser.add_argument('--gsa', 
+                        help='output of afc.py program',
+                        type=os.path.abspath)
+
+    parser.add_argument('--exp', 
+                        help='.csv w/ experiment',
+                        type=os.path.abspath)
+
     args = parser.parse_args()
     if args.exec and args.o == sys.stdout:
         args.o = tempfile.NamedTemporaryFile(mode='w')
     return args
+
+def parse_orca_spectrum(args):
+    global ORCA_PART
+    ORCA_PART = f"with open('{args.orca}', 'r') as f:\n"+ORCA_PART
+
+
+def parse_exp(args):
+    global EXP_PART
+    EXP_PART = f'spectrum = pandas.read_csv("{args.exp}")' + EXP_PART
+
+
+def parse_gsa(args):
+    global GSA_PART
+    GSA_PART = f"gsa_data = pandas.read_csv('{args.gsa}')" + GSA_PART
+
 
 def parse_gaussian_spectrum(args):
     global GAUSSIAN_PART
     if not os.path.isfile(args.g16):
         raise FileNotFoundError
     GAUSSIAN_PART=f'''
-with open('fcf1.log', 'r') as f:
+with open('{args.g16}', 'r') as f:
     text_g16 = f.readlines()
 flag=0
 energs, vbrs = [], []
@@ -189,7 +223,7 @@ def write_script(args):
     """
     Writes a python/matplotlib script with the data from spec_file
     """
-    global BOILERPLATE, ORCA_PART, FREQS_PART, EZFCF_PART, GAUSSIAN_PART
+    global BOILERPLATE, ORCA_PART, FREQS_PART, EZFCF_PART, GAUSSIAN_PART, GSA_PART, EXP_PART
     print(BOILERPLATE, file=args.o)
     if args.orca:
         print(ORCA_PART, file=args.o)
@@ -199,6 +233,10 @@ def write_script(args):
         print(EZFCF_PART, file=args.o)
     if args.g16:
         print(GAUSSIAN_PART, file=args.o)
+    if args.gsa:
+        print(GSA_PART, file=args.o)
+    if args.exp:
+        print(EXP_PART, file=args.o)
     print(SCRIPT_FINALE, file=args.o)
     if args.exec:
         args.o.flush()
@@ -206,12 +244,18 @@ def write_script(args):
 
 def main():
     args = parse_arguments()
+    if args.orca:
+        parse_orca_spectrum(args)
     if args.freqs:
         parse_orca_freqs(args)
     if args.ezfcf:
         parse_ezfcf_spectrum(args)
     if args.g16:
         parse_gaussian_spectrum(args)
+    if args.gsa:
+        parse_gsa(args)
+    if args.exp:
+        parse_exp(args)
     write_script(args)
     if args.exec:
         p = subprocess.run(['python3', str(args.o.name)])

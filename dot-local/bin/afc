@@ -10,6 +10,7 @@ import sys
 import os
 from Psience.VPT2 import VPTAnalyzer
 import numpy as np
+import code
 
 
 def existing_file(path):
@@ -17,6 +18,7 @@ def existing_file(path):
         return os.path.abspath(path)
     else:
         raise FileNotFoundError('bad path for '+path)
+
 
 def parse_arguments(custom_arguments=None):
     parser = argparse.ArgumentParser(prog='afc',
@@ -42,8 +44,23 @@ def parse_arguments(custom_arguments=None):
 
 
 def parse_gaussian(args):
-    #TODO
-    pass
+    with open(args.harm, 'r') as f:
+        g16_text = f.readlines()[1:] #skip header
+    harm_fcfs = {}
+    # create a dict of form {state: fcf}
+    for l in g16_text:
+        final_state, rel_e, current_harm_fcf = l.split(',')
+        final_state = final_state.rstrip('>').lstrip('|').split(';')
+        final_state_list = [0 for _ in range(args.DOF)]
+        if final_state == ['0']:
+            harm_fcfs['0'*args.DOF] = float(current_harm_fcf.strip())
+            continue
+        for excitation in final_state:
+            mode, n = excitation.split('^')
+            mode, n = int(mode), int(n)
+            final_state_list[mode-1] = n
+        harm_fcfs[''.join(map(str, final_state_list))] = float(current_harm_fcf)
+    return harm_fcfs
 
 
 def parse_ezfcf(args):
@@ -52,12 +69,12 @@ def parse_ezfcf(args):
     #Parse ezFCF ouput, create a datastructure corresponding to the degeneracy blocks
     flag = 0
     harm_fcfs = {}
-    # First, parse and create a dict of form state: fcf
+    # create a dict of form {state: fcf}
     for l in ezfcf_text:
         if 'Stick photoelectron spectrum (with Dushinsky rotations)' in l: flag = 1
         if not flag or len(l.split('->')) == 1: continue
         stuff, final_state = l.split('->')
-        current_harm_fcf = stuff.split()[2]
+        current_harm_fcf = float(stuff.split()[2]) ** 2
         final_state = final_state.lstrip('(').rstrip('\n').rstrip(')')[2:]
         if final_state == '0':
             harm_fcfs['0'*args.DOF] = float(current_harm_fcf)
@@ -65,18 +82,19 @@ def parse_ezfcf(args):
         vib = [0 for x in range(args.DOF)]
         for quantum_of_excitation in final_state.split(','):
             n, mode = quantum_of_excitation.split('v')
-            n, mode = list(map(int, [n, mode]))
+            n, mode = int(n), int(mode)
             vib[mode] = n
-        harm_fcfs[''.join(map(str, vib))] = float(current_harm_fcf)
+        harm_fcfs[''.join(map(str, vib))] = float(current_harm_fcf) 
     return harm_fcfs
 
 def parse_harmonic(args):
     if args.harmtype == 'g16':
-        raise NotImplementedError('Gaussian support is not yet implemented!')
+        args.harm_fcfs = parse_gaussian(args)
+        return args.harm_fcfs
     args.harm_fcfs = parse_ezfcf(args)
-    return parse_ezfcf(args)
+    return args.harm_fcfs
 
-def parse_vpt_output(args):
+def parse_vpt_txt(args):
     with open(args.vpttxt, 'r') as f:
         vpt_text = f.readlines()
     flag, prev_line, states, states_clean = 0, '', [], {}
@@ -144,7 +162,7 @@ def correct_fcfs(args):
     anharm_fcfs = dict()
     for coeff_block, fcf_block, state_block in zip(args.wf_blocks_expansions, args.harm_fcf_blocks, args.degenerate_state_blocks_diag):
         for coeff, state, fcf in zip(coeff_block, state_block, fcf_block):
-            FCF = np.sum(abs(coeff) ** 2 * np.array(fcf_block)**2)
+            FCF = np.sum(abs(coeff) ** 2 * np.array(fcf_block))
             anharm_fcfs[state] = FCF
     args.anharm_fcfs = anharm_fcfs
     #anharm_fcfs can only have states from the degen blocks, correcting for that
@@ -154,7 +172,7 @@ def correct_fcfs(args):
             corrected_fcfs[harmonic_state] = anharm_fcfs[harmonic_state]
             continue
         else:
-            corrected_fcfs[harmonic_state] = harmonic_fcf**2
+            corrected_fcfs[harmonic_state] = harmonic_fcf
     args.corrected_fcfs = corrected_fcfs
 
 
@@ -171,7 +189,7 @@ def main(custom_arguments=None):
      args.harm_fcf_blocks is a list with blocks of fcfs matching the degen blocks
     """
     args = parse_arguments(custom_arguments)
-    parse_vpt_output(args)
+    parse_vpt_txt(args)
     parse_vpt_hdf5(args)
     parse_harmonic(args)
     get_harm_fcf_blocks(args)
@@ -179,7 +197,7 @@ def main(custom_arguments=None):
     print('state,harm_e,anharm_e,harm_fcf,anharm_fcf', file=args.o)
     for state, harmonic_fcf in args.harm_fcfs.items():
         if state not in args.corrected_fcfs or state not in args.states_vpt: continue
-        print(state, args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf**2, args.corrected_fcfs[state], sep=',', file=args.o)
+        print(state, args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf, args.corrected_fcfs[state], sep=',', file=args.o)
     return args
 
 

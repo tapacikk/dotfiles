@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+import argparse 
+import os
+import sys
+
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog='qsoc',
+                                     description='State interation for SOC Qchem')
+    parser.add_argument('qchem_output', 
+                        help='''Output file of the RASSI calculation''')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default=sys.stdout,
+                        help='Output of the script. Default is stdout.')
+    args = parser.parse_args()
+    with open(args.qchem_output, 'r') as f:
+        args.text = f.readlines()
+    return args
+
+
+def get_basis(args):
+    args.STATES = {}
+    prev_line = ''
+    for l in args.text:
+        if 'EOMEA transition' in prev_line:
+            args.STATES[prev_line.split()[-1]] = {'total_e':float(l.split()[3])}
+        prev_line = l
+        
+        
+
+def main():
+    args = parse_arguments()
+    get_basis(args)
+    print(args.STATES)
+
+
+if __name__ == '__main__':
+    main()
+

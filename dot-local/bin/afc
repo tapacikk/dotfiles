@@ -175,6 +175,14 @@ def correct_fcfs(args):
             corrected_fcfs[harmonic_state] = harmonic_fcf
     args.corrected_fcfs = corrected_fcfs
 
+def clean_state(state): 
+    state_clean = '|'
+    for i, vib in enumerate(state):
+        if vib == '0': continue
+        state_clean += str(i+1) + '^' + str(vib) + ';'
+    return state_clean+'>'
+
+        
 
 def main(custom_arguments=None):
     """
@@ -194,10 +202,10 @@ def main(custom_arguments=None):
     parse_harmonic(args)
     get_harm_fcf_blocks(args)
     correct_fcfs(args)
-    print('state,harm_e,anharm_e,harm_fcf,anharm_fcf', file=args.o)
+    print('state,state_clean,harm_e,anharm_e,harm_fcf,anharm_fcf', file=args.o)
     for state, harmonic_fcf in args.harm_fcfs.items():
         if state not in args.corrected_fcfs or state not in args.states_vpt: continue
-        print(state, args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf, args.corrected_fcfs[state], sep=',', file=args.o)
+        print("'"+state+"'", clean_state(state), args.states_vpt[state][0], args.states_vpt[state][1], harmonic_fcf, args.corrected_fcfs[state], sep=',', file=args.o)
     return args
 
 

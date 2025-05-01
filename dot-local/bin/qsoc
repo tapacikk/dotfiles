@@ -1,39 +1,159 @@
 #!/usr/bin/env python3
-import argparse 
-import os
+import numpy as np
+import re
 import sys
+import argparse
 
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='qsoc',
-                                     description='State interation for SOC Qchem')
+                                     description='QChem SOC parser')
     parser.add_argument('qchem_output', 
-                        help='''Output file of the RASSI calculation''')
+                        help='''Output of QChem with SOC executed''')
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
                         metavar='OUTFILE', default=sys.stdout,
                         help='Output of the script. Default is stdout.')
     args = parser.parse_args()
-    with open(args.qchem_output, 'r') as f:
-        args.text = f.readlines()
     return args
 
-
-def get_basis(args):
-    args.STATES = {}
+def find_states(args):
+    args.m_states = []
     prev_line = ''
-    for l in args.text:
-        if 'EOMEA transition' in prev_line:
-            args.STATES[prev_line.split()[-1]] = {'total_e':float(l.split()[3])}
-        prev_line = l
-        
-        
+    with open(args.qchem_output, 'r') as inFile:
+        for line in inFile:
+            if "EOMEA transition" in prev_line:
+                args.m_states.append({'state_name': prev_line.split()[2], 'energy': float(line.split()[8])} )
+            prev_line = line
+    for state in args.m_states:
+        print(f"State: {state['state_name']} has energy: {state['energy']} eV", file=args.o)
+
+# Function to put block into the Hamiltonian matrix
+def put_block_in(H_block, offset_i, offset_j, args):
+    for i in range(H_block.shape[0]):                           #shape[0] : n_rows
+        for j in range(H_block.shape[1]):                       #shape[1] : n_cols
+            #off_set decides at what indexing in full hamiltonian matrix the block falls into
+            args.m_ham[i + offset_i, j + offset_j] = H_block[i, j]    
+            args.m_ham[j + offset_j, i + offset_i] = np.conj(H_block[i, j])   #conjugate for Hermticity
+
+# Fill the diagonal of the Hamiltonian matrix
+def fill_diagonal(args):
+    print("fill_diagonal(): start", file=args.o)
+    ncount = 0
+
+    for state in args.m_states:
+        # Directly set the diagonal values based on the state's energy in eV
+        args.m_ham[ncount, ncount] = state["energy"] * args.ev2cm
+        args.m_ham[ncount + 1, ncount + 1] = state["energy"] * args.ev2cm
+        ncount += 2
+
+    print("The diagonal of the Hamiltonian is:", file=args.o)
+    print(str(np.diag(args.m_ham)), file=args.o)
+    print("fill_diagonal(): end", file=args.o)
+
+# Read Hamiltonian blocks from file and fill the matrix
+def read_H_blocks(args):
+    is1 = 0
+    is2 = is1 + 1
+    ncols = args.m_mult
+    nrows = args.m_mult
+    n_pattern_matrix = 0
+    n_matrix_rows = 0
+    found_state_A = False
+    found_state_B = False
+    found_actual_matrix = False
+    subH = np.zeros((nrows, ncols), dtype=np.complex128)
+
+    with open(args.qchem_output, 'r') as inFile:
+        for line in inFile:
+            if is1 < len(args.m_states) and is2 < len(args.m_states):
+                pattern_matrix = "Actual matrix element"
+                pattern_state_A = f"State A: eomea_ccsd/b: {args.m_states[is1]['state_name']}"
+                pattern_state_B = f"State B: eomea_ccsd/b: {args.m_states[is2]['state_name']}"
+
+                if pattern_state_A in line:
+                    found_state_A = True
+                    found_state_B = False
+                    print(f"Found state A: {args.m_states[is1]['state_name']} in line: {line.strip()}", file=args.o)
+                    j_offset = is1 * args.m_mult
+
+                elif found_state_A and pattern_state_B in line:
+                    print(f"Found state B: {args.m_states[is2]['state_name']} in line: {line.strip()}", file=args.o)
+                    found_state_A = False
+                    found_state_B = True
+                    i_row = 0
+                    i_offset = is2 * args.m_mult
+
+                elif found_state_B and pattern_matrix in line:
+                    n_pattern_matrix += 1
+
+                elif n_pattern_matrix == 5:
+                    found_actual_matrix = True
+
+                elif found_actual_matrix:
+                    n_matrix_rows += 1
+                    if 1 < n_matrix_rows <= 1 + nrows:
+                        numbers = re.findall(r"\(([^)]+)\)", line)
+
+                        print(f"Extracted numbers: {numbers}", file=args.o)
+
+                        for i_column in range(ncols):
+                            try:
+                                real, imag = numbers[i_column].split(',')
+                                subH[i_row, i_column] = complex(float(real), float(imag))
+                            except ValueError as e:
+                                print(f"Error parsing complex number: {numbers[i_column]} - {e}", file=args.o)
+                        i_row += 1
+                    elif n_matrix_rows > 1 + nrows:
+                        print("subH:\n" + str(subH), file=args.o)
+                        put_block_in(subH, i_offset, j_offset, args)
+                        found_actual_matrix = False
+                        n_matrix_rows = 0
+                        n_pattern_matrix = 0
+                        is2 += 1
+                        if is2 == len(args.m_states):
+                            is1 += 1
+                            is2 = is1 + 1
+
+# Build the Hamiltonian matrix
+def build_ham(args):
+    args.m_size = args.m_mult * len(args.m_states)
+    args.m_ham = np.zeros((args.m_size, args.m_size), dtype=np.complex128)
+    fill_diagonal(args)
+    read_H_blocks(args)
+    print(f"Hamiltonian size: {args.m_size}", file=args.o)
+
+    # Print the Hamiltonian matrix
+   # print("Hamiltonian matrix (m_ham):")
+   # print(m_ham.shape)
+    #print(m_ham)
+    eigenvalues, eigenvectors = np.linalg.eigh(args.m_ham)
+    with open('energs.txt', 'w') as f:
+        e_before = list([float(i.real) - min(np.diag(args.m_ham)).real for i in np.diag(args.m_ham)])
+        e_before = list([e*args.cm2ev for e in e_before])
+        print("energies before correction\n", file=f, end='')
+        print(e_before, file=f)
+        e_after = list([float(i)-min(eigenvalues) for i in sorted(eigenvalues)])
+        e_after = list([e*args.cm2ev for e in e_after])
+        print("energies after correction\n", file=f, end='')
+        print(e_after, file=f)
+    np.savetxt('eigenvectors.txt',eigenvectors )
+
+
 
 def main():
     args = parse_arguments()
-    get_basis(args)
-    print(args.STATES)
+    args.m_mult = 2      # To acocunt for alpha and beta spins
+    debug = False
+    args.ev2cm = 8065.73  # eV to cm⁻¹ conversion factor
+    args.cm2ev = 1/args.ev2cm
+    args.m_size = 0     # variable for defining the size of the final hamiltonian
+    args.m_ham = None
+    find_states(args)
+    build_ham(args)
+
 
 
 if __name__ == '__main__':
     main()
+
 

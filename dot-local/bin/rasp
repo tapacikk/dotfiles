@@ -2,6 +2,7 @@
 import os 
 import argparse
 import sys
+import math
 
 def parse_arguments():
     parser = argparse.ArgumentParser(prog='rasp',
@@ -24,12 +25,16 @@ def parse_arguments():
     parser.add_argument('-trdc', action='store_true',
                         help='Use this if TRDC option was set in rassi input')
     parser.add_argument('-py', type=str, default=True,
-                        help='Output in python format. Optionally can specify the dict name',
+                        help='Output in python format. \
+                              Optionally can specify the dict name',
                         nargs='?')
     parser.add_argument('-mcd', action='store_true',
                         help='Create the matricies files for mcd code')
+    parser.add_argument('-thermal', type=int,
+                        help='Perform thermal averaging. Specify T.',
+                        metavar='TEMP')
     args = parser.parse_args()
-    if args.mcd:
+    if args.mcd or args.trdc:
        args.so = True 
     args.filename = args.rassi_output.name
     return args
@@ -37,27 +42,20 @@ def parse_arguments():
 
 def get_roots(args):
     roots = {}
-    flag_line = 'Eigenvalues of complex Hamiltonian' if args.so else 'SPIN-FREE ENERGIES:'
-    breakline = 'Weights' if args.so else 'Dipole'
     started = 0
-    EMIN = 0
+    flag_line = '::    RASSI State' if not args.so else \
+                                   '::    SO-RASSI State'
     for line in args.rassi_output:
-        if started and breakline in line: break
         if flag_line in line:
             started = 1
-        if not started: continue
-        if 'EMIN (a.u.)' in line:
-            EMIN = float(line.split()[-1].strip(')'))
-            args.EMIN = EMIN
-        if EMIN:
-            try:
-                roots[int(line.split()[0])] = float(line.split()[1]) + EMIN
-            except ValueError:
-                continue
-            except IndexError:
-                continue
+        if flag_line in line and started:
+            state, e = int(line.split()[3]), float(line.split()[-1])
+            roots[state] = e
+        if not flag_line in line and started:
+            break
     args.roots = roots
     return roots
+
 
 def get_spectrum(args):
     roots = {}
@@ -77,6 +75,7 @@ def get_spectrum(args):
             initial, final, osc_str, a_x, a_y, a_z, *rest = line.split()
             initial, final = map(int, (initial, final))
             osc_str, a_x, a_y, a_z = map(float, (osc_str, a_x, a_y, a_z))
+            osc_str *= args.populations[initial]
             delta_e = args.roots[final] - args.roots[initial]
             delta_e_ev = delta_e * 27.211396641308
             delta_e_cm = ((delta_e_ev * 1.602177e-19)/(6.62607015e-34 * 299792458)) / 100
@@ -110,6 +109,7 @@ def get_spectrum_trdc(args):
             z = complex(float(z_r), float(z_i))
             initial, final = map(int, (initial, final))
             osc_str = x*x.conjugate() + y*y.conjugate() + z*z.conjugate()
+            osc_str *= args.populations[initial]
             delta_e = args.roots[final] - args.roots[initial]
             delta_e_ev = delta_e * 27.211396641308
             delta_e_cm = ((delta_e_ev * 1.602177e-19)/(6.62607015e-34 * 299792458)) / 100
@@ -124,14 +124,32 @@ def get_spectrum_trdc(args):
     return spectrum
 
 
+def compute_populations(args):
+    """given the dict of roots, computes populations for all of them"""
+    if not args.thermal:
+        args.populations = {k:v for k,v in zip(args.roots, [1 for x in args.roots])}
+        return
+    gs = args.roots[1]
+    k = 8.617333262e-5 / 27.211396641308
+    beta = 1 / (k*args.thermal)
+    args.populations = {}
+    for state, energy in args.roots.items():
+        args.populations[state] = math.exp(-(energy-gs) * beta)
+    return 
+
+
 def print_spectrum(args):
     metric_line = 'oscillator_strength' if not args.trdc else 'dipole_moment'
-    if not args.py:
-        print(f'transition', f'energy_{args.units}',metric_line, file=args.o, sep=',')
+    #print csv if not args.py
+    if args.py is True:
+        print(f'transition', f'energy_{args.units}',metric_line, 
+              file=args.o, sep=',')
         for k, v in args.spectrum.items():
             print(k, v[0], v[1], file=args.o, sep=',')
         return
-    print(f'data_{args.spectype} = ', '{', file=args.o)
+    #print python dict w/ name args.py
+    dict_name = args.spectype if args.py == None else args.py
+    print(f'data_{dict_name} = ', '{', file=args.o)
     for k, v in args.spectrum.items():
         print(' '*4, f"'{k}' : ", 
               '{', 
@@ -229,6 +247,7 @@ def print_matricies(args):
 def main():
     args = parse_arguments()
     roots = get_roots(args)
+    compute_populations(args)
     if args.mcd:
         get_matricies(args)
     get_spectrum(args)

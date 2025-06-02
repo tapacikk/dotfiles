@@ -24,6 +24,8 @@ def parse_arguments():
                         help='Plot Spin-Orbit states. Default off')
     parser.add_argument('-trdc', action='store_true',
                         help='Use this if TRDC option was set in rassi input')
+    parser.add_argument('-tint', action='store_true',
+                        help='Use this if TINT option was set to parse the tint output')
     parser.add_argument('-py', type=str, default=True,
                         help='Output in python format. \
                               Optionally can specify the dict name',
@@ -34,7 +36,7 @@ def parse_arguments():
                         help='Perform thermal averaging. Specify T.',
                         metavar='TEMP')
     args = parser.parse_args()
-    if args.mcd or args.trdc:
+    if args.mcd or args.trdc or args.tint:
        args.so = True 
     args.filename = args.rassi_output.name
     return args
@@ -90,6 +92,36 @@ def get_spectrum(args):
     return spectrum
 
 
+def get_spectrum_tint(args):
+    args.spectrum = {}
+    roots = {}
+    flag_line = '++ Isotropic transition moment strengths (SO states):'
+    started = 0
+    spectrum = {}
+    for line in args.rassi_output:
+        if flag_line in line:
+            started = 1
+        if not started or not line.split(): continue
+        if line.split()[0] == '--': 
+            break
+        try:
+            initial, final, osc_str, red_rot_str, total_a, *rest = line.split()
+            initial, final = map(int, (initial, final))
+            osc_str, red_rot_str, total_a = map(float, (osc_str, red_rot_str, total_a))
+            osc_str *= args.populations[initial]
+            delta_e = args.roots[final] - args.roots[initial]
+            delta_e_ev = delta_e * 27.211396641308
+            delta_e_cm = ((delta_e_ev * 1.602177e-19)/(6.62607015e-34 * 299792458)) / 100
+            delta_e_nm = 1/delta_e_cm * 10e6
+            e = {'ev': delta_e_ev,
+                 'cm': delta_e_cm, 
+                 'nm': delta_e_nm}
+            spectrum[f'{initial}->{final}'] = (e[args.units], osc_str, red_rot_str, total_a)
+        except ValueError:
+            continue
+    args.spectrum = {k: v for k, v in sorted(spectrum.items(), key=lambda item: item[1][0])}
+    return spectrum
+
 def get_spectrum_trdc(args):
     args.spectrum = {}
     roots = {}
@@ -136,7 +168,6 @@ def compute_populations(args):
     for state, energy in args.roots.items():
         args.populations[state] = math.exp(-(energy-gs) * beta)
     return 
-
 
 def print_spectrum(args):
     metric_line = 'oscillator_strength' if not args.trdc else 'dipole_moment'
@@ -254,6 +285,9 @@ def main():
     if args.trdc:
         args.rassi_output.seek(0)
         get_spectrum_trdc(args)
+    if args.tint:
+        args.rassi_output.seek(0)
+        get_spectrum_tint(args)
     args.rassi_output.close()
     print_spectrum(args)
 

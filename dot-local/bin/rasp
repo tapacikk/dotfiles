@@ -12,21 +12,19 @@ def parse_arguments():
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
                         metavar='OUTFILE', default=sys.stdout,
                         help='Output of the script. Default is stdout.')
-    parser.add_argument('-spectype', choices=['v', 'l', 'm'], 
+    parser.add_argument('-spectype', choices=['v', 'l', 'm', 'f'], 
                         metavar='SPECTYPE', default='l',
                         help='Type of spectrum to plot. v, \
                               l and m are velocity, length \
-                              and magnetic transitions')
+                              magnetic transitions. use f for TINT keyword.')
     parser.add_argument('--units', choices=['cm', 'ev', 'nm'], 
                         metavar='UNIT', default='nm',
                         help='Units for the specturm. Default nm')
-    parser.add_argument('-so', action='store_true',
-                        help='Plot Spin-Orbit states. Default off')
+    parser.add_argument('-noso', action='store_true',
+                        help='Do not use spin-orbit.')
     parser.add_argument('-trdc', action='store_true',
                         help='Use this if TRDC option was set in rassi input')
-    parser.add_argument('-tint', action='store_true',
-                        help='Use this if TINT option was set to parse the tint output')
-    parser.add_argument('-py', type=str, default=True,
+    parser.add_argument('-py', type=str, default=False,
                         help='Output in python format. \
                               Optionally can specify the dict name',
                         nargs='?')
@@ -36,8 +34,7 @@ def parse_arguments():
                         help='Perform thermal averaging. Specify T.',
                         metavar='TEMP')
     args = parser.parse_args()
-    if args.mcd or args.trdc or args.tint:
-       args.so = True 
+    args.so = False if args.noso else True
     args.filename = args.rassi_output.name
     return args
 
@@ -63,7 +60,8 @@ def get_spectrum(args):
     roots = {}
     spec_lines = {'l': '++ Dipole transition strengths',
                   'v': '++ Velocity transition strengths',
-                  'm':  '++ Magnetic-Dipole'}
+                  'm': '++ Magnetic-Dipole',
+                  'f':  '++ Isotropic transition moment strengths (SO states):'}
     flag_line = spec_lines[args.spectype]
     started = 0
     spectrum = {}
@@ -74,53 +72,24 @@ def get_spectrum(args):
         if line.split()[0] == '--': 
             break
         try:
-            initial, final, osc_str, a_x, a_y, a_z, *rest = line.split()
+            initial, final, osc_str, *rest = line.split()
             initial, final = map(int, (initial, final))
-            osc_str, a_x, a_y, a_z = map(float, (osc_str, a_x, a_y, a_z))
+            osc_str = float(osc_str)
             osc_str *= args.populations[initial]
             delta_e = args.roots[final] - args.roots[initial]
+            dipole_matrix_element = (osc_str * 1.5) / delta_e
             delta_e_ev = delta_e * 27.211396641308
             delta_e_cm = ((delta_e_ev * 1.602177e-19)/(6.62607015e-34 * 299792458)) / 100
             delta_e_nm = 1/delta_e_cm * 10e6
             e = {'ev': delta_e_ev,
                  'cm': delta_e_cm, 
                  'nm': delta_e_nm}
-            spectrum[f'{initial}->{final}'] = (e[args.units], osc_str, a_x, a_y, a_z)
+            spectrum[f'{initial}->{final}'] = (e[args.units], osc_str, dipole_matrix_element)
         except ValueError:
             continue
-    args.spectrum = {k: v for k, v in sorted(spectrum.items(), key=lambda item: item[1][0])}
+    args.spectrum = {k: v for k, v in sorted(spectrum.items(), key=lambda item: item[1][0])} #sort by e
     return spectrum
 
-
-def get_spectrum_tint(args):
-    args.spectrum = {}
-    roots = {}
-    flag_line = '++ Isotropic transition moment strengths (SO states):'
-    started = 0
-    spectrum = {}
-    for line in args.rassi_output:
-        if flag_line in line:
-            started = 1
-        if not started or not line.split(): continue
-        if line.split()[0] == '--': 
-            break
-        try:
-            initial, final, osc_str, red_rot_str, total_a, *rest = line.split()
-            initial, final = map(int, (initial, final))
-            osc_str, red_rot_str, total_a = map(float, (osc_str, red_rot_str, total_a))
-            osc_str *= args.populations[initial]
-            delta_e = args.roots[final] - args.roots[initial]
-            delta_e_ev = delta_e * 27.211396641308
-            delta_e_cm = ((delta_e_ev * 1.602177e-19)/(6.62607015e-34 * 299792458)) / 100
-            delta_e_nm = 1/delta_e_cm * 10e6
-            e = {'ev': delta_e_ev,
-                 'cm': delta_e_cm, 
-                 'nm': delta_e_nm}
-            spectrum[f'{initial}->{final}'] = (e[args.units], osc_str, red_rot_str, total_a)
-        except ValueError:
-            continue
-    args.spectrum = {k: v for k, v in sorted(spectrum.items(), key=lambda item: item[1][0])}
-    return spectrum
 
 def get_spectrum_trdc(args):
     args.spectrum = {}
@@ -140,16 +109,18 @@ def get_spectrum_trdc(args):
             y = complex(float(y_r), float(y_i))
             z = complex(float(z_r), float(z_i))
             initial, final = map(int, (initial, final))
-            osc_str = x*x.conjugate() + y*y.conjugate() + z*z.conjugate()
-            osc_str *= args.populations[initial]
+            dipole_matrix_element = x*x.conjugate() + y*y.conjugate() + z*z.conjugate()
+            dipole_matrix_element = dipole_matrix_element.real
             delta_e = args.roots[final] - args.roots[initial]
+            osc_str = (2/3) * dipole_matrix_element * delta_e
+            osc_str *= args.populations[initial]
             delta_e_ev = delta_e * 27.211396641308
             delta_e_cm = ((delta_e_ev * 1.602177e-19)/(6.62607015e-34 * 299792458)) / 100
             delta_e_nm = 1/delta_e_cm * 10e6
             e = {'ev': delta_e_ev,
                  'cm': delta_e_cm, 
                  'nm': delta_e_nm}
-            spectrum[f'{initial}->{final}'] = (e[args.units], osc_str.real)
+            spectrum[f'{initial}->{final}'] = (e[args.units], osc_str, dipole_matrix_element)
         except ValueError:
             continue
     args.spectrum = {k: v for k, v in sorted(spectrum.items(), key=lambda item: item[1][0])}
@@ -169,22 +140,20 @@ def compute_populations(args):
         args.populations[state] = math.exp(-(energy-gs) * beta)
     return 
 
+
 def print_spectrum(args):
-    metric_line = 'oscillator_strength' if not args.trdc else 'dipole_moment'
-    #print csv if not args.py
-    if args.py is True:
-        print(f'transition', f'energy_{args.units}',metric_line, 
+    if args.py is False:
+        print(f'transition', f'energy_{args.units}', 'osc_str', '<i|mu|f>^2',
               file=args.o, sep=',')
         for k, v in args.spectrum.items():
-            print(k, v[0], v[1], file=args.o, sep=',')
+            print(k, v[0], v[1], v[2], file=args.o, sep=',')
         return
-    #print python dict w/ name args.py
     dict_name = args.spectype if args.py == None else args.py
     print(f'data_{dict_name} = ', '{', file=args.o)
     for k, v in args.spectrum.items():
         print(' '*4, f"'{k}' : ", 
               '{', 
-              f"'energy_{args.units}': {v[0]}, '{metric_line}': {v[1]}", 
+              f"'energy_{args.units}': {v[0]}, 'osc_str': {v[1]}, 'dipole_matrix_element': {v[2]}", 
               '},',
               file=args.o)
     print('}', file=args.o)
@@ -272,8 +241,6 @@ def print_matricies(args):
                     real, imag = map(float, j.split(','))
                     print("{:26.16E}".format(real), end='', file=f)
                     print("{:26.16E}".format(imag), file=f)
-                    #print(real, imag, file=f)
-    exit(0)
 
 def main():
     args = parse_arguments()
@@ -281,13 +248,11 @@ def main():
     compute_populations(args)
     if args.mcd:
         get_matricies(args)
-    get_spectrum(args)
+        exit(0)
     if args.trdc:
-        args.rassi_output.seek(0)
         get_spectrum_trdc(args)
-    if args.tint:
-        args.rassi_output.seek(0)
-        get_spectrum_tint(args)
+    else:
+        get_spectrum(args)
     args.rassi_output.close()
     print_spectrum(args)
 

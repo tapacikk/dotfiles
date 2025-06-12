@@ -18,7 +18,7 @@ def parse_arguments():
                               l and m are velocity, length \
                               magnetic transitions. use f for TINT keyword.')
     parser.add_argument('--units', choices=['cm', 'ev', 'nm'], 
-                        metavar='UNIT', default='nm',
+                        metavar='UNIT', default='cm',
                         help='Units for the specturm. Default nm')
     parser.add_argument('-noso', action='store_true',
                         help='Do not use spin-orbit.')
@@ -35,6 +35,8 @@ def parse_arguments():
                         metavar='TEMP')
     args = parser.parse_args()
     args.so = False if args.noso else True
+    if args.spectype in ['v', 'm', 'f']:
+        args.trdc = False
     args.filename = args.rassi_output.name
     return args
 
@@ -229,7 +231,6 @@ def print_matricies(args):
         print('#', len(args.roots), '(atomic units)', file=f)
         for root in args.roots.values():
             print("{:15.8f}".format(root), file=f)
-            #print(root, file=f)
     for file in file_list:
         if file == 'energies.txt': continue
         with open(file, 'w') as f:

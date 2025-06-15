@@ -168,7 +168,7 @@ static Key quit_keys[] = {
 
 #if BORDER_PATCH
 /* Size of the window border */
-static unsigned int border_width = 0;
+static unsigned int border_width = 3;
 #endif // BORDER_PATCH
 
 #if PREFIXCOMPLETION_PATCH

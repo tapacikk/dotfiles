@@ -7,11 +7,10 @@ while true; do
 done &
 
 
-export PATH=$PATH:$HOME/.local/bin
 setxkbmap -option ctrl:nocaps
-wal -c
-wal -i $HOME/.local/wall
-xss-lock -- slock &
+#feh --bg-center /home/taras/.local/wall/wall7.png
+wal -i /home/taras/.local/wall
 picom -b
+xss-lock -- slock &
 exec dwm 
 

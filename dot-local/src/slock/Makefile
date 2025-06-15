@@ -11,10 +11,13 @@ all: slock
 .c.o:
 	${CC} -c ${CFLAGS} $<
 
-${OBJ}: config.h config.mk arg.h util.h
+${OBJ}: config.h config.mk arg.h util.h patches.h
 
 config.h:
 	cp config.def.h $@
+
+patches.h:
+	cp patches.def.h $@
 
 slock: ${OBJ}
 	${CC} -o $@ ${OBJ} ${LDFLAGS}
@@ -35,6 +38,7 @@ install: all
 	cp -f slock ${DESTDIR}${PREFIX}/bin
 	chmod 755 ${DESTDIR}${PREFIX}/bin/slock
 	chmod u+s ${DESTDIR}${PREFIX}/bin/slock
+	echo installing manual page to ${DESTDIR}${MANPREFIX}/man1
 	mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	sed "s/VERSION/${VERSION}/g" <slock.1 >${DESTDIR}${MANPREFIX}/man1/slock.1
 	chmod 644 ${DESTDIR}${MANPREFIX}/man1/slock.1

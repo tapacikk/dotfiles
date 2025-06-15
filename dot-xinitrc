@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 while true; do
    xsetroot -name "$(date '+[%a,%d-%b][%I:%M]')"
    sleep 1
@@ -8,9 +7,11 @@ done &
 
 
 setxkbmap -option ctrl:nocaps
-#feh --bg-center /home/taras/.local/wall/wall7.png
-wal -i /home/taras/.local/wall
-picom -b
+export WALL=$(ls /home/taras/.local/wall | shuf -n 1)
+export WALL=/home/taras/.local/wall/$WALL
+feh --bg-center $WALL
+wal -i $WALL --cols16 -n
+picom -b 
 xss-lock -- slock &
 exec dwm 
 

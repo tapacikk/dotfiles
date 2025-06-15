@@ -3,7 +3,7 @@
 
 static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom */
 #if ALPHA_PATCH
-static int opacity = 1;                     /* -o  option; if 0, then alpha is disabled */
+static int opacity = 0.90;                     /* -o  option; if 0, then alpha is disabled */
 #endif // ALPHA_PATCH
 #if CARET_WIDTH_PATCH
 static int caret_width = 2;                 /* -cw option; set default caret width */

@@ -24,7 +24,7 @@ X11LIB = /usr/X11R6/lib
 #PAM=-lpam
 
 # Uncomment for blur pixelated screen and background image patches / BLUR_PIXELATED_SCREEN_PATCH, BACKGROUND_IMAGE_PATCH
-#IMLIB=-lImlib2
+IMLIB=-lImlib2
 
 # includes and libs
 INCS = -I. -I/usr/include -I${X11INC}

@@ -7,11 +7,11 @@ done &
 
 
 setxkbmap -option ctrl:nocaps
-export WALL=$(ls /home/taras/.local/wall | shuf -n 1)
-export WALL=/home/taras/.local/wall/$WALL
-feh --bg-center $WALL
+WALL=$(ls /home/taras/.local/wall | shuf -n 1)
+WALL=/home/taras/.local/wall/$WALL
+feh --bg-fill $WALL --no-fehbg
 wal -i $WALL --cols16 -n
-picom -b 
+picom -b --corner-radius 10
 xss-lock -- slock &
 exec dwm 
 

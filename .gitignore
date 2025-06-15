@@ -8,27 +8,11 @@ dot-local/share/xorg
 dot-local/share/qutebrowser/*
 **/__pycache__/
 dot-local/lib/python3.11
-dot-local/bin/tg
-dot-local/bin/ff
-dot-local/share/recently-used.xbel
-dot-local/share/TelegramDesktop/
-dot-local/share/applications
-dot-local/share/dbus-1
-dot-local/share/icons
 dot-local/src/chimera
 dot-local/bin/chimera*
-dot-local/share/licenses
 dot-local/bin/dwm
 dot-local/src/dwm/dwm
-dot-local/src/dwm/dwm.o
 dot-local/bin/chem
-dot-local/share/iwctl/history
-dot-local/src/chemcraft
-dot-local/share/fonts
-dot-local/share/jupyter
-dot-local/src/rcfiles
-dot-local/var/oama/khvorost@g.ucla.edu.oama
-dot-local/share/iwctl/history
 dot-local/src/qutebrowser/.venv
 
 

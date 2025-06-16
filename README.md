@@ -2,40 +2,16 @@
 
 ## Yes, I now have a linux computer
 
-This repo contains files from my home directory needed for operation of my operating system.
+This repo contains files from my home directory needed for operation of my
+operating system, as well as my scripts that I use on the daily basis.
 
-Here there are dotfiles for:
-* vim
+
+### Suckless software 
+I use *flexipatch* for all of it, since I'm a shameful normie.
+
+My builds of:
 * dwm
 * dmenu
 * st
-* zsh
-* mutt
-
-## Don't forget:
-
-1. hid\_apple rule in modprobe: (/etc/modprobe.d/hid\_apple.conf)
-```
-sudo echo "options hid_apple swap_opt_cmd=1" > /etc/modprobe.d/hid\_apple.conf
-sudo update-initramfs -u
-sudo modprobe -r hid_apple; sudo modprobe hid_apple
-```
-
-### Locking
-put the following in /etc/systemd/system/slock@.service:
-
-```
-[Unit]
-Description=Lock X session using slock for user %i
-Before=sleep.target
-
-[Service]
-User=%i
-Environment=DISPLAY=:0
-ExecStartPre=/usr/bin/xset dpms force suspend
-ExecStart=/home/taras/.local/bin/slock
-
-[Install]
-WantedBy=sleep.target
-```
+* slock 
 

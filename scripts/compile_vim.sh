@@ -11,7 +11,7 @@ NC='\033[0m' # No Color
 # Configuration
 VIM_VERSION="v9.1.0"
 BUILD_DIR="/tmp/vim-build"
-INSTALL_PREFIX="/tmp/vim"
+INSTALL_PREFIX="/usr/local"
 
 print_status() {
     echo -e "${GREEN}[INFO]${NC} $1"
@@ -104,7 +104,7 @@ configure_vim() {
         --disable-netbeans \
         --disable-xsmp \
         --disable-xsmp-interact \
-        --with-compiledby="Custom Vim Build" \
+        --with-compiledby="TARAS" \
         --with-tlib=ncurses
 }
 
@@ -239,7 +239,7 @@ main() {
     verify_installation
     create_basic_vimrc
     
-     Ask before cleanup
+#     Ask before cleanup
     echo
     read -p "Remove build directory? [Y/n]: " -n 1 -r
     echo

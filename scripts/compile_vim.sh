@@ -28,7 +28,7 @@ print_error() {
 check_dependencies() {
     print_status "Checking dependencies..."
     
-    local deps=("git" "make" "gcc" "libncurses5-dev" "libncursesw5-dev")
+    local deps=("git" "make" "gcc" "libncurses5-dev" "libncursesw5-dev" "libx11-dev" "xserver-xorg-dev" "xorg-dev")
     local missing=()
     
     for dep in "${deps[@]}"; do

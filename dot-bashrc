@@ -119,5 +119,5 @@ export GAUSS_SCRDIR=/tmp
 export GAUSS_EXEDIR=$HOME/.local/src/g16
 alias  ca="source $HOME/miniconda3/bin/activate; conda activate vpt"
 export PATH=$PATH:/home/taras/.local/src/neci/build/bin
-export PATH=/opt/OpenMolcas:$PATH
+export PATH=/opt/OpenMolcas:/opt/yt-dlp/latest/bin:$PATH
 alias systemctl="sudo systemctl"

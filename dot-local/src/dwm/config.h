@@ -19,7 +19,7 @@ static const unsigned int barborderpx    = 1;  /* border pixel of bar */
 #endif // BAR_BORDER_PATCH
 static const unsigned int snap           = 32;  /* snap pixel */
 #if SWALLOW_PATCH
-static const int swallowfloating         = 0;   /* 1 means swallow floating windows by default */
+static const int swallowfloating         = 1;   /* 1 means swallow floating windows by default */
 #endif // SWALLOW_PATCH
 #if BAR_TAGPREVIEW_PATCH
 static const int scalepreview            = 4;        /* Tag preview scaling */
@@ -168,7 +168,7 @@ static const char font[]                 = "monospace 10";
 #else
 static const char *fonts[]               = { "monospace:size=20" };
 #endif // BAR_PANGO_PATCH
-static const char dmenufont[]            = "monospace:size=20";
+static const char dmenufont[]            = "monospace:size=14";
 
 static char c000000[]                    = "#000000"; // placeholder value
 
@@ -460,7 +460,7 @@ static char tagicons[][NUMTAGS][MAX_TAGLEN] =
 static char *tagicons[][NUMTAGS] =
 #endif // NAMETAG_PATCH
 {
-	[DEFAULT_TAGS]        = {"1:>_", "2:web", "3:chem", "4", "5:office", "6", "7:ff", "8", "9:top"},
+	[DEFAULT_TAGS]        = {"1:>_", "2:web", "3:chem", "4", "5:office", "6:slack", "7:ff", "8", "9:top"},
 	[ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
 	[ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
@@ -509,6 +509,7 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
 	RULE(.class = "Gimp", .tags = 1 << 4)
+	RULE(.class = "St", .isterminal=1)
 	RULE(.class = "Firefox", .tags = 1 << 7)
 	#if RENAMED_SCRATCHPADS_PATCH
 	RULE(.instance = "spterm", .scratchkey = 's', .isfloating = 1)

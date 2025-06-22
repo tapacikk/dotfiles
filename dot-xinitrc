@@ -1,4 +1,11 @@
 #!/bin/bash
+xrandr --output HDMI-0 --off \
+       --output DP-0 --off \
+       --output DP-1 --off \
+       --output DP-2 --mode 2560x1440 --pos 0x0 --rate 144.00 --rotate normal \
+       --output DP-3 --off \
+       --output DP-4 --off \
+       --output DP-5 --off
 
 while true; do
    xsetroot -name "$(date '+[%a,%d-%b][%I:%M]')"
@@ -10,7 +17,7 @@ setxkbmap -option ctrl:nocaps
 WALL=$(ls /home/taras/.local/wall | shuf -n 1)
 WALL=/home/taras/.local/wall/$WALL
 feh --bg-fill $WALL --no-fehbg
-wal -i $WALL --cols16 -n
+/home/taras/.local/bin/wal -i $WALL --cols16 -n -s
 picom -b --corner-radius 10
 dunst &
 xss-lock -- slock &

@@ -2,6 +2,7 @@ config.load_autoconfig(True)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
 config.set('content.headers.accept_language', '', 'https://matchmaker.krunker.io/*')
 config.set('scrolling.smooth', True)
+config.set('downloads.remove_finished', 1000)
 
 # Load images automatically in web pages.
 config.set('content.images', True, 'chrome-devtools://*')
@@ -35,18 +36,19 @@ c.tabs.width = '10%'
 
 # Default zoom level.
 # Type: Perc
-c.zoom.default = '150%'
+c.zoom.default = '125%'
 
 # Default font size to use. Whenever "default_size" is used in a font
 # setting, it's replaced with the size listed here. Valid values are
 # either a float value with a "pt" suffix, or an integer value with a
 # "px" suffix.
 # Type: String
-c.fonts.default_size = '24pt'
+c.fonts.default_size = '14pt'
 
 # Bindings for normal mode
 config.bind('s', 'cmd-set-text -s :open -t https://scholar.google.com/scholar?q=')
 config.bind('t', 'cmd-set-text -s :open -t')
+config.bind(';m', 'hint links spawn mpv {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 

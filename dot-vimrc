@@ -40,5 +40,4 @@ set statusline +=%5l%*             "current line
 set statusline +=/%L%*               "total lines
 set nofoldenable
 "VIMWIKI config
-let g:vimwiki_list = [{ 'path': '$HOME/work/notes/wiki',
-                      \  }]
+let g:vimwiki_list = [{ 'path': '/work/notes/wiki'}]

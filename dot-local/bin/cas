@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+import os 
+import stat
+import argparse
+import sys
+import random
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog='cas',
+                                     description='prep the dir to run molcas')
+    parser.add_argument('molcas_input', 
+                        help='''molcas input file''')
+    parser.add_argument('-np', type=int, metavar='NPROCS',
+                        default=1,
+                        help='number of MPI processes')
+    parser.add_argument('-p', type=str, metavar='PROJECT',
+                        help='Project name', default='molcas')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default=sys.stdout,
+                        help='file to write your job script.\
+                              Defaults to STDOUT')
+    args = parser.parse_args()
+    return args
+
+
+def write_job_script(args):
+    rn = random.randint(100000, 1000000)
+    while os.path.isdir(os.path.join('/scratch', str(rn))):
+        rn = random.randint(0, 1000000)
+    BOILERPLATE=f'''#!/bin/bash
+export MOLCAS=/opt/OpenMolcas
+export MOLCAS_WORKDIR=/scratch/{rn}
+echo "MOLCAS_WORKDIR:" "/scratch/{rn}" > SCRATCH_INFO
+export MOLCAS_NPROCS={args.np}
+echo "MOLCAS_NPROCS:" "$MOLCAS_NPROCS" >> SCRATCH_INFO
+export Project={args.p}
+echo "Project:" "$Project" >> SCRATCH_INFO
+
+# Check if an input file is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 input_file.inp"
+    exit 1
+fi
+INPUT_FILE=$1
+'''
+    print(BOILERPLATE, file=args.o)
+    basename = os.path.splitext(args.molcas_input)[0]
+    print('mkdir -p $MOLCAS_WORKDIR', file=args.o)
+    print(f'pymolcas -np $MOLCAS_NPROCS $1 2> err ' + '| tee "${INPUT_FILE%.*}.out"', 
+          file=args.o)
+    print('rm SAVE/xmldump', 
+          'rm SAVE/*.RasOrb.*', 
+          'rm SAVE/*.SpdOrb.*', 
+          'rm err', 
+          'rm SAVE/*.molden.*', 
+          'rm $Project.status',
+          file=args.o, sep='\n')
+    if args.o != sys.stdout:
+        os.chmod(args.o.name, 0o775)
+
+
+def main():
+    args = parse_arguments()
+    write_job_script(args)
+    args.o.close()
+
+
+if __name__ == '__main__':
+    main()

@@ -12,6 +12,8 @@ SKIP_MPI=0
 SKIP_HDF5=0
 SKIP_BLAS=0
 DISTCLEAN=0
+SKIP_GA=0
+PREFIX_GLOBAL=/opt
 
 print_usage() {
     cat << EOF
@@ -21,23 +23,46 @@ Install OpenMolcas
 
 OPTIONS:
     --skip-mpi      Skip OpenMPI compilation
+    --skip-ga       Skip GlobalArrays compilation
     --skip-hdf5     Skip HDF5 compilation  
     --skip-blas     Skip OpenBLAS compilation
     --distclean     Clean all source directories before building
+    --prefix        Where to install. Must be writable
     --help          Show this help message
 
 EOF
 }
 
+
 # Parse arguments
-for arg in "$@"; do
+while [[ $# -gt 0 ]]; do
+    arg="$1"
+    if [[ "$arg" == *=* ]]; then
+        key="${arg%%=*}"
+        value="${arg#*=}"
+        set -- "$key" "$value" "${@:3}"  
+        arg="$1"  
+    fi
     case $arg in
         --distclean)
             DISTCLEAN=1
             shift
             ;;
+        --prefix)
+            shift
+            if [[ -z "$1" || "$1" == --* ]]; then
+                echo "Error: --prefix requires a directory argument" >&2
+                exit 1
+            fi
+            PREFIX_GLOBAL="$1"
+            shift
+            ;;
         --skip-blas)
             SKIP_BLAS=1
+            shift
+            ;;
+        --skip-ga)
+            SKIP_GA=1
             shift
             ;;
         --skip-mpi)
@@ -60,29 +85,33 @@ for arg in "$@"; do
     esac
 done
 
-# Configuration
-readonly MOLCAS_URL="https://gitlab.com/Molcas/OpenMolcas/-/archive/v24.10/OpenMolcas-v24.10.tar.gz"
-readonly OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.6.tar.gz"
-readonly HDF5_URL="https://github.com/HDFGroup/hdf5/releases/download/hdf5_1.14.5/hdf5-1.14.5.tar.gz"
-readonly BLAS_URL="https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.29/OpenBLAS-0.3.29.tar.gz"
-
 # Directory configuration
-export MOLCAS_DIR="/opt/OpenMolcas"
-export OPENMPI_DIR="/opt/openmpi"
-export HDF5_DIR="/opt/hdf5"
-export BLAS_DIR="/opt/OpenBLAS"
+export MOLCAS_DIR="$PREFIX_GLOBAL/OpenMolcas"
+export OPENMPI_DIR="$PREFIX_GLOBAL/openmpi"
+export HDF5_DIR="$PREFIX_GLOBAL/hdf5"
+export BLAS_DIR="$PREFIX_GLOBAL/OpenBLAS"
+export GA_DIR="$PREFIX_GLOBAL/ga"
 
 # Version configuration
 export MOLCAS_VERSION="24.10"
 export OPENMPI_VERSION="4.1.6"
 export HDF5_VERSION="1.14.5"
 export BLAS_VERSION="0.3.29"
+export GA_VERSION="5.9.2"
+
+# URLS
+readonly MOLCAS_URL="https://gitlab.com/Molcas/OpenMolcas/-/archive/v${MOLCAS_VERSION}/OpenMolcas-v${MOLCAS_VERSION}.tar.gz"
+readonly OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.6.tar.gz"
+readonly HDF5_URL="https://github.com/HDFGroup/hdf5/releases/download/hdf5_1.14.5/hdf5-1.14.5.tar.gz"
+readonly BLAS_URL="https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.29/OpenBLAS-0.3.29.tar.gz"
+readonly GA_URL="https://github.com/GlobalArrays/ga/archive/refs/tags/v5.9.2.tar.gz"
 
 # Installation prefixes
 export MOLCAS_INSTALL_PREFIX="${MOLCAS_DIR}/${MOLCAS_VERSION}"
 export OPENMPI_INSTALL_PREFIX="${OPENMPI_DIR}/${OPENMPI_VERSION}"
 export HDF5_INSTALL_PREFIX="${HDF5_DIR}/${HDF5_VERSION}"
 export BLAS_INSTALL_PREFIX="${BLAS_DIR}/${BLAS_VERSION}"
+export GA_INSTALL_PREFIX="${GA_DIR}/${GA_VERSION}"
 
 # Logging functions
 log_info() {
@@ -106,14 +135,6 @@ handle_error() {
 }
 
 trap 'handle_error $LINENO' ERR
-
-# Utility functions
-check_root() {
-    if [[ $EUID -ne 0 ]]; then
-        log_error "This script must be run as root"
-        exit 1
-    fi
-}
 
 create_directory() {
     local dir="$1"
@@ -166,19 +187,9 @@ extract_tarball() {
     popd > /dev/null
 }
 
-# Main installation functions
-install_system_packages() {
-    log_info "Installing system packages"
-    if apt-get update && apt-get install -y cmake build-essential gfortran; then
-        log_success "System packages installed"
-    else
-        log_error "Failed to install system packages"
-        return 1
-    fi
-}
-
 print_configuration() {
     log_info "Build configuration:"
+    echo "  PREFIX_GLOBAL: $PREFIX_GLOBAL"
     echo "  MOLCAS_URL: $MOLCAS_URL"
     echo "  OPENMPI_URL: $OPENMPI_URL"
     echo "  HDF5_URL: $HDF5_URL"
@@ -187,6 +198,18 @@ print_configuration() {
     echo "  OPENMPI_INSTALL_PREFIX: $OPENMPI_INSTALL_PREFIX"
     echo "  HDF5_INSTALL_PREFIX: $HDF5_INSTALL_PREFIX"
     echo "  BLAS_INSTALL_PREFIX: $BLAS_INSTALL_PREFIX"
+}
+
+check_writable() {
+    if [[ ! -d "$PREFIX_GLOBAL" ]]; then
+        log_error "Error: Directory $1 does not exist." 
+        exit 1
+    elif [[ ! -w "$PREFIX_GLOBAL" ]]; then
+        log_error "Error: Directory $PREFIX_GLOBAL is not writable." 
+        exit 1
+    else
+        log_info "Directory $PREFIX_GLOBAL is writable."
+    fi
 }
 
 clean_source_directories() {
@@ -328,36 +351,36 @@ install_hdf5() {
 }
 
 install_blas() {
-    if [[ $SKIP_BLAS -eq 1 ]]; then
+if [[ $SKIP_BLAS -eq 1 ]]; then
         log_info "Skipping OpenBLAS compilation"
         return 0
     fi
-    
+
     log_info "Starting OpenBLAS compilation"
-    
+
     # Create directories
     create_directory "${BLAS_DIR}/src"
     create_directory "${BLAS_DIR}/tarballs"
     create_directory "$BLAS_INSTALL_PREFIX"
-    
+
     # Download and extract
     download_file "$BLAS_URL" "${BLAS_DIR}/tarballs"
     extract_tarball "${BLAS_DIR}/tarballs/OpenBLAS-${BLAS_VERSION}.tar.gz" "${BLAS_DIR}/src"
-    
+
     # Compile and install
     local build_dir="${BLAS_DIR}/src/OpenBLAS-${BLAS_VERSION}"
     local log_file="${build_dir}/make_${LOG_DATE}.log"
-    
+
     log_info "Compiling OpenBLAS (log: $log_file)"
     pushd "$build_dir" > /dev/null
-    
+
     local make_args=(
         INTERFACE64=1
         CC="${OPENMPI_INSTALL_PREFIX}/bin/mpicc"
         FC="${OPENMPI_INSTALL_PREFIX}/bin/mpifort"
         PREFIX="$BLAS_INSTALL_PREFIX"
     )
-    
+
     if make "${make_args[@]}" -j"$(nproc)" &> "$log_file"; then
         log_success "OpenBLAS compiled successfully"
     else
@@ -365,7 +388,7 @@ install_blas() {
         popd > /dev/null
         return 1
     fi
-    
+
     # Install
     log_info "Installing OpenBLAS"
     if make PREFIX="$BLAS_INSTALL_PREFIX" install &>> "$log_file"; then
@@ -375,9 +398,75 @@ install_blas() {
         popd > /dev/null
         return 1
     fi
+
+    popd > /dev/null
+}
+
+
+
+install_ga() {
+    if [[ $SKIP_GA -eq 1 ]]; then
+        log_info "Skipping GlobalArrays compilation"
+        return 0
+    fi
+    export PATH=$PATH:${OPENMPI_INSTALL_PREFIX}/bin
+    
+    log_info "Starting GloabalArrays compilation"
+    
+    # Create directories
+    create_directory "${GA_DIR}/src"
+    create_directory "${GA_DIR}/tarballs"
+    create_directory "$GA_INSTALL_PREFIX"
+    
+    # Download and extract
+    download_file "$GA_URL" "${GA_DIR}/tarballs"
+    extract_tarball "${GA_DIR}/tarballs/v${GA_VERSION}.tar.gz" "${GA_DIR}/src"
+
+
+    # Configure with CMake
+    local build_dir="${GA_DIR}/src/ga-${GA_VERSION}/build"
+    local log_file="${build_dir}/cmake_${LOG_DATE}.log"
+    create_directory $build_dir
+
+    pushd $build_dir > /dev/null
+
+
+    local cmake_args=(
+        -DCMAKE_INSTALL_PREFIX="$GA_INSTALL_PREFIX"
+        -DENABLE_BLAS="ON"
+        -DENABLE_CXX="OFF"
+        -DCMAKE_C_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpicc"
+        -DCMAKE_CXX_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpic++"
+        -DCMAKE_Fortran_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpifort"
+        -DLINALG_VENDOR="OpenBLAS"
+        -DLINALG_PREFIX="${BLAS_INSTALL_PREFIX}"
+    )
+    
+    log_info "Configuring GA. Log file: $log_file"
+    
+    if cmake .. "${cmake_args[@]}" &> "$log_file"; then
+        log_success "GA configured successfully"
+    else
+        log_error "GA configuration failed. Check: $log_file"
+        popd > /dev/null
+        return 1
+    fi
+
+
+    # Install
+    local log_file="${build_dir}/make_${LOG_DATE}.log"
+    log_info "Compiling and installing GlobalArrays log: $log_file"
+    if make -j"$(nproc)" &> "$log_file" && make install &>> "$log_file"; then
+        log_success "GlobalArrays compiled and installed successfully"
+    else
+        log_error "GlobalArrays compilation/installation failed. Check: $log_file"
+        popd > /dev/null
+        return 1
+    fi
     
     popd > /dev/null
 }
+
 
 install_molcas() {
     log_info "Starting OpenMolcas compilation"
@@ -402,22 +491,17 @@ install_molcas() {
 main() {
     log_info "Starting OpenMolcas installation script"
     
-    # Pre-flight checks
-    check_root
-    
-    # Display configuration
     print_configuration
+
+    check_writable
     
-    # Install system dependencies
-    install_system_packages
-    
-    # Clean if requested
     clean_source_directories
     
     # Install packages in dependency order
     install_openmpi
-    install_hdf5
     install_blas
+    install_hdf5
+    install_ga
     install_molcas
     
     log_success "Installation script completed successfully"

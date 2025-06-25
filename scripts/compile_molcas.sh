@@ -113,6 +113,10 @@ export HDF5_INSTALL_PREFIX="${HDF5_DIR}/${HDF5_VERSION}"
 export BLAS_INSTALL_PREFIX="${BLAS_DIR}/${BLAS_VERSION}"
 export GA_INSTALL_PREFIX="${GA_DIR}/${GA_VERSION}"
 
+
+# PATH
+export PATH=$PATH:${OPENMPI_INSTALL_PREFIX}/bin
+
 # Logging functions
 log_info() {
     echo "[INFO $(date '+%H:%M:%S')] $*"
@@ -479,6 +483,55 @@ install_molcas() {
     # Download and extract
     download_file "$MOLCAS_URL" "${MOLCAS_DIR}/tarballs"
     extract_tarball "${MOLCAS_DIR}/tarballs/OpenMolcas-v${MOLCAS_VERSION}.tar.gz" "${MOLCAS_DIR}/src"
+
+
+    # Configure with CMake
+    local build_dir="${MOLCAS_DIR}/src/OpenMolcas-v${MOLCAS_VERSION}/build"
+    local log_file="${build_dir}/cmake_${LOG_DATE}.log"
+    create_directory $build_dir
+
+    pushd $build_dir > /dev/null
+
+
+    local cmake_args=(
+          -DCMAKE_INSTALL_PREFIX="$MOLCAS_INSTALL_PREFIX"
+          -DCMAKE_C_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpicc 
+          -DCMAKE_CXX_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpic++ 
+          -DCMAKE_Fortran_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpifort 
+          -DOPENBLASROOT=${BLAS_INSTALL_PREFIX}
+          -DLINALG=OpenBLAS  
+          -DHDF5_DIR=${HDF5_INSTALL_PREFIX}/cmake
+          -DDEFMOLCASDISK=50000  
+          -DDEFMOLCASMEM=20000  
+          -DMPI=ON  
+          -DGA=ON  
+          -DTOOLS=ON 
+    )
+    
+    log_info "Configuring GA. Log file: $log_file"
+    
+    export GAROOT=$GA_INSTALL_PREFIX
+    if cmake .. "${cmake_args[@]}" &> "$log_file"; then
+        log_success "GA configured successfully"
+    else
+        log_error "GA configuration failed. Check: $log_file"
+        popd > /dev/null
+        return 1
+    fi
+
+
+    # Install
+    local log_file="${build_dir}/make_${LOG_DATE}.log"
+    log_info "Compiling and installing GlobalArrays log: $log_file"
+    if make -j"$(nproc)" &> "$log_file" && make install &>> "$log_file"; then
+        log_success "GlobalArrays compiled and installed successfully"
+    else
+        log_error "GlobalArrays compilation/installation failed. Check: $log_file"
+        popd > /dev/null
+        return 1
+    fi
+    
+    popd > /dev/null
     
     # TODO: Add OpenMolcas-specific compilation steps here
     # This would depend on OpenMolcas build system requirements

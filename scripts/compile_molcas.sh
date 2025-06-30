@@ -97,14 +97,14 @@ export MOLCAS_VERSION="24.10"
 export OPENMPI_VERSION="4.1.6"
 export HDF5_VERSION="1.14.5"
 export BLAS_VERSION="0.3.29"
-export GA_VERSION="5.9.2"
+export GA_VERSION="5.8.2"
 
 # URLS
 readonly MOLCAS_URL="https://gitlab.com/Molcas/OpenMolcas/-/archive/v${MOLCAS_VERSION}/OpenMolcas-v${MOLCAS_VERSION}.tar.gz"
 readonly OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.6.tar.gz"
 readonly HDF5_URL="https://github.com/HDFGroup/hdf5/releases/download/hdf5_1.14.5/hdf5-1.14.5.tar.gz"
 readonly BLAS_URL="https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.29/OpenBLAS-0.3.29.tar.gz"
-readonly GA_URL="https://github.com/GlobalArrays/ga/archive/refs/tags/v5.9.2.tar.gz"
+readonly GA_URL="https://github.com/GlobalArrays/ga/archive/refs/tags/v5.8.2.tar.gz"
 
 # Installation prefixes
 export MOLCAS_INSTALL_PREFIX="${MOLCAS_DIR}/${MOLCAS_VERSION}"
@@ -224,6 +224,7 @@ clean_source_directories() {
             "${MOLCAS_DIR}/src"
             "${OPENMPI_DIR}/src"
             "${BLAS_DIR}/src"
+            "${GA_DIR}/src"
         )
         
         for dir in "${dirs[@]}"; do
@@ -385,7 +386,7 @@ if [[ $SKIP_BLAS -eq 1 ]]; then
         PREFIX="$BLAS_INSTALL_PREFIX"
     )
 
-    if make "${make_args[@]}" -j"$(nproc)" &> "$log_file"; then
+    if make "${make_args[@]}" &> "$log_file"; then
         log_success "OpenBLAS compiled successfully"
     else
         log_error "OpenBLAS compilation failed. Check: $log_file"
@@ -440,7 +441,6 @@ install_ga() {
         -DENABLE_BLAS="ON"
         -DENABLE_CXX="OFF"
         -DCMAKE_C_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpicc"
-        -DCMAKE_CXX_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpic++"
         -DCMAKE_Fortran_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpifort"
         -DLINALG_VENDOR="OpenBLAS"
         -DLINALG_PREFIX="${BLAS_INSTALL_PREFIX}"
@@ -505,6 +505,7 @@ install_molcas() {
           -DDEFMOLCASMEM=20000  
           -DMPI=ON  
           -DGA=ON  
+          -DGA_BUILD=ON  
           -DTOOLS=ON 
     )
     
@@ -522,22 +523,18 @@ install_molcas() {
 
     # Install
     local log_file="${build_dir}/make_${LOG_DATE}.log"
-    log_info "Compiling and installing GlobalArrays log: $log_file"
+    log_info "Compiling and installing OpenMolcas log: $log_file"
     if make -j"$(nproc)" &> "$log_file" && make install &>> "$log_file"; then
-        log_success "GlobalArrays compiled and installed successfully"
+        log_success "OpenMolcas compiled and installed successfully"
     else
-        log_error "GlobalArrays compilation/installation failed. Check: $log_file"
+        log_error "OpenMolcas compilation/installation failed. Check: $log_file"
         popd > /dev/null
         return 1
     fi
     
     popd > /dev/null
     
-    # TODO: Add OpenMolcas-specific compilation steps here
-    # This would depend on OpenMolcas build system requirements
-    
-    log_info "OpenMolcas compilation setup complete"
-    log_info "Note: OpenMolcas compilation steps need to be implemented based on build requirements"
+    log_success "OpenMolcas compilation complete."
 }
 
 # Main execution
@@ -554,7 +551,6 @@ main() {
     install_openmpi
     install_blas
     install_hdf5
-    install_ga
     install_molcas
     
     log_success "Installation script completed successfully"

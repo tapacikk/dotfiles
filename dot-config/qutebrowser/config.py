@@ -3,6 +3,7 @@ config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
 config.set('content.headers.accept_language', '', 'https://matchmaker.krunker.io/*')
 config.set('scrolling.smooth', True)
 config.set('downloads.remove_finished', 1000)
+config.set('tabs.show', 'never')
 
 # Load images automatically in web pages.
 config.set('content.images', True, 'chrome-devtools://*')

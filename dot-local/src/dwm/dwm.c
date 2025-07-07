@@ -51,6 +51,10 @@
 #endif
 #endif
 
+#if THINKPAD_KEYS | VOLUME_KEYS
+#include <X11/XF86keysym.h>
+#endif
+
 #if BAR_PANGO_PATCH
 #include <pango/pango.h>
 #endif // BAR_PANGO_PATCH

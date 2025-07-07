@@ -882,6 +882,15 @@ static const char *dmenucmd[] = {
 	NULL
 };
 static const char *termcmd[]  = { "st", NULL };
+#if VOLUME_KEYS
+static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
+static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",   NULL };
+static const char *mute_vol[] = { "pactl", "set-sink-mute",   "@DEFAULT_SINK@", "toggle", NULL };
+#endif //VOLUME_KEYS
+#if THINKPAD_KEYS
+static const char *brighter[] = { "brightnessctl", "set", "10%+", NULL };
+static const char *dimmer[]   = { "brightnessctl", "set", "10%-", NULL };
+#endif //THINKPAD_KEYS
 
 #if BAR_STATUSCMD_PATCH
 #if BAR_DWMBLOCKS_PATCH
@@ -1015,7 +1024,16 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_Escape,     setkeymode,             {.ui = COMMANDMODE} },
 	#endif // KEYMODES_PATCH
 	{ MODKEY,                       XK_d,          spawn,                  {.v = dmenucmd } },
-	{ MODKEY          ,             XK_Return,     spawn,                  {.v = termcmd } },
+	{ MODKEY          ,             XK_Return,     spawn,                  {.v = termcmd  } },
+    #if VOLUME_KEYS
+    { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
+    { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
+    { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },
+    #endif //VOLUME_KEYS
+    #if THINKPAD_KEYS
+    { 0,             XF86XK_MonBrightnessDown,     spawn,                  {.v = dimmer } },
+    { 0,               XF86XK_MonBrightnessUp,     spawn,                  {.v = brighter } },
+    #endif //THINKPAD_KEYS
 	#if RIODRAW_PATCH
 	{ MODKEY|ControlMask,           XK_p,          riospawnsync,           {.v = dmenucmd } },
 	{ MODKEY|ControlMask,           XK_Return,     riospawn,               {.v = termcmd } },

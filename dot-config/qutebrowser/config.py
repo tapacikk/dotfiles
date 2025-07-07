@@ -52,6 +52,7 @@ config.bind('t', 'cmd-set-text -s :open -t')
 config.bind(';m', 'hint links spawn mpv {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
+config.bind('<z><l>', 'spawn --userscript qute-pass --username-target secret --username-pattern "username: (.+)"')
 
 # DRACULA THEME
 import dracula.draw

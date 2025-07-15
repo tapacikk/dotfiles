@@ -49,7 +49,7 @@ c.fonts.default_size = '14pt'
 # Bindings for normal mode
 config.bind('s', 'cmd-set-text -s :open -t https://scholar.google.com/scholar?q=')
 config.bind('t', 'cmd-set-text -s :open -t')
-config.bind(';m', 'hint links spawn mpv {hint-url}')
+config.bind(',m', 'hint links spawn --detach mpv {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<z><l>', 'spawn --userscript qute-pass --username-target secret --username-pattern "username: (.+)"')

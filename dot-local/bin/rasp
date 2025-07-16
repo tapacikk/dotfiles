@@ -4,7 +4,7 @@ import argparse
 import sys
 import math
 
-def parse_arguments():
+def parse_arguments(non_interactive_arguments=None):
     parser = argparse.ArgumentParser(prog='rasp',
                                      description='RASSI Parser')
     parser.add_argument('rassi_output', type=open,
@@ -33,7 +33,10 @@ def parse_arguments():
     parser.add_argument('-thermal', type=int,
                         help='Perform thermal averaging. Specify T.',
                         metavar='TEMP')
-    args = parser.parse_args()
+    if non_interactive_arguments == None:
+        args = parser.parse_args()
+    else:
+        args = parser.parse_args(non_interactive_arguments)
     args.so = False if args.noso else True
     if args.spectype in ['v', 'm', 'f']:
         args.trdc = False
@@ -243,9 +246,11 @@ def print_matricies(args):
                     print("{:26.16E}".format(real), end='', file=f)
                     print("{:26.16E}".format(imag), file=f)
 
-def main():
-    args = parse_arguments()
+def main(non_interactive_arguments=None):
+    args = parse_arguments(non_interactive_arguments)
     roots = get_roots(args)
+    if not roots:
+        return 1
     compute_populations(args)
     if args.mcd:
         get_matricies(args)
@@ -255,7 +260,10 @@ def main():
     else:
         get_spectrum(args)
     args.rassi_output.close()
+    if non_interactive_arguments != None and args.o == sys.stdout:
+        return args.spectrum
     print_spectrum(args)
+    return args.spectrum
 
 
 if __name__ == '__main__':

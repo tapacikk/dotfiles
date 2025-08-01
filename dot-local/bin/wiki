@@ -1,0 +1,27 @@
+#!/bin/bash
+
+
+INDEX_FILE=/work/notes/wiki/index.wiki
+result=$(grep "Project based wikis" $INDEX_FILE -A 30 | uniq | tail -n+3 | dmenu -l 10 -p "Choose wiki:")
+
+result="${result#*[[}"
+result="${result%%]]*}"
+result=$(echo "$result" | sed 's/\//\\\//g; s/|/\\|/g')
+
+echo $result
+
+vimcommand="vim $INDEX_FILE -c :/$result -c VimwikiFollowLink"
+# test if running in terminal or not
+#if [ -t 0 ]; then
+#    $vimcommand
+#    exit 0
+#fi
+
+#if not, launch a new terminal window
+st -T wiki -e $vimcommand 
+
+
+
+
+
+

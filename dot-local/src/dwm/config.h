@@ -882,6 +882,8 @@ static const char *dmenucmd[] = {
 	NULL
 };
 static const char *termcmd[]  = { "st", NULL };
+static const char *calccmd[]  = { "/home/taras/.local/bin/calc", NULL };
+static const char *qutecmd[]  = { "qutebrowser", NULL };
 #if VOLUME_KEYS
 static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
 static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",   NULL };
@@ -1025,6 +1027,8 @@ static const Key keys[] = {
 	#endif // KEYMODES_PATCH
 	{ MODKEY,                       XK_d,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY          ,             XK_Return,     spawn,                  {.v = termcmd  } },
+	{ MODKEY          ,             XK_c,          spawn,                  {.v = calccmd  } },
+	{ MODKEY          ,             XK_o,          spawn,                  {.v = qutecmd  } },
     #if VOLUME_KEYS
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },

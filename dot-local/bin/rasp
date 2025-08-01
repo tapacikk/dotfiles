@@ -138,11 +138,13 @@ def compute_populations(args):
         args.populations = {k:v for k,v in zip(args.roots, [1 for x in args.roots])}
         return
     gs = args.roots[1]
-    k = 8.617333262e-5 / 27.211396641308
+    k = 8.617333262e-5 
     beta = 1 / (k*args.thermal)
     args.populations = {}
     for state, energy in args.roots.items():
-        args.populations[state] = math.exp(-(energy-gs) * beta)
+        gap = energy - gs
+        gap *= 27.211396641308
+        args.populations[state] = math.exp(-(gap) * beta)
     return 
 
 

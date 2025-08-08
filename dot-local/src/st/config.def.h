@@ -5,12 +5,11 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+static char *font = "FiraCode Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium";
 #if FONT2_PATCH
 /* Spare fonts */
 static char *font2[] = {
-/*	"Inconsolata for Powerline:pixelsize=12:antialias=true:autohint=true", */
-/*	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true", */
+	"GLYPHICONS Halflings:pixelsize=20:antialias=true:autohint=true", 
 };
 #endif // FONT2_PATCH
 
@@ -21,7 +20,7 @@ static char *font2[] = {
  * pseudo transparency fixes coordinates to the screen origin
  */
 static const char *bgfile = "/path/to/image.ff";
-static const int pseudotransparency = 0;
+static const int pseudotransparency = 1;
 #endif // BACKGROUND_IMAGE_PATCH
 
 #if RELATIVEBORDER_PATCH
@@ -165,13 +164,13 @@ unsigned int tabspaces = 8;
 
 #if ALPHA_PATCH
 /* bg opacity */
-float alpha = 0.8;
+float alpha = 0.95;
 #if ALPHA_GRADIENT_PATCH
 float grad_alpha = 0.54; //alpha value that'll change
 float stat_alpha = 0.46; //constant alpha value that'll get added to grad_alpha
 #endif // ALPHA_GRADIENT_PATCH
 #if ALPHA_FOCUS_HIGHLIGHT_PATCH
-float alphaUnfocused = 0.6;
+float alphaUnfocused = 0.80;
 #endif // ALPHA_FOCUS_HIGHLIGHT_PATCH
 #endif // ALPHA_PATCH
 
@@ -222,7 +221,7 @@ static const char *colorname[] = {
  */
 #if ALPHA_PATCH && ALPHA_FOCUS_HIGHLIGHT_PATCH
 unsigned int defaultbg = 0;
-unsigned int bg = 17, bgUnfocused = 16;
+unsigned int bg = 0, bgUnfocused = 0;
 #else
 unsigned int defaultbg = 258;
 #endif // ALPHA_FOCUS_HIGHLIGHT_PATCH

@@ -34,7 +34,6 @@ c.tabs.favicons.show = 'always'
 #   - bottom
 #   - left
 #   - right
-c.tabs.position = 'top'
 c.tabs.width = '10%'
 
 # Default zoom level.

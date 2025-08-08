@@ -20,9 +20,6 @@ set ifs "\n"
 # leave some space at the top and the bottom of the screen
 set scrolloff 10
 
-# Use the `dim` attribute instead of underline for the cursor in the preview pane
-set cursorpreviewfmt "\033[7;2m"
-
 # use enter for shell commands
 map <enter> shell
 
@@ -37,6 +34,9 @@ map X !$f
 map o &mimeopen $f
 map O $mimeopen --ask $f
 
+#delete key
+map D :delete
+
 # define a custom 'open' command
 # This command is called when current file is not a directory. You may want to
 # use either file extensions and/or mime types here. Below uses an editor for
@@ -49,7 +49,10 @@ cmd open &{{
 }}
 
 # mkdir command. See wiki if you want it to select created dir
-map a :push %mkdir<space>
+map ma :push %mkdir<space>
+
+#touch command
+map a :push %touch<space>
 
 # define a custom 'rename' command without prompt for overwrite
 # cmd rename %[ -e $1 ] && printf "file exists" || mv $f $1
@@ -106,3 +109,13 @@ cmd zip ${{
     zip -r $1.zip $1
     rm -rf $1
 }}
+
+
+# Path links
+map gw cd /work
+map gc cd /dot/dot-config/lf
+map gy cd /work/yb/
+map gt cd /tmp
+
+map R &./run.sh $f
+set icons

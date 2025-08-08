@@ -5,12 +5,11 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=20:antialias=true:autohint=true";
+static char *font = "FiraCode Nerd Font Mono:pixelsize=20:antialias=true:autohint=true:style=Medium";
 #if FONT2_PATCH
 /* Spare fonts */
 static char *font2[] = {
-/*	"Inconsolata for Powerline:pixelsize=12:antialias=true:autohint=true", */
-/*	"Hack Nerd Font Mono:pixelsize=11:antialias=true:autohint=true", */
+	"GLYPHICONS Halflings:pixelsize=20:antialias=true:autohint=true", 
 };
 #endif // FONT2_PATCH
 

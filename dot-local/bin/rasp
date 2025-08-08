@@ -33,6 +33,8 @@ def parse_arguments(non_interactive_arguments=None):
     parser.add_argument('-thermal', type=int,
                         help='Perform thermal averaging. Specify T.',
                         metavar='TEMP')
+    parser.add_argument('--roots-only', action='store_true',
+                        help='only print the roots')
     if non_interactive_arguments == None:
         args = parser.parse_args()
     else:
@@ -253,6 +255,9 @@ def main(non_interactive_arguments=None):
     roots = get_roots(args)
     if not roots:
         return 1
+    elif args.roots_only:
+        [print(_, file=args.o) for _ in args.roots.values()]
+        return args.roots
     compute_populations(args)
     if args.mcd:
         get_matricies(args)

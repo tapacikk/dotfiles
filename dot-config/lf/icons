@@ -34,9 +34,9 @@ fi             # FILE
 *.py 
 *.pl 
 *.jl 
-*.r ﳒ
-*.c ﭰ
-*.cpp ﭱ
+*.r 󰬙
+*.c 
+*.cpp 
 *.f90 󱈚
 *.f 󱈚
 *.for 󱈚
@@ -44,9 +44,9 @@ fi             # FILE
 # Text & docs
 *.txt 
 *.md 
-*.pdf 
-*.doc 
-*.docx 
+*.doc 
+*.docx 
+*.pdf 
 
 # Logs / outputs
 *.log 
@@ -66,14 +66,16 @@ fi             # FILE
 *.tsv 
 
 # Molecular structure files
-*.xyz 
-*.pdb 
-*.mol 
-*.sdf 
-*.molden 
-*.cube 
-*.dx 
-*.cif 
+*.xyz 
+*.pdb 
+*.mol 
+*.sdf 
+*.molden 
+*.cube 
+*.dx 
+*.cif 
+*errors 
+*err 
 
 # Images
 *.png 
@@ -83,11 +85,24 @@ fi             # FILE
 *.tif 
 *.tiff 
 
+# office
+*.pptx 󰏆
+*.doc 󰏆
+*.docx 󰏆
+*.xlsx 󰏆
+*.tex 
+*.bibtex 
+
+#molcas
+*RasOrb* 
+
 # Source control
 .git 
 .gitignore 
-Makefile 
+Makefile 
 CMakeLists.txt 
 
 # configs
 *.conf 
+
+

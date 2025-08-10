@@ -14,3 +14,9 @@ feh
 imagemagick
 xserver-xorg-dev
 xorg-dev
+libvips-dev
+libsixel-dev
+libchafa-dev
+openssl
+libssl-dev
+libxcb-image0-dev

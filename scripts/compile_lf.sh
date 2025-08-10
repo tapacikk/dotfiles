@@ -24,6 +24,7 @@ build_program() {
 
     echo -e "\033[0;32m[INFO]\033[0m Extracting $name..."
     rm -rf "$src_dir"/*
+    echo $tarball
     tar -xf "$tarball" -C "$src_dir"
 
     # Custom build logic per program
@@ -49,13 +50,13 @@ build_program() {
 }
 
 main() {
+    build_program "ctpv" \
+        "https://github.com/NikitaIvanovV/ctpv/archive/refs/tags/v1.1.tar.gz" \
+        "1.1"
     build_program "ueberzugpp" \
         "https://github.com/jstkdng/ueberzugpp/archive/refs/tags/v2.9.6.tar.gz" \
         "2.9.6"
 
-    build_program "ctpv" \
-        "https://github.com/NikitaIvanovV/ctpv/archive/refs/tags/v0.6.4.tar.gz" \
-        "0.6.4"
 
     echo -e "\n\033[0;32m[OK]\033[0m All programs built successfully."
 }

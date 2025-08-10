@@ -80,4 +80,5 @@ export PATH=$PATH:/opt/ueberzugpp/latest/bin
 export PATH=$PATH:/opt/ctpv/latest/bin
 export PATH=$PATH:/opt/OpenMolcas/latest
 export PATH=$PATH:/opt/yt-dlp/latest/bin
+export PATH=$PATH:/opt/pywal16/bin
 

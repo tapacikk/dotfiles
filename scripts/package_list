@@ -24,3 +24,4 @@ libx11-xcb-dev
 cmake
 libtbb-dev
 btop
+libmagic-dev

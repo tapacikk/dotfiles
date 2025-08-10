@@ -67,7 +67,6 @@ alias gs="git status"
 export GAUSS_SCRDIR=/tmp
 export GAUSS_EXEDIR=$HOME/.local/src/g16
 alias  ca="source $HOME/miniconda3/bin/activate; conda activate vpt"
-export PATH=$PATH:/home/taras/.local/src/neci/build/bin
 export PATH=/opt/OpenMolcas:/opt/yt-dlp/latest/bin:/opt/ctpv/latest/bin:$PATH
 alias systemctl="sudo systemctl"
 lfcd() {
@@ -75,3 +74,9 @@ lfcd() {
 }
 alias lf='lfcd'
 alias nala="sudo nala"
+# path (opt)
+export PATH=$PATH:/opt/ueberzugpp/latest/bin
+export PATH=$PATH:/opt/ctpv/latest/bin
+export PATH=$PATH:/opt/OpenMolcas/latest
+export PATH=$PATH:/opt/yt-dlp/latest/bin
+

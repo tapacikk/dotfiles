@@ -32,6 +32,9 @@ build_program() {
         echo -e "\033[0;33m[BUILD]\033[0m Custom build for ctpv..."
         pushd "$src_dir/ctpv-$version" > /dev/null
         make PREFIX="$prefix" install
+        pushd /opt/$name >/dev/null
+        ln -s $version latest
+        popd > /dev/null
         popd > /dev/null
 
     elif [ "$name" == "ueberzugpp" ]; then
@@ -41,8 +44,10 @@ build_program() {
         cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_OPENCV=OFF -DCMAKE_INSTALL_PREFIX="$prefix"
         cmake --build .
         make install -j 
+        pushd /opt/$name >/dev/null
+        ln -s $version latest
         popd > /dev/null
-
+        popd > /dev/null
     else
         echo -e "\033[0;31m[FAIL]\033[0m No build instructions for $name"
         exit 1

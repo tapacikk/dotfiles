@@ -40,7 +40,7 @@ build_program() {
         pushd "$src_dir/ueberzugpp-$version/build" > /dev/null
         cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_OPENCV=OFF -DCMAKE_INSTALL_PREFIX="$prefix"
         cmake --build .
-        make install
+        make install -j 
         popd > /dev/null
 
     else

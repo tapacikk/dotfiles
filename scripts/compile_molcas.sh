@@ -23,7 +23,6 @@ Install OpenMolcas
 
 OPTIONS:
     --skip-mpi      Skip OpenMPI compilation
-    --skip-ga       Skip GlobalArrays compilation
     --skip-hdf5     Skip HDF5 compilation  
     --skip-blas     Skip OpenBLAS compilation
     --distclean     Clean all source directories before building

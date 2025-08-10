@@ -21,3 +21,6 @@ openssl
 libssl-dev
 libxcb-image0-dev
 libx11-xcb-dev
+cmake
+libtbb-dev
+btop

@@ -37,8 +37,9 @@ build_program() {
         echo -e "\033[0;33m[BUILD]\033[0m Custom build for ueberzugpp..."
         mkdir -p "$src_dir/ueberzugpp-$version/build"
         pushd "$src_dir/ueberzugpp-$version/build" > /dev/null
-        cmake .. -DCMAKE_INSTALL_PREFIX="$prefix"
-        make -j"$(nproc)" install
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DENABLE_OPENCV=OFF -DCMAKE_INSTALL_PREFIX="$prefix"
+        cmake --build .
+        make install
         popd > /dev/null
 
     else

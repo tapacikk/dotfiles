@@ -25,3 +25,4 @@ cmake
 libtbb-dev
 btop
 libmagic-dev
+python3-venv

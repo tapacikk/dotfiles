@@ -26,3 +26,4 @@ libtbb-dev
 btop
 libmagic-dev
 python3-venv
+picom

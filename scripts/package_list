@@ -1,0 +1,16 @@
+nala
+stow
+build-essential
+gcc
+gfortran
+xorg
+git
+libx11-dev
+libghc-x11-xft-dev
+libimlib2-dev
+libxcb1-dev
+libxcb-res0-dev
+feh
+imagemagick
+xserver-xorg-dev
+xorg-dev

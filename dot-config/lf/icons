@@ -92,17 +92,15 @@ fi             # FILE
 *.xlsx 󰏆
 *.tex 
 *.bibtex 
-
-#molcas
-*RasOrb* 
-
+*.h5 󰉯
 # Source control
 .git 
 .gitignore 
 Makefile 
 CMakeLists.txt 
-
 # configs
 *.conf 
 
 
+
+/home/taras 

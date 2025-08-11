@@ -46,3 +46,7 @@ libxrandr2
 libxtst6
 libxi6
 libasound2
+ffmpegthumbnailer
+jq
+poppler-utils
+atool

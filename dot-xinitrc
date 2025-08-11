@@ -9,7 +9,7 @@ WALL=$(ls $HOME/.local/wall | shuf -n 1)
 WALL=$HOME/.local/wall/$WALL
 feh --bg-fill $WALL --no-fehbg
 /opt/pywal16/bin/wal -i $WALL --cols16 -n -s
-picom -b --corner-radius 10 --backend xrender
+picom -b --corner-radius 10 --backend glx
 xss-lock -- slock &
 xset r rate 200 35
 exec dwm 

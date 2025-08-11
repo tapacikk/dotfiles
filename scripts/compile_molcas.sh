@@ -92,7 +92,7 @@ export BLAS_DIR="$PREFIX_GLOBAL/OpenBLAS"
 export GA_DIR="$PREFIX_GLOBAL/ga"
 
 # Version configuration
-export MOLCAS_VERSION="24.10"
+export MOLCAS_VERSION="25.06"
 export OPENMPI_VERSION="4.1.6"
 export HDF5_VERSION="1.14.5"
 export BLAS_VERSION="0.3.29"

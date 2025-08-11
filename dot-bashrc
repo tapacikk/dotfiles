@@ -65,7 +65,7 @@ export EDITOR=vim
 export GPG_TTY=$(tty)
 alias gs="git status"
 export GAUSS_SCRDIR=/tmp
-export GAUSS_EXEDIR=$HOME/.local/src/g16
+export GAUSS_EXEDIR=/opt/disgrace_program/latest/g16
 alias  ca="source $HOME/miniconda3/bin/activate; conda activate vpt"
 export PATH=/opt/OpenMolcas:/opt/yt-dlp/latest/bin:/opt/ctpv/latest/bin:$PATH
 alias systemctl="sudo systemctl"
@@ -80,5 +80,4 @@ export PATH=/opt/ueberzugpp/latest/bin:$PATH
 export PATH=/opt/ctpv/latest/bin:$PATH
 export PATH=/opt/OpenMolcas/latest:$PATH
 export PATH=/opt/yt-dlp/latest/bin:$PATH
-export PATH=/opt/pywal16/bin:$PATH
 

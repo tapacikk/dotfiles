@@ -13,6 +13,7 @@ map gw cd /work
 map gc cd /dot/dot-config/lf
 map gy cd /work/yb/
 map gt cd /tmp
+map gd cd /dot
 
 # dedicated keys for file opener actions
 map o &mimeopen $f
@@ -21,10 +22,6 @@ map O $mimeopen --ask $f
 #delete key
 map D :delete
 
-# define a custom 'open' command
-# This command is called when current file is not a directory. You may want to
-# use either file extensions and/or mime types here. Below uses an editor for
-# text files and a file opener for the rest.
 cmd open &{{
     case $(file --mime-type -Lb $f) in
         text/*) lf -remote "send $id \$$EDITOR \$fx";;
@@ -33,25 +30,6 @@ cmd open &{{
     esac
 }}
 
-# mkdir command. See wiki if you want it to select created dir
-map ha :push %mkdir<space>
-
-#touch command
-map a :push %touch<space>
-
-# extract the current file with the right command
-# (xkcd link: https://xkcd.com/1168/)
-cmd extract ${{
-    set -f
-    case $f in
-        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f;;
-        *.tar.gz|*.tgz) tar xzvf $f;;
-        *.tar.xz|*.txz) tar xJvf $f;;
-        *.zip) unzip $f;;
-        *.rar) unrar x $f;;
-        *.7z) 7z x $f;;
-    esac
-}}
 # compress current file or selected files with tar and gunzip
 cmd tar ${{
     set -f
@@ -74,3 +52,14 @@ set previewer ctpv
 set cleaner ctpvclear
 &ctpv -s $id
 &ctpvquit $id
+
+# new dirs/files, emulating NERDTree
+cmd new_node %{{
+    target="$1"
+    if [[ "$target" == */ ]]; then
+        mkdir -p "$target"
+    else
+        touch "$target"
+    fi
+}}
+map a :push :new_node<space>

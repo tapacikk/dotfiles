@@ -50,3 +50,7 @@ ffmpegthumbnailer
 jq
 poppler-utils
 atool
+dunst
+python3-pyparsing
+python3-matplotlib
+python3-pandas

@@ -172,8 +172,8 @@ static const char dmenufont[]            = "monospace:size=14";
 
 static char c000000[]                    = "#000000"; // placeholder value
 
-static char normfgcolor[]                = "#2bbbbb";
-static char normbgcolor[]                = "#222222";
+static char normfgcolor[]                = "#c3c8c9";
+static char normbgcolor[]                = "#112327";
 static char normbordercolor[]            = "#444444";
 static char normfloatcolor[]             = "#db8fd9";
 

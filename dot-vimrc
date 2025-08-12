@@ -32,12 +32,10 @@ command! -nargs=+ RunHere execute 'cd %:p:h' | execute '!'.<q-args>
 "STATUSLINE
 set laststatus=2
 set statusline=
-set statusline +=\ b%n\ %*            "buffer number
-set statusline +=%=\ %<%F%*            "full path
+set statusline +=\ %<%F%*            "full path
 set statusline +=%m%*                "modified flag
 set statusline +=%=%y%*                "file type
 set statusline +=%5l%*             "current line
 set statusline +=/%L%*               "total lines
-set nofoldenable
 "VIMWIKI config
 let g:vimwiki_list = [{ 'path': '/work/notes/wiki'}]

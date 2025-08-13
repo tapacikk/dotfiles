@@ -532,6 +532,11 @@ install_molcas() {
     fi
     
     popd > /dev/null
+    # create link
+    pushd ${MOLCAS_DIR} > /dev/null
+        rm latest
+        ln -s ${MOLCAS_VERSION} latest
+    popd  > /dev/null
     
     log_success "OpenMolcas compilation complete."
 }

@@ -1533,7 +1533,7 @@
 
 /* Thinkpad Keys (brightness)
  */
-#define THINKPAD_KEYS 1
+#define THINKPAD_KEYS 0
 
 /* Volume keys
  */

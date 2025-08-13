@@ -1,3 +1,5 @@
 *.o
 dmenu
 stest
+config.h
+patches.h

@@ -46,6 +46,7 @@ c.zoom.default = '100%'
 # "px" suffix.
 # Type: String
 c.fonts.default_size = '12pt'
+c.fonts.default_family = "FiraMono Nerd Font"
 
 # Bindings for normal mode
 config.bind('s', 'cmd-set-text -s :open -t https://scholar.google.com/scholar?q=')
@@ -65,3 +66,4 @@ dracula.draw.blood(c, {
     }
 })
 
+config.source('qutewal.py')

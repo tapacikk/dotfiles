@@ -3,7 +3,7 @@
 
 static int topbar = 1;                      /* -b  option; if 0, dmenu appears at bottom */
 #if ALPHA_PATCH
-static int opacity = 1;                     /* -o  option; if 0, then alpha is disabled */
+static int opacity = 0.90;                     /* -o  option; if 0, then alpha is disabled */
 #endif // ALPHA_PATCH
 #if CARET_WIDTH_PATCH
 static int caret_width = 2;                 /* -cw option; set default caret width */
@@ -18,7 +18,7 @@ static int incremental = 0;                 /* -r  option; if 1, outputs text ea
 static int instant = 0;                     /* -n  option; if 1, selects matching item without the need to press enter */
 #endif // INSTANT_PATCH
 #if CENTER_PATCH
-static int center = 0;                      /* -c  option; if 0, dmenu won't be centered on the screen */
+static int center = 1;                      /* -c  option; if 0, dmenu won't be centered on the screen */
 static int min_width = 500;                 /* minimum width when centered */
 #endif // CENTER_PATCH
 #if BARPADDING_PATCH
@@ -97,8 +97,8 @@ const
 #endif // XRESOURCES_PATCH
 char *colors[][2] = {
 	/*               fg         bg       */
-	[SchemeNorm] = { "#bbbbbb", "#222222" },
-	[SchemeSel]  = { "#eeeeee", "#005577" },
+	[SchemeNorm] = { "#171717", "#222222" },
+	[SchemeSel]  = { "#000000", "#171717" },
 	[SchemeOut]  = { "#000000", "#00ffff" },
 	#if BORDER_PATCH
 	[SchemeBorder] = { "#000000", "#005577" },
@@ -129,14 +129,14 @@ char *colors[][2] = {
 	#endif // CARET_SCHEME_PATCH
 };
 /* -l option; if nonzero, dmenu uses vertical list with given number of lines */
-static unsigned int lines      = 0;
+static unsigned int lines      = 30;
 #if GRID_PATCH
 /* -g option; if nonzero, dmenu uses a grid comprised of columns and lines */
-static unsigned int columns    = 0;
+static unsigned int columns    = 1;
 #endif // GRID_PATCH
 #if LINE_HEIGHT_PATCH
 static unsigned int lineheight = 0;         /* -h option; minimum height of a menu line     */
-static unsigned int min_lineheight = 8;
+static unsigned int min_lineheight = 10;
 #endif // LINE_HEIGHT_PATCH
 #if NAVHISTORY_PATCH
 static unsigned int maxhist    = 15;
@@ -168,7 +168,7 @@ static Key quit_keys[] = {
 
 #if BORDER_PATCH
 /* Size of the window border */
-static unsigned int border_width = 0;
+static unsigned int border_width = 3;
 #endif // BORDER_PATCH
 
 #if PREFIXCOMPLETION_PATCH

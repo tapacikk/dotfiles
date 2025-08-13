@@ -5,7 +5,7 @@
  * when including this patch.
  * https://github.com/bakkeby/patches/blob/master/dmenu/dmenu-alpha-5.0_20210725_523aa08.diff
  */
-#define ALPHA_PATCH 0
+#define ALPHA_PATCH 1
 
 /* This adds padding for dmenu in similar fashion to the similarly named patch for dwm. The idea
  * is to have dmenu appear on top of the bar when using said patch in dwm.
@@ -17,7 +17,7 @@
  * or xyw patches, to make the menu stand out from similarly coloured windows.
  * http://tools.suckless.org/dmenu/patches/border/
  */
-#define BORDER_PATCH 0
+#define BORDER_PATCH 1
 
 /* The caret scheme patch, a.k.a. colored caret patch, adds the option to change the color
  * of the caret via the SchemeCaret color scheme.
@@ -36,17 +36,17 @@
  * case-insensitive -i option with a case sensitive -s option.
  * http://tools.suckless.org/dmenu/patches/case-insensitive/
  */
-#define CASEINSENSITIVE_PATCH 0
+#define CASEINSENSITIVE_PATCH 1
 
 /* This patch centers dmenu in the middle of the screen.
  * https://tools.suckless.org/dmenu/patches/center/
  */
-#define CENTER_PATCH 0
+#define CENTER_PATCH 1
 
 /* Minor patch to enable the use of Ctrl+v (XA_PRIMARY) and Ctrl+Shift+v (CLIPBOARD) to paste.
  * By default dmenu only supports Ctrl+y and Ctrl+Shift+y to paste.
  */
-#define CTRL_V_TO_PASTE_PATCH 0
+#define CTRL_V_TO_PASTE_PATCH 1
 
 /* This patch adds a flag (-dy) which makes dmenu run the command given to it whenever input
  * is changed with the current input as the last argument and update the option list according
@@ -68,7 +68,7 @@
  * portions of the string to be matched.
  * https://tools.suckless.org/dmenu/patches/fuzzymatch/
  */
-#define FUZZYMATCH_PATCH 0
+#define FUZZYMATCH_PATCH 1
 
 /* Adds fzf-like functionality for dmenu.
  * Refer to https://github.com/DAFF0D11/dafmenu/ for documentation and example use cases.
@@ -81,13 +81,13 @@
  * G columns * L lines grid.
  * https://tools.suckless.org/dmenu/patches/grid/
  */
-#define GRID_PATCH 0
+#define GRID_PATCH 1
 
 /* This patch adds the ability to move left and right through a grid.
  * This patch depends on the grid patch.
  * https://tools.suckless.org/dmenu/patches/gridnav/
  */
-#define GRIDNAV_PATCH 0
+#define GRIDNAV_PATCH 1
 
 /* This patch highlights the individual characters of matched text for each dmenu list entry.
  * If combined with the fuzzymatch patch then fuzzy highlight will be used for highlighting
@@ -98,7 +98,7 @@
  * https://tools.suckless.org/dmenu/patches/highlight/
  * https://tools.suckless.org/dmenu/patches/fuzzyhighlight/
  */
-#define HIGHLIGHT_PATCH 0
+#define HIGHLIGHT_PATCH 1
 
 /* This will automatically sort the search result so that high priority items are shown first.
  * https://tools.suckless.org/dmenu/patches/highpriority/
@@ -108,7 +108,7 @@
 /* This patch causes dmenu to print out the current text each time a key is pressed.
  * https://tools.suckless.org/dmenu/patches/incremental/
  */
-#define INCREMENTAL_PATCH 0
+#define INCREMENTAL_PATCH 1
 
 /* This patch adds an option to provide preselected text.
  * https://tools.suckless.org/dmenu/patches/initialtext/
@@ -151,12 +151,12 @@
 /* This patch adds basic mouse support for dmenu.
  * https://tools.suckless.org/dmenu/patches/mouse-support/
  */
-#define MOUSE_SUPPORT_PATCH 0
+#define MOUSE_SUPPORT_PATCH 1
 
 /* Expands the above to support mouse hovering.
  * https://tools.suckless.org/dmenu/patches/mouse-support/
  */
-#define MOTION_SUPPORT_PATCH 0
+#define MOTION_SUPPORT_PATCH 1
 
 /* Without this patch when you press Ctrl+Enter dmenu just outputs current item and it is not
  * possible to undo that.
@@ -178,7 +178,7 @@
  *
  * https://tools.suckless.org/dmenu/patches/navhistory/
  */
-#define NAVHISTORY_PATCH 0
+#define NAVHISTORY_PATCH 1
 
 /* This patch adds back in the workaround for a BadLength error in the Xft library when color
  * glyphs are used. This is for systems that do not have an updated version of the Xft library
@@ -334,7 +334,7 @@
  * is too long or there are too many options to be shown in dmenu in one line, to be defined.
  * https://tools.suckless.org/dmenu/patches/symbols/
  */
-#define SYMBOLS_PATCH 0
+#define SYMBOLS_PATCH 1
 
 /* With this patch dmenu will split input lines at first tab character and only display first
  * part, but it will perform matching on and output full lines as usual.
@@ -381,7 +381,7 @@
  *
  * https://tools.suckless.org/dmenu/patches/xresources/
  */
-#define XRESOURCES_PATCH 0
+#define XRESOURCES_PATCH 1
 
 /* This patch adds options for specifying dmenu window position and width.
  * The center patch takes precedence over the XYW patch if enabled.

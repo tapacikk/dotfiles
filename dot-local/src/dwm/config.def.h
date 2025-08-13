@@ -168,7 +168,7 @@ static const char font[]                 = "monospace 10";
 #else
 static const char *fonts[]               = { "monospace:size=20" };
 #endif // BAR_PANGO_PATCH
-static const char dmenufont[]            = "monospace:size=14";
+static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium";
 
 static char c000000[]                    = "#000000"; // placeholder value
 

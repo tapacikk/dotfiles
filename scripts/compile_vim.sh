@@ -38,8 +38,6 @@ build_vim() {
     make distclean 2>/dev/null || true
     ./configure --prefix="$INSTALL_PREFIX" \
         --enable-multibyte \
-        --enable-pythoninterp=dynamic \
-        --enable-python3interp=dynamic \
         --with-features=normal \
         --enable-clipboard \
         --with-x \

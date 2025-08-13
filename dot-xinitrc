@@ -1,6 +1,6 @@
 #!/bin/bash
 while true; do
-   xsetroot -name "$(date '+%a,%d %b%I:%M')"
+   xsetroot -name "$(date '+%a,%d%b %I:%M')"
    sleep 1
 done &
 
@@ -8,7 +8,7 @@ setxkbmap -option ctrl:nocaps
 WALL=$(ls $HOME/.local/wall | shuf -n 1)
 WALL=$HOME/.local/wall/$WALL
 feh --bg-fill $WALL --no-fehbg
-/opt/pywal16/bin/wal -i $WALL --cols16 -n -s
+/opt/pywal16/bin/wal -i $WALL --cols16 lighten -n -s 
 picom -b --corner-radius 10 --backend glx
 xss-lock -- slock &
 xset r rate 200 35

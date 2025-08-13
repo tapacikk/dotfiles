@@ -6,7 +6,7 @@
 
 /* appearance */
 #if ROUNDED_CORNERS_PATCH
-static const unsigned int borderpx       = 5;   /* border pixel of windows */
+static const unsigned int borderpx       = 2;   /* border pixel of windows */
 static const int corner_radius           = 10;
 #else
 static const unsigned int borderpx       = 1;   /* border pixel of windows */

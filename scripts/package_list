@@ -58,3 +58,7 @@ network-manager
 pulseaudio
 alsa-utils
 aerc
+dunst
+libnotify-bin
+maim
+linux-headers-amd64

@@ -12,4 +12,5 @@ feh --bg-fill $WALL --no-fehbg
 picom -b --corner-radius 10 --backend glx
 xss-lock -- slock &
 xset r rate 200 35
+dunst &
 exec dwm 

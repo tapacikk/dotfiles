@@ -1,4 +1,4 @@
-#!/home/taras/.local/src/qutebrowser/.venv/bin/python
+#!/opt/qutebrowser/latest/bin/python
 
 # SPDX-FileCopyrightText: Chris Braun (cryzed) <cryzed@googlemail.com>
 #

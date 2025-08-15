@@ -19,7 +19,7 @@ static int instant = 0;                     /* -n  option; if 1, selects matchin
 #endif // INSTANT_PATCH
 #if CENTER_PATCH
 static int center = 1;                      /* -c  option; if 0, dmenu won't be centered on the screen */
-static int min_width = 400;                 /* minimum width when centered */
+static int min_width = 600;                 /* minimum width when centered */
 #endif // CENTER_PATCH
 #if BARPADDING_PATCH
 static const int vertpad = 10;              /* vertical padding of bar */
@@ -38,7 +38,7 @@ static char *fonts[] =
 static const char *fonts[] =
 #endif // XRESOURCES_PATCH
 {
-	"monospace:size=10"
+	"monospace:size=15"
 };
 #endif // PANGO_PATCH
 #if MANAGED_PATCH
@@ -97,8 +97,8 @@ const
 #endif // XRESOURCES_PATCH
 char *colors[][2] = {
 	/*               fg         bg       */
-	[SchemeNorm] = { "#171717", "#222222" },
-	[SchemeSel]  = { "#000000", "#171717" },
+   	[SchemeNorm] = { "#bbbbbb", "#222222" },
+	[SchemeSel]  = { "#eeeeee", "#005577" },
 	[SchemeOut]  = { "#000000", "#00ffff" },
 	#if BORDER_PATCH
 	[SchemeBorder] = { "#000000", "#005577" },

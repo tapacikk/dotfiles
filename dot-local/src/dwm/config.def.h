@@ -60,7 +60,7 @@ static const int showtab                 = showtab_auto;        /* Default tab b
 static const int toptab                  = False;               /* False means bottom tab bar */
 #endif // TAB_PATCH
 #if BAR_HEIGHT_PATCH
-static const int bar_height              = 25;   /* 0 means derive from font, >= 1 explicit height */
+static const int bar_height              = 0;   /* 0 means derive from font, >= 1 explicit height */
 #endif // BAR_HEIGHT_PATCH
 #if BAR_PADDING_PATCH
 static const int vertpad                 = 10;  /* vertical padding of bar */
@@ -886,6 +886,9 @@ static const char *ttermcmd[] = { "st", "-e", "tmux", "a", NULL };
 static const char *calccmd[]  = { "/home/taras/.local/bin/calc", NULL };
 static const char *qutecmd[]  = { "qutebrowser", NULL };
 static const char *wikicmd[]  = { "wiki", NULL };
+static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };
+static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
+static const char *slockcmd[]  = { "slock", NULL };
 #if VOLUME_KEYS
 static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
 static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",   NULL };
@@ -1033,6 +1036,9 @@ static const Key keys[] = {
 	{ MODKEY          ,             XK_c,          spawn,                  {.v = calccmd  } },
 	{ MODKEY          ,             XK_o,          spawn,                  {.v = qutecmd  } },
 	{ MODKEY|ShiftMask,             XK_w,          spawn,                  {.v = wikicmd  } },
+	{ MODKEY          ,             XK_s,          spawn,                  {.v = scrshtdcmd } },
+	{ MODKEY|ShiftMask,             XK_s,          spawn,                  {.v = scrshtcmd } },
+	{ MODKEY|ShiftMask,             XK_l,          spawn,                  {.v = slockcmd } },
     #if VOLUME_KEYS
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },

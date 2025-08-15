@@ -45,7 +45,7 @@ c.zoom.default = '100%'
 # either a float value with a "pt" suffix, or an integer value with a
 # "px" suffix.
 # Type: String
-c.fonts.default_size = '12pt'
+c.fonts.default_size = '18pt'
 c.fonts.default_family = "FiraMono Nerd Font"
 
 # Bindings for normal mode

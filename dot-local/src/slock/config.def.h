@@ -22,7 +22,7 @@ static const char *colorname[NUMCOLS] = {
 
 #if MESSAGE_PATCH || COLOR_MESSAGE_PATCH
 /* default message */
-static const char * message = "Suckless: Software that sucks less.";
+static const char * message = "Taras Khvorost computer. macroperson@pm.me";
 
 /* text color */
 static const char * text_color = "#ffffff";
@@ -86,7 +86,7 @@ ResourcePref resources[] = {
 
 #if ALPHA_PATCH
 /* lock screen opacity */
-static const float alpha = 0.9;
+static const float alpha = 0.5;
 #endif // ALPHA_PATCH
 
 /* treat a cleared input like a wrong password (color) */
@@ -123,7 +123,7 @@ static const secretpass scom[] = {
 /* Enable blur */
 #define BLUR
 /* Set blur radius */
-static const int blurRadius = 5;
+static const int blurRadius = 10;
 /* Enable Pixelation */
 //#define PIXELATION
 /* Set pixelation radius */

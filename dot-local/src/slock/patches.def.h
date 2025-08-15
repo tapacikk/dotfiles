@@ -35,7 +35,7 @@
  * The background image patch takes precedence over this patch.
  * https://tools.suckless.org/slock/patches/blur-pixelated-screen/
  */
-#define BLUR_PIXELATED_SCREEN_PATCH 0
+#define BLUR_PIXELATED_SCREEN_PATCH 1
 
 /* This patch introduces an additional color to indicate the state of Caps Lock.
  * https://tools.suckless.org/slock/patches/capscolor/
@@ -72,12 +72,12 @@
  * and the password can be entered then.
  * https://tools.suckless.org/slock/patches/dpms/
  */
-#define DPMS_PATCH 0
+#define DPMS_PATCH 1
 
 /* This patch draws the dwm logo which changes color based on the state.
  * https://tools.suckless.org/slock/patches/dwmlogo/
  */
-#define DWM_LOGO_PATCH 0
+#define DWM_LOGO_PATCH 1
 
 /* This patch allows for a command to be run after a specified number of incorrect attempts.
  * https://tools.suckless.org/slock/patches/failure-command/
@@ -102,7 +102,7 @@
  * configuration in config.mk. Look for and uncomment the XINERAMA placeholder.
  * https://tools.suckless.org/slock/patches/message/
  */
-#define MESSAGE_PATCH 0
+#define MESSAGE_PATCH 1
 
 /* Replaces shadow support with PAM authentication support.
  * Change variable pam_service in config.def.h to the corresponding PAM service.
@@ -142,4 +142,4 @@
 /* This patch adds the ability to get colors via Xresources.
  * https://tools.suckless.org/slock/patches/xresources/
  */
-#define XRESOURCES_PATCH 0
+#define XRESOURCES_PATCH 1

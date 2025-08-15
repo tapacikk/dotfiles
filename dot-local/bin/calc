@@ -16,7 +16,7 @@ copy_to_clipboard() { printf "$1" | xclip -sel clip; }
 result_from_equation() { printf "$1" | sed 's/^.*\(=\|≈\) //'; }
 
 main() {
-    dmenu_cmd="dmenu -l 10 -p"
+    dmenu_cmd="dmenu -g 1 -l 10 -p"
 
     while
         input=$(get_history | ${dmenu_cmd} "Calculator: " "$@")

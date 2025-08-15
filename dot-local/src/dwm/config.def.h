@@ -890,6 +890,7 @@ static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "defau
 static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
 static const char *energcmd[]  = { "/home/taras/.local/bin/energ", NULL };
 static const char *slockcmd[]  = { "slock", NULL };
+static const char *passcmd[]  = { "passmenu", NULL };
 #if VOLUME_KEYS
 static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
 static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",   NULL };
@@ -1041,6 +1042,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_s,          spawn,                  {.v = scrshtcmd } },
 	{ MODKEY|ShiftMask,             XK_l,          spawn,                  {.v = slockcmd } },
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  {.v = energcmd } },
+	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
     #if VOLUME_KEYS
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },

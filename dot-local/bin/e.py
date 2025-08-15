@@ -52,8 +52,6 @@ def convert(args):
         return
 
 
-
-
 def main():
     args = parse_arguments()
     convert(args)

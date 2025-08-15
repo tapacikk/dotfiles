@@ -1,0 +1,47 @@
+#!/bin/bash
+
+history_file="/tmp/dmenu-energ/history"
+
+get_history() {
+    [[ ! -f $history_file ]] && mkdir -p "$(dirname "$history_file")" && touch "$history_file"
+    [[ ! -s $history_file ]] && echo "No history found" || tac "$history_file"
+}
+
+is_in_history() {
+    grep -qxF "$1" "$history_file"
+}
+
+add_to_history() {
+    echo "$1" >> "$history_file"
+}
+
+main() {
+    dmenu_cmd="dmenu -g 1 -l 10 -p"
+
+    # Step 1: Get input
+    input=$(get_history | ${dmenu_cmd} "E: " "$@")
+    [[ -z $input ]] && exit 0
+
+    # Save original input only
+    if ! is_in_history "$input"; then
+        add_to_history "$input"
+    fi
+
+    # Step 2: Run calculation
+    results=$("$HOME/.local/bin/e.py" $input)
+
+    # Step 3: Create menu items: "unit: value"
+    menu_items=$(echo "$results" | sed -E 's/^ *//') # remove leading spaces
+
+    # Step 4: Let user pick unit+value
+    selection=$(echo "$menu_items" | ${dmenu_cmd} "Select unit and value:")
+    [[ -z $selection ]] && exit 0
+
+    # Step 5: Copy just the value to clipboard
+    value=$(echo "$selection" | sed -E 's/^[^:]+:[[:space:]]*//')
+    printf "%s" "$value" | xclip -sel clip
+
+    exit 0
+}
+
+main "$@"

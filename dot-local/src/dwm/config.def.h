@@ -888,6 +888,7 @@ static const char *qutecmd[]  = { "qutebrowser", NULL };
 static const char *wikicmd[]  = { "wiki", NULL };
 static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };
 static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
+static const char *energcmd[]  = { "/home/taras/.local/bin/energ", NULL };
 static const char *slockcmd[]  = { "slock", NULL };
 #if VOLUME_KEYS
 static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
@@ -1039,6 +1040,7 @@ static const Key keys[] = {
 	{ MODKEY          ,             XK_s,          spawn,                  {.v = scrshtdcmd } },
 	{ MODKEY|ShiftMask,             XK_s,          spawn,                  {.v = scrshtcmd } },
 	{ MODKEY|ShiftMask,             XK_l,          spawn,                  {.v = slockcmd } },
+	{ MODKEY|ShiftMask,             XK_e,          spawn,                  {.v = energcmd } },
     #if VOLUME_KEYS
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
@@ -1275,7 +1277,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_f,          fullscreen,             {0} },
 	#endif // FULLSCREEN_PATCH
 	#if STICKY_PATCH
-	{ MODKEY|ShiftMask,             XK_s,          togglesticky,           {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_s,          togglesticky,           {0} },
 	#endif // STICKY_PATCH
 	#if SCRATCHPAD_ALT_1_PATCH
 	{ MODKEY,                       XK_minus,      scratchpad_show,        {0} },

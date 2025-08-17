@@ -1,8 +1,1 @@
-#!/bin/bash
-
-playonlinux --run "Chemcraft"
-<<<<<<< Updated upstream
-=======
-
-
->>>>>>> Stashed changes
+/opt/chemcraft/latest/Chemcraft

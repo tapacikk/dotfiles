@@ -362,7 +362,7 @@
  *
  * https://tools.suckless.org/dmenu/patches/vi-mode/
  */
-#define VI_MODE_PATCH 0
+#define VI_MODE_PATCH 1
 
 /* Adds extended window manager hints such as _NET_WM_WINDOW_TYPE and _NET_WM_WINDOW_TYPE_DOCK.
  * https://github.com/Baitinq/dmenu/blob/master/patches/dmenu-wm_type.diff

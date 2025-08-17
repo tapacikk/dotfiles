@@ -5,8 +5,7 @@ PROMPT='''1.select(copy)
 3.full screen
 4.select
 5.current win(copy)
-6.full screen(copy)" 
-'''
+6.full screen(copy)'''
 SCREENSHOT_SAVE_DIR=/tmp/screenshots
 mkdir -p $SCREENSHOT_SAVE_DIR
 
@@ -15,7 +14,7 @@ if [[ $1 == "default" ]];then
     exit 0
 fi
 
-case "$(echo "$PROMPT" | dmenu -ps 0 -l 6 -g 1 -p "Screenshot:")" in
+case "$(echo "$PROMPT" | dmenu -vi -ps 0 -l 6 -g 1 -p "Screenshot:")" in
 	"4.select") maim -s $SCREENSHOT_SAVE_DIR/pic-selected-"$(date '+%y%m%d-%H%M-%S').png" ;;
 	"2.current win") maim -i "$(xdotool getactivewindow)" $SCREENSHOT_SAVE_DIR/pic-window-"$(date '+%y%m%d-%H%M-%S').png" ;;
 	"3.full screen") maim $SCREENSHOT_SAVE_DIR/pic-full-"$(date '+%y%m%d-%H%M-%S').png" ;;

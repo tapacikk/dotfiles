@@ -1,27 +1,49 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+INDEX_FILE="/work/notes/wiki/index.wiki"
 
-INDEX_FILE=/work/notes/wiki/index.wiki
-result=$(grep "Project based wikis" $INDEX_FILE -A 30 | uniq | tail -n+3 | dmenu -l 10 -p "Choose wiki:")
+# Ensure index file exists
+if [[ ! -f $INDEX_FILE ]]; then
+    echo "Error: Index file not found: $INDEX_FILE" >&2
+    exit 1
+fi
 
-result="${result#*[[}"
-result="${result%%]]*}"
-result=$(echo "$result" | sed 's/\//\\\//g; s/|/\\|/g')
+# Extract wikis after "Project based wikis"
+choices=$(grep -A 30 "Project based wikis" "$INDEX_FILE" | tail -n +3 | awk '!seen[$0]++')
 
-echo $result
+if [[ -z $choices ]]; then
+    echo "No project wikis found in $INDEX_FILE" >&2
+    exit 1
+fi
 
-vimcommand="vim $INDEX_FILE -c :/$result -c VimwikiFollowLink"
-# test if running in terminal or not
-#if [ -t 0 ]; then
-#    $vimcommand
-#    exit 0
-#fi
+# Build menu entries as "label<TAB>link"
+menu_entries=$(sed -nE '
+    s/.*\[\[([^]|]+)\|([^]]+)\]\].*/\2\t\1/p;    # with label
+    s/.*\[\[([^]|]+)\]\].*/\1\t\1/p;             # without label
+' <<< "$choices")
 
-#if not, launch a new terminal window
-st -T wiki -e $vimcommand 
+menu_entries="Index"$'\n'"$menu_entries"
+# Show only labels in dmenu
+selection=$(printf '%s\n' "$menu_entries" | cut -f1 | dmenu -g 1 -vi -l 10 -p "Choose wiki:") || exit 1
 
+# Map label back to actual link target
+link=$(printf '%s\n' "$menu_entries" | awk -F'\t' -v sel="$selection" '$1 == sel {print $2; exit}')
 
+# Escape special chars for Vim search
+link_escaped=$(sed -E 's/[\/|]/\\&/g' <<< "$link")
 
+# Final Vim command
+echo $link > /tmp/link
+if [[ $link ]];then
+    vim_cmd=(vim "$INDEX_FILE" -c ":/$link_escaped" -c VimwikiFollowLink)
+else
+    vim_cmd=(vim "$INDEX_FILE")
+fi
 
-
+# Launch in terminal if needed
+if [[ $TERM == "st-256color" ]]; then
+    "${vim_cmd[@]}"
+else
+    st -T wiki -e "${vim_cmd[@]}"
+fi
 

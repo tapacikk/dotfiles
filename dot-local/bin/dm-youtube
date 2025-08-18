@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+
+# this is a function for parsing youtube rss, see xmlgetnext
+parse_youtube_feed() {
+    echo "$1" | while xmlgetnext; do
+        case $DM_XML_TAG in
+        'entry')
+            title=''
+            link=''
+            published=''
+            ;;
+        'media:title')
+            title="$DM_XML_VALUE"
+            ;;
+        'yt:videoId')
+            link="$DM_XML_VALUE"
+            ;;
+        'published')
+            published="$(date --date="${DM_XML_VALUE}" "+%Y-%m-%d %H:%M")"
+            ;;
+        '/entry')
+            echo " ${published} | ${link} | ${title}"
+            ;;
+        esac
+    done
+}
+
+
+xmlgetnext() {
+    local IFS='>'
+    # we need to mangle backslashes for this to work (SC2162)
+    # The DM_XML_* variables are global variables and are expected to be read and dealt with by someone else (SC2034)
+    # shellcheck disable=SC2162,SC2034
+    read -d '<' DM_XML_TAG DM_XML_VALUE
+}
+
+
+declare -A youtube_channels=(
+    ["Veritasium"]="https://www.youtube.com/c/veritasium"
+    ["Agadmator"]="https://www.youtube.com/@agadmator"
+    ["Steve Mould"]="https://www.youtube.com/@SteveMould"
+    ["Vsauce"]="https://www.youtube.com/@Vsauce"
+)
+
+
+main() {
+    local _feed_url _channel _video
+    local _channel_id _video_id _video_list
+
+    # Sorts the array and lets you select a channel with dmenu
+    # As this is loaded from other file it is technically not defined
+    # shellcheck disable=SC2154
+    _channel=$(printf '%s\n' "${!youtube_channels[@]}" | sort | ${MENU_VI} 'Select Channel:')
+
+    # The way it's done here is most effective, it searchs for "=" then it takes
+    # everything before the = sign and leaves us with our variable used in the
+    # _feed_url variable
+    _channel_id=$(curl -s -f -L "${youtube_channels[${_channel}]}" | grep -o "channel_id=.*" | sed 's/".*//g')
+    _feed_url="https://www.youtube.com/feeds/videos.xml?channel_id=${_channel_id##*=}"
+    # parse rss
+    _video_list=$(parse_youtube_feed "$(curl -s "${_feed_url}")")
+
+    _video=$(printf '%s\n' "${_video_list}" | sort -r | ${MENU_VI} 'Select Video')
+    _video_id=$(echo "${_video}" | cut -d'|' -f2 | sed -e 's/^[ \t]*//')
+
+    if [[ -n ${_video_id} ]]; then
+        # After the video is chosen, run it in mpv
+        st -e mpv "https://www.youtube.com/watch?v=${_video_id}"
+    fi
+}
+
+MENU="dmenu -i -g 1 -p "
+MENU_VI="dmenu -vi -i -g 1 -p "
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && main
+

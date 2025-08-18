@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+
+declare -A websearch=(
+    ["DuckDuckGo"]="https://duckduckgo.com/?q="
+    ["Wikipedia"]="https://en.wikipedia.org/w/index.php?search="
+    ["YouTube"]="https://www.youtube.com/results?search_query="
+    ["Arch Linux Wiki"]="https://wiki.archlinux.org/index.php?search="
+    ["Google Scholar"]="https://scholar.google.com/scholar?q="
+)
+
+main() {
+    engine=$(printf '%s\n' "${!websearch[@]}" | sort | ${MENU_VI} 'Choose search engine:') || exit 1
+
+    # Getting the URL of the search engine we chose.
+    url="${websearch["${engine}"]}"
+
+    # Searching the chosen engine.
+    query=$(printf '%s' "$engine" | ${MENU} 'Enter search query:')
+
+    query="$(echo -n "${query}" | jq -s -R -r @uri)"
+    # Display search results in web browser
+    # shellcheck disable=SC2154
+    qutebrowser "${url}${query}"
+}
+
+MENU="dmenu -g 1 -i -p"
+MENU_VI="dmenu -vi -g 1 -i -p"
+[[ "${BASH_SOURCE[0]}" == "${0}" ]] && main
+

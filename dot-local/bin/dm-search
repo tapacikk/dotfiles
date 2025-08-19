@@ -9,10 +9,12 @@ declare -A websearch=(
     ["YouTube"]="https://www.youtube.com/results?search_query="
     ["Arch Linux Wiki"]="https://wiki.archlinux.org/index.php?search="
     ["Google Scholar"]="https://scholar.google.com/scholar?q="
+    ["ORCA Manual"]="https://www.faccts.de/docs/orca/6.1/manual/search.html?q="
+    ["OpenMolcas Manual"]="https://molcas.gitlab.io/OpenMolcas/sphinx/search.html?q="
 )
 
 main() {
-    engine=$(printf '%s\n' "${!websearch[@]}" | sort | ${MENU_VI} 'Choose search engine:') || exit 1
+    engine=$(printf '%s\n' "${!websearch[@]}" | sort | ${MENU} 'Choose search engine:') || exit 1
 
     # Getting the URL of the search engine we chose.
     url="${websearch["${engine}"]}"
@@ -27,6 +29,5 @@ main() {
 }
 
 MENU="dmenu -g 1 -i -p"
-MENU_VI="dmenu -vi -g 1 -i -p"
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && main
 

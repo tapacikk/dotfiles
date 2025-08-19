@@ -29,7 +29,7 @@ def parse_value_and_unit(value_str, unit_arg):
 def to_hartree(value, units):
     if units == 'h':
         return value
-    elif units == 'ev':
+    elif units == 'ev' or units == 'eV':
         return value / HARTREE_TO_EV
     elif units == 'cm':
         return value / HARTREE_TO_CM

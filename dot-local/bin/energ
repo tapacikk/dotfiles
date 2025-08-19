@@ -17,7 +17,7 @@ add_to_history() {
 
 main() {
     dmenu_cmd="dmenu -g 1 -l 10 -p "
-    dmenu_cmd_vi="dmenu -g 1 -l 10 -vi -p "
+    dmenu_cmd_vi="dmenu -g 1 -l 10 -vi"
 
     # Step 1: Get input
     input=$(get_history | ${dmenu_cmd} "E: " "$@")
@@ -35,7 +35,7 @@ main() {
     menu_items=$(echo "$results" | sed -E 's/^ *//') # remove leading spaces
 
     # Step 4: Let user pick unit+value
-    selection=$(echo "$menu_items" | ${dmenu_cmd_vi} "Select unit and value:")
+    selection=$(echo "$menu_items" | ${dmenu_cmd_vi} )
     [[ -z $selection ]] && exit 0
 
     # Step 5: Copy just the value to clipboard

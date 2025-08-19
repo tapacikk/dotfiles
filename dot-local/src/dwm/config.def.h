@@ -508,14 +508,8 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
 	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
-	RULE(.class = "Gimp", .tags = 1 << 4)
 	RULE(.class = "St", .isterminal=1)
-	RULE(.class = "Firefox", .tags = 1 << 7)
-	#if RENAMED_SCRATCHPADS_PATCH
-	RULE(.instance = "spterm", .scratchkey = 's', .isfloating = 1)
-	#elif SCRATCHPADS_PATCH
-	RULE(.instance = "spterm", .tags = SPTAG(0), .isfloating = 1)
-	#endif // SCRATCHPADS_PATCH
+	RULE(.instance = "float_video", .isfloating=1)
 };
 
 #if MONITOR_RULES_PATCH
@@ -889,6 +883,8 @@ static const char *wikicmd[]  = { "wiki", NULL };
 static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };
 static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
 static const char *energcmd[]  = { "/home/taras/.local/bin/energ", NULL };
+static const char *dmsearchcmd[]  = { "/home/taras/.local/bin/dm-search", NULL };
+static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
 static const char *slockcmd[]  = { "slock", NULL };
 static const char *passcmd[]  = { "passmenu", NULL };
 #if VOLUME_KEYS
@@ -1043,6 +1039,8 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_l,          spawn,                  {.v = slockcmd } },
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  {.v = energcmd } },
 	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
+	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
+	{ MODKEY|ShiftMask,             XK_o,          spawn,                  {.v = dmsearchcmd } },
     #if VOLUME_KEYS
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },

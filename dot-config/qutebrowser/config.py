@@ -1,3 +1,5 @@
+c.fonts.default_size = '12pt'
+c.fonts.default_family = "FiraMono Nerd Font"
 config.load_autoconfig(True)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
 config.set('content.headers.accept_language', '', 'https://matchmaker.krunker.io/*')
@@ -34,7 +36,7 @@ c.tabs.favicons.show = 'always'
 #   - bottom
 #   - left
 #   - right
-c.tabs.width = '10%'
+c.tabs.width = '5%'
 
 # Default zoom level.
 # Type: Perc
@@ -45,8 +47,6 @@ c.zoom.default = '100%'
 # either a float value with a "pt" suffix, or an integer value with a
 # "px" suffix.
 # Type: String
-c.fonts.default_size = '18pt'
-c.fonts.default_family = "FiraMono Nerd Font"
 
 # Bindings for normal mode
 config.bind('s', 'cmd-set-text -s :open -t https://scholar.google.com/scholar?q=')

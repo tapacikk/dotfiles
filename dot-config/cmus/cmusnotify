@@ -4,7 +4,10 @@
 # version		:1.2.2
 # url			:https://github.com/Dimithrandir/cmushnotify
 # author		:Dimithrandir
-# description	:Sends notifications from cmus. If dunst is not installed, only fires a notification if a new song started playing after 1/4 of the duration of the previous song, to prevent notification stacking or manual playback notifications.
+# description	:Sends notifications from cmus. If dunst is not installed, only
+#                fires a notification if a new song started playing after 1/4 of the duration
+#                of the previous song, to prevent notification stacking or manual playback
+#                notifications.
 
 # Look for album art photos in the same folder as file provided as argument in this order: folder, cover, albumart, front, [ album name ]. If none found, try to extract embedded cover with ffmpeg. If none found, or no ffmpeg, use default pic.
 get_albumart() {
@@ -28,7 +31,7 @@ if [ "$2" = 'playing' ] ; then
 		shift
 	done
 
-	notification_sum="Cmus • Now playing" 
+	notification_sum="NOW PLAYING" 
 	notification_body="$_title\n$_artist\n$_album\n$_date"
 
 	# get album art
@@ -36,16 +39,4 @@ if [ "$2" = 'playing' ] ; then
 
 	# with dunst
 	[ "$( command -v dunstify )" ] && dunstify -r 36198 -i "$img_file" "$notification_sum" "$notification_body" && exit 0
-
-	# without dunst
-	readonly tempfile="$HOME/.config/cmus/.cmushnotify.cache"
-
-	[ -f "$tempfile" ] && timegoal=$( cat "$tempfile" ) || timegoal=0
-
-	if [ "$( date +%s )" -ge "$timegoal" ] ; then
-		timegoal=$(( $( date +%s ) + _duration / 4 ))
-		echo "$timegoal" > "$tempfile"
-		# send notification
-		notify-send -i "$img_file" "$notification_sum" "$notification_body"
-	fi
 fi

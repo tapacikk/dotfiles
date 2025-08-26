@@ -80,4 +80,7 @@ export PATH=/opt/ueberzugpp/latest/bin:$PATH
 export PATH=/opt/ctpv/latest/bin:$PATH
 export PATH=/opt/OpenMolcas/latest:$PATH
 export PATH=/opt/yt-dlp/latest/bin:$PATH
-
+export PATH=/opt/crystal/latest/bin:$PATH
+export PATH=/opt/openmpi/latest/bin:$PATH
+#ld
+export LD_LIBRARY_PATH=/opt/openmpi/latest/lib:$LD_LIBRARY_PATH

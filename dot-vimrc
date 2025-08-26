@@ -22,6 +22,7 @@ nnoremap ;n :NERDTreeToggle<CR>
 let NERDTreeWinSize=20
 let NERDTreeMinimalUI=1
 let NERDTreeMinimalMenu=1
+
 nnoremap q: <nop>
 nnoremap Q <nop>
 inoremap kj <Esc>

@@ -4,8 +4,7 @@ INDEX_FILE="/work/notes/wiki/index.wiki"
 
 # Ensure index file exists
 if [[ ! -f $INDEX_FILE ]]; then
-    echo "Error: Index file not found: $INDEX_FILE" >&2
-    exit 1
+    echo "Error: Index file not found: $INDEX_FILE" >&2 exit 1
 fi
 
 # Extract wikis after "Project based wikis"
@@ -24,7 +23,7 @@ menu_entries=$(sed -nE '
 
 menu_entries="Index"$'\n'"$menu_entries"
 # Show only labels in dmenu
-selection=$(printf '%s\n' "$menu_entries" | cut -f1 | dmenu -g 1 -vi -l 10 -p "Choose wiki:") || exit 1
+selection=$(printf '%s\n' "$menu_entries" | cut -f1 | dmenu -g 1 -l 10 -p "Choose wiki:") || exit 1
 
 # Map label back to actual link target
 link=$(printf '%s\n' "$menu_entries" | awk -F'\t' -v sel="$selection" '$1 == sel {print $2; exit}')

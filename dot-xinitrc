@@ -1,7 +1,30 @@
 #!/bin/bash
+#
+#
+#BAR TIME
+
+
+cpu() {
+  cpu_val=$(grep -o "^[^ ]*" /proc/loadavg)
+
+  printf "CPU"
+  printf " $cpu_val"
+}
+
+
+mem() {
+  printf "  "
+  printf "$(free -h | awk '/^Mem/ { print $3 }' | sed s/i//g)"
+}
+
+
+clock() {
+	printf "| 󱑆 "
+	printf "$(date '+%H:%M')"
+}
+
 while true; do
-   xsetroot -name "$(date '+%a,%d %b %I:%M')"
-   sleep 1
+  sleep 1 && xsetroot -name "$(cpu) $(mem) $(clock)"
 done &
 
 setxkbmap -option ctrl:nocaps

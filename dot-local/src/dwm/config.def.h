@@ -460,7 +460,7 @@ static char tagicons[][NUMTAGS][MAX_TAGLEN] =
 static char *tagicons[][NUMTAGS] =
 #endif // NAMETAG_PATCH
 {
-	[DEFAULT_TAGS]        = {"1:>_", "2:web", "3:chem", "4", "5:office", "6:slack", "7:ff", "8", "9:top"},
+	[DEFAULT_TAGS]        = {"", "", "󰄻", "4", "󰏆", "", "7", "8", "9"},
 	[ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
 	[ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };

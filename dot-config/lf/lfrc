@@ -4,6 +4,7 @@ set shellopts '-eu'
 set ifs "\n"
 set scrolloff 10
 map <enter> :push !
+map <shift><enter> :push !
 map x !$f
 set icons
 map . :set hidden!
@@ -15,6 +16,19 @@ map gc cd /dot/dot-config/lf
 map gy cd /work/yb/
 map gt cd /tmp
 map gd cd /dot
+map gH cd /work/yb/hal
+cmd extract ${{
+    set -f
+    case $f in
+        *.tar.bz|*.tar.bz2|*.tbz|*.tbz2) tar xjvf $f;;
+        *.tar.gz|*.tgz) tar xzvf $f;;
+        *.tar.xz|*.txz) tar xJvf $f;;
+        *.zip) unzip $f;;
+        *.rar) unrar x $f;;
+        *.7z) 7z x $f;;
+    esac
+}}
+
 
 # dedicated keys for file opener actions
 map o &mimeopen $f
@@ -66,3 +80,4 @@ cmd new_node %{{
 map m
 map mr &./run.sh $f
 map ma :push :new_node<space>
+map mp $realpath $f | xclip -selection clipboard

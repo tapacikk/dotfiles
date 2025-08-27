@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+import os 
+import stat
+import argparse
+import sys
+import random
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog='ocas',
+                                     description='prep the dir to run orca')
+    parser.add_argument('orca_input', 
+                        help='''orca input file''')
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
+                        metavar='OUTFILE', default='run.sh',
+                        help='file to write your job script.\
+                              Defaults to run.sh')
+    args = parser.parse_args()
+    return args
+
+
+def write_job_script(args):
+    rn = random.randint(100000, 1000000)
+    while os.path.isdir(os.path.join('/scratch', 'orca', str(rn))):
+        rn = random.randint(0, 1000000)
+    BOILERPLATE=f'''#!/bin/bash
+export SUBMIT_DIR=$(pwd)
+export ORCA=/opt/orca/latest
+export ORCA_WORKDIR=/scratch/orca/{rn}
+echo "ORCA_WORKDIR:" "/scratch/orca/{rn}" > SCRATCH_INFO
+
+# Check if an input file is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 input_file.inp"
+    exit 1
+fi
+INPUT_FILE=$1
+mkdir -p $ORCA_WORKDIR
+ln -s $ORCA_WORKDIR workdir
+cp $1 $ORCA_WORKDIR
+cd $ORCA_WORKDIR
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/openmpi/latest/lib
+export PATH=$PATH:/opt/openmpi/latest/bin
+'''+'$ORCA/orca $1 2> err | tee "$SUBMIT_DIR/${INPUT_FILE%.*}.out"'
+    print(BOILERPLATE, file=args.o)
+    print('rm SAVE/xmldump', 
+          'rm SAVE/*.RasOrb.*', 
+          'rm SAVE/*.SpdOrb.*', 
+          'rm err', 
+          'rm SAVE/*.molden.*', 
+          'rm $Project.status',
+          file=args.o, sep='\n')
+    if args.o != sys.stdout:
+        os.chmod(args.o.name, 0o775)
+
+
+def main():
+    args = parse_arguments()
+    write_job_script(args)
+    args.o.close()
+
+
+if __name__ == '__main__':
+    main()

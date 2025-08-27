@@ -8,6 +8,7 @@ map <shift><enter> :push !
 map x !$f
 set icons
 map . :set hidden!
+map I $less +G $f
 
 
 # Path links

@@ -4,7 +4,7 @@ set shellopts '-eu'
 set ifs "\n"
 set scrolloff 10
 map <enter> :push !
-map <shift><enter> :push !
+map ; :push $
 map x !$f
 set icons
 map . :set hidden!

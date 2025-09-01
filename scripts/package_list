@@ -62,3 +62,6 @@ dunst
 libnotify-bin
 maim
 linux-headers-amd64
+tmux
+curl
+bat

@@ -16,7 +16,7 @@ def parse_arguments():
     parser.add_argument('-p', type=str, metavar='PROJECT',
                         help='Project name', default='molcas')
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
-                        metavar='OUTFILE', default=run.sh,
+                        metavar='OUTFILE', default='run.sh',
                         help='file to write your job script.\
                               Defaults to STDOUT')
     args = parser.parse_args()

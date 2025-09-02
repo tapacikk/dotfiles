@@ -5,10 +5,10 @@ import sys
 import math
 
 def parse_arguments(non_interactive_arguments=None):
-    parser = argparse.ArgumentParser(prog='rasp',
-                                     description='RASSI Parser')
-    parser.add_argument('rassi_output', type=open,
-                        help='''Output file of the RASSI calculation''')
+    parser = argparse.ArgumentParser(prog='orasp',
+                                     description='ORCA spectrum parser')
+    parser.add_argument('orca_output', type=open,
+                        help='''Output file of the ORCA calculation w/ the spectrum''')
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
                         metavar='OUTFILE', default=sys.stdout,
                         help='Output of the script. Default is stdout.')
@@ -20,16 +20,10 @@ def parse_arguments(non_interactive_arguments=None):
     parser.add_argument('--units', choices=['cm', 'ev', 'nm'], 
                         metavar='UNIT', default='cm',
                         help='Units for the specturm. Default nm')
-    parser.add_argument('-noso', action='store_true',
-                        help='Do not use spin-orbit.')
-    parser.add_argument('-trdc', action='store_true',
-                        help='Use this if TRDC option was set in rassi input')
     parser.add_argument('-py', type=str, default=False,
                         help='Output in python format. \
                               Optionally can specify the dict name',
                         nargs='?')
-    parser.add_argument('-mcd', action='store_true',
-                        help='Create the matricies files for mcd code')
     parser.add_argument('-thermal', type=int,
                         help='Perform thermal averaging. Specify T.',
                         metavar='TEMP')
@@ -39,26 +33,28 @@ def parse_arguments(non_interactive_arguments=None):
         args = parser.parse_args()
     else:
         args = parser.parse_args(non_interactive_arguments)
-    args.so = False if args.noso else True
     if args.spectype in ['v', 'm', 'f']:
         args.trdc = False
-    args.filename = args.rassi_output.name
+    args.filename = args.orca_output.name
     return args
 
 
 def get_roots(args):
     roots = {}
     started = 0
-    flag_line = '::    RASSI State' if not args.so else \
-                                   '::    SO-RASSI State'
-    for line in args.rassi_output:
+    flag_line = 'QDPT WITH NEVPT2 DIAGONAL ENERGIES'
+    for line in args.orca_output:
         if flag_line in line:
-            started = 1
-        if flag_line in line and started:
-            state, e = int(line.split()[3]), float(line.split()[-1])
-            roots[state] = e
-        if not flag_line in line and started:
             break
+    flag_line = 'Eigenvalues:'
+    for line in args.orca_output:
+        if flag_line in line:
+            break
+    for line in args.orca_output:
+        if 'threshold' in line.lower(): break
+        if not line.split(): continue
+        state, e_cm, e_ev, *rest = line.split()
+        roots[state.strip(':')] = {'cm': e_cm, 'ev': e_ev}
     args.roots = roots
     return roots
 
@@ -72,7 +68,7 @@ def get_spectrum(args):
     flag_line = spec_lines[args.spectype]
     started = 0
     spectrum = {}
-    for line in args.rassi_output:
+    for line in args.orca_output:
         if flag_line in line:
             started = 1
         if not started or not line.split(): continue
@@ -104,7 +100,7 @@ def get_spectrum_trdc(args):
     flag_line = '++ Complex transition dipole vectors'
     started = 0
     spectrum = {}
-    for line in args.rassi_output:
+    for line in args.orca_output:
         if flag_line in line:
             started = 1
         if not started or not line.split(): continue
@@ -168,114 +164,21 @@ def print_spectrum(args):
     print('}', file=args.o)
 
 
-def get_matricies(args):
-    roots = {}
-    prop_lines = ['ANGMOM', 'MLTPL', 'AMFI']
-    parsing_prop = 1
-    spin_started = 0
-    args.properties = {}
-    for line in args.rassi_output:
-        if 'Spin-orbit properties section' in line:
-            spin_started = 1
-            continue
-        if not spin_started or not line.split(): continue
-        if 'PROPERTY' in line:
-            current_prop = line.split('PROPERTY:')[1].split()[0]
-            dimention = line.split()[-1]
-            if current_prop in prop_lines :
-                args.properties[current_prop+dimention] = parse_property(args)
-    print_matricies(args)
-
-
-def parse_property(args):
-    '''
-    receives file object, advances its pointer by parsing the matrix
-    '''
-    result = []
-    for _ in range(int(len(args.roots)/2)): #matrix blocks
-        row1, row2 = [], []
-        args.rassi_output.readline() #empty line
-        args.rassi_output.readline() #states
-        for b in args.roots:
-            line = args.rassi_output.readline()
-            i,j = line.split(')   (')
-            row1.append(i.split('(')[1])
-            row2.append(j.rstrip(')\n'))
-        result.append(row1)
-        result.append(row2)
-    return result
-
-
-def print_matricies(args):
-    """
-    Print the results of get_matricies
-    """
-    #check if the files exist already
-    ask = False
-    file_list = {'spin-1.txt':'AMFI1',
-                 'spin-2.txt':'AMFI2',
-                 'spin-3.txt':'AMFI3',
-                 'dipole-1.txt':'MLTPL1',
-                 'dipole-2.txt':'MLTPL2',
-                 'dipole-3.txt':'MLTPL3',
-                 'angmom-1.txt':'ANGMOM1',
-                 'angmom-2.txt':'ANGMOM2',
-                 'angmom-3.txt':'ANGMOM3',
-                 'energies.txt':''}
-    for file in file_list:
-        if os.path.isfile(file):
-            ask = True
-    if ask:
-        while True:
-            user_input = input("The file(s) already exist. Overwrite? (y/N): ")
-            if user_input.lower() in ["yes", "y"]:
-                break
-            elif user_input.lower() in ["no", "n"]:
-                exit(0)
-            else:
-                continue
-    with open('energies.txt', 'w') as f:
-        print('#', len(args.roots), '(atomic units)', file=f)
-        for root in args.roots.values():
-            print("{:15.8f}".format(root), file=f)
-    for file in file_list:
-        if file == 'energies.txt': continue
-        with open(file, 'w') as f:
-            f.write(' #NROW NCOL REAL IMAG\n')
-            for idx1, i in enumerate(args.properties[file_list[file]]):
-                for idx2, j in enumerate(i):
-                    print("{:4.0f}".format(idx2+1), file=f, end='')
-                    print("{:4.0f}".format(idx1+1), file=f, end='')
-                    real, imag = map(float, j.split(','))
-                    print("{:26.16E}".format(real), end='', file=f)
-                    print("{:26.16E}".format(imag), file=f)
-
-
 def main(non_interactive_arguments=None):
     args = parse_arguments(non_interactive_arguments)
     roots = get_roots(args)
     if not roots:
+        print('Error in parsing roots!')
         return 1
     elif args.roots_only:
         #print roots, convert to cm
-        h2cm = 219474.63137
-        gs = min(args.roots.values())
-        [print((_-gs)*h2cm, file=args.o) for _ in args.roots.values()]
-        return args.roots
-    compute_populations(args)
-    if args.mcd:
-        get_matricies(args)
-        exit(0)
-    if args.trdc:
-        get_spectrum_trdc(args)
-    else:
-        get_spectrum(args)
-    args.rassi_output.close()
-    if non_interactive_arguments != None and args.o == sys.stdout:
-        return args.spectrum
-    print_spectrum(args)
-    return args.spectrum
+        print('root', 'e_cm', 'e_ev', sep=',', file=args.o)
+        [print(_[0], _[1]['cm'], _[1]['ev'], sep=',', file=args.o) for _ in roots.items()]
+        args.orca_output.close()
+        return 0
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    exit(main())
+

@@ -44,6 +44,7 @@ declare -A youtube_channels=(
     ["Vsauce"]="https://www.youtube.com/@Vsauce"
     ["Mental Outlaw"]="https://www.youtube.com/@MentalOutlaw"
     ["Cozy Rain"]="https://www.youtube.com/@CozyRain"
+    ["Ghibli Piano"]="https://www.youtube.com/@SoothingGhibliPiano"
 )
 
 

@@ -175,7 +175,7 @@ def main(non_interactive_arguments=None):
         print('root', 'e_cm', 'e_ev', sep=',', file=args.o)
         [print(_[0], _[1]['cm'], _[1]['ev'], sep=',', file=args.o) for _ in roots.items()]
         args.orca_output.close()
-        return 0
+        return roots
     return 0
 
 

@@ -85,3 +85,6 @@ export PATH=/opt/openmpi/latest/bin:$PATH
 #ld
 export LD_LIBRARY_PATH=/opt/openmpi/latest/lib:$LD_LIBRARY_PATH
 alias DU="du -hs .;du -hs *"
+export CRYSTAL_ROOT=/opt/crystal/latest
+export MPIROOT=/opt/openmpi/latest
+export CRYSCOR_ROOT=/work/cryscor/bin/Linux-ifx-taras/std

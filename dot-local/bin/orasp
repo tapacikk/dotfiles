@@ -9,8 +9,7 @@ def parse_arguments(non_interactive_arguments=None):
                                      description='ORCA spectrum parser')
     parser.add_argument('orca_output', type=open,
                         help='''Output file of the ORCA calculation''')
-    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
-                        metavar='OUTFILE', default=sys.stdout,
+    parser.add_argument('-o', nargs='?', type=argparse.FileType('w'), metavar='OUTFILE', default=sys.stdout,
                         help='Output of the script. Default is stdout.')
     parser.add_argument('-spectype', choices=['v', 'l', 'f'], 
                         metavar='SPECTYPE', default='l',
@@ -67,6 +66,7 @@ def parse_orca_spectrum(file_iterator, spec_line):
     while '*' not in current_line and current_line.split():
         init, arrow, final, e_ev, e_cm, wavelength, fosc, matrix_element, *rest = current_line.split()
         init, final = init[:-5], final[:-5]
+        init, final = str(int(init) + 1), str(int(final) + 1)
         spectrum[init+arrow+final] = (float(e_cm), float(fosc), float(matrix_element))
         current_line = next(file_iterator)
     return spectrum
@@ -115,7 +115,7 @@ def main(non_interactive_arguments=None):
     if non_interactive_arguments != None and args.o == sys.stdout:
         return args.spectrum
     print_spectrum(args)
-    return 0
+    return args.spectrum
 
 
 if __name__ == '__main__':

@@ -27,6 +27,10 @@ def parse_arguments(non_interactive_arguments=None):
                         nargs='?')
     parser.add_argument('--roots-only', action='store_true',
                         help='only print the roots')
+    parser.add_argument('--g-factors', action='store_true',
+                        help='only print the g-factors')
+    parser.add_argument('--zeta', action='store_true',
+                        help='only print the zeta')
     if non_interactive_arguments == None:
         args = parser.parse_args()
     else:
@@ -51,6 +55,42 @@ def get_roots(args):
     args.roots = roots
     return roots
 
+def get_g_factors(args):
+    while 1:
+        line = next(args.orca_output)
+        if 'ELECTRONIC G-MATRIX' in line and len(line) < 47:
+            for i in range(19): next(args.orca_output)
+            break
+    return next(args.orca_output).split()
+
+
+def get_zeta(args):
+    zeta = 0
+    root_collection = []
+    while 1:
+        line = next(args.orca_output)
+        if 'The ligand field one electron eigenfunctions:' in line:
+            next(args.orca_output)
+            next(args.orca_output)
+            for i in range(7):
+                root_collection.append(next(args.orca_output).split()[2])
+            root_collection = [].copy()
+            break
+    while 1:
+        line = next(args.orca_output)
+        if 'The ligand field one electron eigenfunctions:' in line:
+            next(args.orca_output)
+            next(args.orca_output)
+            for i in range(7):
+                root_collection.append(next(args.orca_output).split()[2])
+            break
+    while 1:
+        line = next(args.orca_output)
+        if 'ZETA_F' in line:
+            zeta = float(line.split()[-1])
+            break
+    return zeta, list(map(float, root_collection))
+
 
 def parse_orca_spectrum(file_iterator, spec_line):
     spectrum = dict()
@@ -72,9 +112,6 @@ def parse_orca_spectrum(file_iterator, spec_line):
     return spectrum
 
 
-def get_spectrum_trdc(args):
-    return None
-
 def print_spectrum(args):
     if args.py is False:
         print(f'transition', f'energy_{args.units}', 'osc_str', '<i|mu|f>^2',
@@ -95,6 +132,12 @@ def print_spectrum(args):
 
 def main(non_interactive_arguments=None):
     args = parse_arguments(non_interactive_arguments)
+    if args.zeta:
+        z, ailft_roots = get_zeta(args)
+        return z, ailft_roots
+    if args.g_factors:
+        g=get_g_factors(args)
+        return g
     roots = get_roots(args)
     roots = get_roots(args)
     if not roots:

@@ -88,3 +88,5 @@ alias DU="du -hs .;du -hs *"
 export CRYSTAL_ROOT=/opt/crystal/latest
 export MPIROOT=/opt/openmpi/latest
 export CRYSCOR_ROOT=/work/cryscor/bin/Linux-ifx-taras/std
+alias cp='/usr/local/bin/advcp -g'
+alias mv='/usr/local/bin/advmv -g'

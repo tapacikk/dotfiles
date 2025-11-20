@@ -74,6 +74,7 @@ def parse_thermo(args):
         if 'SCF Done:' in line:
             res.append(w[4])
     e = res.pop()
+    print('scf_e,zpe,G')
     print(e, zpe, g, sep=',')
 
 

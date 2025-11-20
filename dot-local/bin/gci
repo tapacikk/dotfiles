@@ -22,9 +22,9 @@ def parse_arguments():
                         help='Carge of the system. Default 0')
     parser.add_argument('-s', default=1, type=int, metavar='MULTIPLICITY',
                         help='Multiplicity of the system. Default 1')
-    parser.add_argument('-c', default=128, type=int, metavar='CORES',
+    parser.add_argument('-c', default=16, type=int, metavar='CORES',
                         help='%%nprocs=c. Default 16')
-    parser.add_argument('-mem', default=64, type=int,
+    parser.add_argument('-mem', default=16, type=int,
                         help='%%mem=mem (in Gigabytes). Default 64')
     parser.add_argument('-basis', type=open, metavar='BASISFILE',
                         help='''Path to the file with basis set''')

@@ -32,7 +32,7 @@ static const unsigned int gappih         = 20;  /* horiz inner gap between windo
 static const unsigned int gappiv         = 10;  /* vert inner gap between windows */
 static const unsigned int gappoh         = 10;  /* horiz outer gap between windows and screen edge */
 static const unsigned int gappov         = 40;  /* vert outer gap between windows and screen edge */
-static const int smartgaps_fact          = 6;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
+static const int smartgaps_fact          = 3;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
 #endif // VANITYGAPS_PATCH
 #if AUTOSTART_PATCH
 static const char autostartblocksh[]     = "autostart_blocking.sh";
@@ -882,7 +882,7 @@ static const char *qutecmd[]  = { "qutebrowser", NULL };
 static const char *wikicmd[]  = { "wiki", NULL };
 static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };
 static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
-static const char *energcmd[]  = { "/home/taras/.local/bin/energ", NULL };
+static const char *energcmd[]  = { "/home/taras/.local/bin/dm-energ", NULL };
 static const char *dmsearchcmd[]  = { "/home/taras/.local/bin/dm-search", NULL };
 static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
 static const char *slockcmd[]  = { "slock", NULL };

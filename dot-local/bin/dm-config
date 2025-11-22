@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+E="st -e vim"
+H=$HOME
+C=/dot/dot-config
+D=/dot/dot-local/src
+
+declare -a CFGS=(
+"VIM         ==>     $H/.vimrc"
+"QUTEBROWSER ==>     $C/qutebrowser/config.py"
+"DWM         ==>     $D/dwm/config.h"
+"ST          ==>     $D/st/config.h"
+"DMENU       ==>     $D/dmenu/config.h"
+"DUNST       ==>     $C/dunst/dunstrc"
+)
+
+LCFGS=$(printf '%s\n' "${CFGS[@]}" | awk '{print $1}' | dmenu -vi -g 1 -l 20 -i -p "CONFIG :") || exit
+SCFGS=$(printf '%s\n' "${CFGS[@]}" | grep -i "$LCFGS" | awk '{print $NF}')
+BASEDIR=$(dirname $SCFGS)
+
+$E --cmd "cd $BASEDIR" $SCFGS

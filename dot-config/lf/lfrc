@@ -64,6 +64,18 @@ cmd zip ${{
     rm -rf $1
 }}
 
+cmd copy_path ${{
+    fullpath=$(realpath $f) 
+    echo $fullpath | xclip -selection clipboard
+    notify-send "Copied to clipboard:" "$fullpath"
+}}
+
+cmd copy_path ${{
+    fullpath=$(realpath $f) 
+    echo $fullpath | xclip -selection clipboard
+    notify-send "Copied to clipboard:" "$fullpath"
+}}
+
 #Previews
 set previewer ctpv
 set cleaner ctpvclear
@@ -78,7 +90,15 @@ cmd new_node %{{
         touch "$target"
     fi
 }}
+
+cmd file_size ${{
+    size=$(du -hs $f)
+    lf -remote "send :echo ${size}"
+}}
+
+
 map m
 map mr &./run.sh $f
 map ma :push :new_node<space>
-map mp $realpath $f | xclip -selection clipboard
+map mp :copy_path
+map ms :file_size

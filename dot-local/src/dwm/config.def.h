@@ -888,13 +888,13 @@ static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
 static const char *slockcmd[]  = { "slock", NULL };
 static const char *passcmd[]  = { "passmenu", NULL };
 #if VOLUME_KEYS
-static const char *up_vol[]   = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "+5%",   NULL };
-static const char *down_vol[] = { "pactl", "set-sink-volume", "@DEFAULT_SINK@", "-5%",   NULL };
-static const char *mute_vol[] = { "pactl", "set-sink-mute",   "@DEFAULT_SINK@", "toggle", NULL };
+static const char *up_vol[]   = { "/home/taras/.local/bin/vol_bri", "volume_up", NULL };
+static const char *down_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_down", NULL };
+static const char *mute_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_mute", NULL };
 #endif //VOLUME_KEYS
 #if THINKPAD_KEYS
-static const char *brighter[] = { "brightnessctl", "set", "10%+", NULL };
-static const char *dimmer[]   = { "brightnessctl", "set", "10%-", NULL };
+static const char *brighter[] = { "/home/taras/.local/bin/vol_bri", "brightness_up", NULL };
+static const char *dimmer[]   = { "/home/taras/.local/bin/vol_bri", "brightness_down", NULL };
 #endif //THINKPAD_KEYS
 
 #if BAR_STATUSCMD_PATCH

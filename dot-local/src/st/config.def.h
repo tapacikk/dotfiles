@@ -170,7 +170,7 @@ float grad_alpha = 0.54; //alpha value that'll change
 float stat_alpha = 0.46; //constant alpha value that'll get added to grad_alpha
 #endif // ALPHA_GRADIENT_PATCH
 #if ALPHA_FOCUS_HIGHLIGHT_PATCH
-float alphaUnfocused = 0.90;
+float alphaUnfocused = 0.98;
 #endif // ALPHA_FOCUS_HIGHLIGHT_PATCH
 #endif // ALPHA_PATCH
 

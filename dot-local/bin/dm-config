@@ -12,6 +12,7 @@ declare -a CFGS=(
 "ST          ==>     $D/st/config.h"
 "DMENU       ==>     $D/dmenu/config.h"
 "DUNST       ==>     $C/dunst/dunstrc"
+"PICOM       ==>     $C/picom/picom.conf"
 )
 
 LCFGS=$(printf '%s\n' "${CFGS[@]}" | awk '{print $1}' | dmenu -vi -g 1 -l 20 -i -p "CONFIG :") || exit

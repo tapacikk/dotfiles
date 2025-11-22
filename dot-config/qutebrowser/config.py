@@ -1,4 +1,4 @@
-c.fonts.default_size = '15pt'
+c.fonts.default_size = '20pt'
 c.fonts.default_family = "FiraMono Nerd Font"
 config.load_autoconfig(True)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
@@ -40,7 +40,7 @@ c.tabs.width = '5%'
 
 # Default zoom level.
 # Type: Perc
-c.zoom.default = '125%'
+c.zoom.default = '150%'
 
 # Default font size to use. Whenever "default_size" is used in a font
 # setting, it's replaced with the size listed here. Valid values are

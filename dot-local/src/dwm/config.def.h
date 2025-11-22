@@ -28,8 +28,8 @@ static const int scalepreview            = 4;        /* Tag preview scaling */
 static int nomodbuttons                  = 1;   /* allow client mouse button bindings that have no modifier */
 #endif // NO_MOD_BUTTONS_PATCH
 #if VANITYGAPS_PATCH
-static const unsigned int gappih         = 20;  /* horiz inner gap between windows */
-static const unsigned int gappiv         = 10;  /* vert inner gap between windows */
+static const unsigned int gappih         = 40;  /* horiz inner gap between windows */
+static const unsigned int gappiv         = 40;  /* vert inner gap between windows */
 static const unsigned int gappoh         = 10;  /* horiz outer gap between windows and screen edge */
 static const unsigned int gappov         = 40;  /* vert outer gap between windows and screen edge */
 static const int smartgaps_fact          = 3;   /* gap factor when there is only one client; 0 = no gaps, 3 = 3x outer gaps */
@@ -166,7 +166,7 @@ static void (*bartabmonfns[])(Monitor *) = { NULL /* , customlayoutfn */ };
 #if BAR_PANGO_PATCH
 static const char font[]                 = "monospace 10";
 #else
-static const char *fonts[]               = { "monospace:size=20" };
+static const char *fonts[]               = { "FiraMono Nerd Font:size=20" };
 #endif // BAR_PANGO_PATCH
 static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium";
 

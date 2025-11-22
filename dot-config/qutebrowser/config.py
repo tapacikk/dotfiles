@@ -1,4 +1,4 @@
-c.fonts.default_size = '12pt'
+c.fonts.default_size = '15pt'
 c.fonts.default_family = "FiraMono Nerd Font"
 config.load_autoconfig(True)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
@@ -54,6 +54,7 @@ config.bind('t', 'cmd-set-text -s :open -t')
 config.bind(';n', 'hint links spawn --detach mpv {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
-config.bind('<z><l>', 'spawn --userscript qute-pass --username-target secret --username-pattern "username: (.+)"')
+config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
+config.bind(',,', 'mode-leave', mode='passthrough')
 
 config.source('qutewal.py')

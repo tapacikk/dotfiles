@@ -29,6 +29,7 @@ get_plugins() {
     mkdir -p "$dir"
     git clone --depth 1 https://github.com/preservim/nerdtree.git "$dir/nerdtree"
     git clone --depth 1 https://github.com/vimwiki/vimwiki.git "$dir/vimwiki"
+    git clone --depth 1 https://github.com/sainnhe/everforest.git "$dir/everforest"
     find "$dir" -name .git -type d -exec rm -rf {} +
     rm -r "$dir/vimwiki/test/resources/testwiki space" 2>/dev/null || true
 }

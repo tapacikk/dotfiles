@@ -28,7 +28,7 @@
     ### Text ###
 
     # Set font of notifications
-    font = FiraMono Nerd Font
+    font = FiraMono Nerd Font 20
     # Markup parsing
     markup = full
     # Message format:

@@ -65,3 +65,4 @@ linux-headers-amd64
 tmux
 curl
 bat
+lsd

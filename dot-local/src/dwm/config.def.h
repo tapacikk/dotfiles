@@ -877,7 +877,7 @@ static const char *dmenucmd[] = {
 };
 static const char *termcmd[]  = { "st", NULL };
 static const char *ttermcmd[] = { "st", "-e", "tmux", "a", NULL };
-static const char *calccmd[]  = { "/home/taras/.local/bin/calc", NULL };
+static const char *calccmd[]  = { "/home/taras/.local/bin/dm-calc", NULL };
 static const char *qutecmd[]  = { "qutebrowser", NULL };
 static const char *wikicmd[]  = { "wiki", NULL };
 static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };

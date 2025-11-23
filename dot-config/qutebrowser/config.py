@@ -1,53 +1,17 @@
 c.fonts.default_size = '20pt'
 c.fonts.default_family = "FiraMono Nerd Font"
-config.load_autoconfig(True)
+config.load_autoconfig(False)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
 config.set('content.headers.accept_language', '', 'https://matchmaker.krunker.io/*')
 config.set('scrolling.smooth', True)
 config.set('downloads.remove_finished', 1000)
 config.set('tabs.show', 'always')
-config.set('tabs.position', 'right')
-config.set('tabs.title.alignment', 'right')
-
-# Load images automatically in web pages.
+config.set('tabs.position', 'top')
+config.set('tabs.title.alignment', 'left')
 config.set('content.images', True, 'chrome-devtools://*')
-
-# Enable JavaScript.
-# Type: Bool
 config.set('content.javascript.enabled', True, 'qute://*/*')
-
 c.downloads.location.directory = '/tmp'
-
-# Editor (and arguments) to use for the `edit-*` commands. The following
-# placeholders are defined:  * `{file}`: Filename of the file to be
-# edited. * `{line}`: Line in which the caret is found in the text. *
-# `{column}`: Column in which the caret is found in the text. *
-# `{line0}`: Same as `{line}`, but starting from index 0. * `{column0}`:
-# Same as `{column}`, but starting from index 0.
-# Type: ShellCommand
 c.editor.command = ['st', '-e', 'vim', '{file}']
-c.statusbar.show = 'always'
-c.tabs.favicons.show = 'always'
-
-# Position of the tab bar.
-# Type: Position
-# Valid values:
-#   - top
-#   - bottom
-#   - left
-#   - right
-c.tabs.width = '5%'
-
-# Default zoom level.
-# Type: Perc
-c.zoom.default = '150%'
-
-# Default font size to use. Whenever "default_size" is used in a font
-# setting, it's replaced with the size listed here. Valid values are
-# either a float value with a "pt" suffix, or an integer value with a
-# "px" suffix.
-# Type: String
-
 # Bindings for normal mode
 config.bind('s', 'cmd-set-text -s :open -t https://scholar.google.com/scholar?q=')
 config.bind('t', 'cmd-set-text -s :open -t')
@@ -57,4 +21,16 @@ config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
 config.bind(',,', 'mode-leave', mode='passthrough')
 
-config.source('qutewal.py')
+c.tabs.padding = {'top': 5, 'bottom': 5, 'right': 9, 'left': 5}
+c.tabs.indicator.width = 0 
+import os
+from urllib.request import urlopen
+if not os.path.exists(config.configdir / "theme.py"):
+    theme = "https://raw.githubusercontent.com/catppuccin/qutebrowser/main/setup.py"
+    with urlopen(theme) as themehtml:
+        with open(config.configdir / "theme.py", "a") as file:
+            file.writelines(themehtml.read().decode("utf-8"))
+
+if os.path.exists(config.configdir / "theme.py"):
+    import theme
+    theme.setup(c, 'mocha', True)

@@ -1,10 +1,12 @@
 set nocompatible
-filetype plugin on
+
+"filetype plugin on
 set hidden
 set incsearch ic wildmenu smartcase
 set backspace=indent,eol,start
 set cursorline
 set nobackup noswapfile
+
 syntax enable
 set autoindent expandtab tabstop=4 shiftwidth=4 scrolloff=15
 nmap <silent> <c-l> :wincmd l<CR>
@@ -17,20 +19,16 @@ nnoremap ;q :q<CR>
 nnoremap ;s :ls<CR>:b<Space>
 nnoremap ;e :e<Space>
 nnoremap ;; :
-nnoremap 11 :RunHere 
 nnoremap ;n :NERDTreeToggle<CR>
 let NERDTreeWinSize=20
 let NERDTreeMinimalUI=1
 let NERDTreeMinimalMenu=1
-
 nnoremap q: <nop>
 nnoremap Q <nop>
 inoremap kj <Esc>
 nnoremap n nzzzv
 nnoremap N Nzzzv
 set nowrap
-command! -nargs=+ RunHere execute 'cd %:p:h' | execute '!'.<q-args>
-"STATUSLINE
 set laststatus=2
 set statusline=
 set statusline +=\ %<%F%*            "full path
@@ -40,3 +38,4 @@ set statusline +=%5l%*             "current line
 set statusline +=/%L%*               "total lines
 "VIMWIKI config
 let g:vimwiki_list = [{ 'path': '/work/notes/wiki'}]
+colo slate

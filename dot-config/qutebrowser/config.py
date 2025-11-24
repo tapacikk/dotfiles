@@ -20,6 +20,7 @@ config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
 config.bind(',,', 'mode-leave', mode='passthrough')
+config.set('zoom.default', '150%')
 
 c.tabs.padding = {'top': 5, 'bottom': 5, 'right': 9, 'left': 5}
 c.tabs.indicator.width = 0 

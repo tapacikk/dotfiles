@@ -75,12 +75,7 @@
  */
 #define BAR_HIDEVACANTTAGS_PATCH 1
 
-/* Same as barpadding patch but specifically tailored for the vanitygaps patch in that the outer
- * bar padding is derived from the vanitygaps settings. In addition to this the bar padding is
- * toggled in unison when vanitygaps are toggled. Increasing or decreasing gaps during runtime
- * will not affect the bar padding.
- */
-#define BAR_PADDING_VANITYGAPS_PATCH 0
+#define BAR_PADDING_PATCH 1
 
 /***
  * Other patches

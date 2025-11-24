@@ -13,22 +13,46 @@
     # Text and seperator padding
     padding = 5
     # Horizontal padding
-    horizontal_padding = 0
+    horizontal_padding = 10
     # Width of frame around window
-    frame_width = 2
+    frame_width = 3
     # Color of frame around window
-    frame_color = "#4287f5"
+    frame_color = "#56635f"
     # Sort messages by urgency
     sort = yes
     # Idle seconds
     idle_threshold = 10
-    #Offset
-    offset = (33, 50)
+
+    ### Geometry ###
+
+     # The width of the window, excluding the frame.
+    # dynamic width from 0 to 300
+    # width = (0, 300)
+    # constant width of 300
+    width = (300, 500)
+
+    # The height of a single notification, excluding the frame.
+    # dynamic height from 0 to 300
+    height = (0, 500)
+
+    # Position the notification in the top right corner
+    origin = top-right
+
+    # Offset from the origin
+    # NOTE: Dunst from version 1.11 and older use this alternative notation
+    # offset = 10x50
+    offset = (5, 65)
+
+    # Scale factor. It is auto-detected if value is 0.
+    scale = 0
+
+    # Maximum number of notification (0 means no limit)
+    notification_limit = 20
 
     ### Text ###
 
     # Set font of notifications
-    font = FiraMono Nerd Font 20
+    font = FiraMono Nerd Font 16
     # Markup parsing
     markup = full
     # Message format:
@@ -62,7 +86,6 @@
 
     ### Icons ###
 
-    # Disable icons
     icon_position = top
 
     ### History ###

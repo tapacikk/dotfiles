@@ -33,7 +33,7 @@ main() {
     selection=$(echo "$menu_items" | ${dmenu_cmd_vi} )
     [[ -z $selection ]] && exit 0
 
-    notify-send -a "energy-convert" -t 60000 "$input" "====================\n${menu_items}"
+    notify-send -a "energy-convert" -t 10000 "$input" "====================\n${menu_items}"
 
     value=$(echo "$selection" | sed -E 's/^[^:]+:[[:space:]]*//')
     printf "%s" "$value" | xclip -sel clip

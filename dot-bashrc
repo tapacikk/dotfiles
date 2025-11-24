@@ -91,3 +91,14 @@ export MPIROOT=/opt/openmpi/latest
 export CRYSCOR_ROOT=/work/cryscor/bin/Linux-ifx-taras/std
 alias cp='/usr/local/bin/cpg -g'
 alias mv='/usr/local/bin/mvg -g'
+# nice colored prompt
+GREEN="\[\e[38;5;108m\]"     
+AQUA="\[\e[38;5;108m\]"     
+FG="\[\e[38;5;223m\]"
+YELLOW="\[\e[38;5;180m\]"   
+RESET="\[\e[0m\]"
+BOLD="\[\e[1m\]"
+ITALIC="\[\e[3m\]"
+export PS1="${GREEN}${ITALIC}\u${RESET}${GREY}@${FG}${ITALIC}\h${RESET} \
+${YELLOW}${BOLD}\w${RESET} ${AQUA}➤ ${RESET}"
+

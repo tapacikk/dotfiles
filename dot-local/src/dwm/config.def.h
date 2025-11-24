@@ -885,7 +885,7 @@ static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
 static const char *energcmd[]  = { "/home/taras/.local/bin/dm-energ", NULL };
 static const char *dmsearchcmd[]  = { "/home/taras/.local/bin/dm-search", NULL };
 static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
-static const char *slockcmd[]  = { "slock", NULL };
+static const char *slockcmd[]  = { "/home/taras/.local/bin/pow", NULL };
 static const char *passcmd[]  = { "passmenu", NULL };
 #if VOLUME_KEYS
 static const char *up_vol[]   = { "/home/taras/.local/bin/vol_bri", "volume_up", NULL };

@@ -1,7 +1,7 @@
 set nocompatible
 
 filetype plugin on
-set hidden nu
+set hidden nu relativenumber
 set incsearch ic wildmenu smartcase
 set backspace=indent,eol,start
 set cursorline
@@ -41,3 +41,11 @@ set background=dark
 let g:everforest_background = 'medium'
 let g:everforest_better_performance = 1
 colorscheme everforest
+inoremap <C-c> <Esc>
+augroup NumberToggle
+  autocmd!
+  " Enable relative numbers when entering Normal mode
+  autocmd InsertLeave * set relativenumber
+  " Disable relative numbers (absolute only) when entering Insert mode
+  autocmd InsertEnter * set norelativenumber
+augroup END

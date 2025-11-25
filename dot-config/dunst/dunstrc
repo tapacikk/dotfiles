@@ -66,7 +66,7 @@
     # %% - literal %
     format = "<i>%s</i>\n%b"
     # Align message text horizontally
-    alignment = center
+    alignment = left
     # Align message text vertically
     vertical_alignment = center
     # Show age of message if message is older than x seconds
@@ -118,6 +118,13 @@
     mouse_middle_click = do_action
     # Right click
     mouse_right_click = do_action
+
+
+    ### Progress Bar ###
+    progress_bar = true
+
+    ### Icons ###
+    min_icon_size = 32
 
 [urgency_normal]
 

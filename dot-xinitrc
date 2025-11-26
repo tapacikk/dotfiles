@@ -71,4 +71,5 @@ picom -b --corner-radius 5 --backend glx
 xss-lock -- slock &
 xset r rate 200 35
 dunst &
+udiskie &
 exec dwm 

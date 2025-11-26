@@ -1,4 +1,4 @@
-c.fonts.default_size = '20pt'
+c.fonts.default_size = '12pt'
 c.fonts.default_family = "FiraMono Nerd Font"
 config.load_autoconfig(False)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
@@ -19,8 +19,7 @@ config.bind(';n', 'hint links spawn --detach mpv {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
-config.bind(',,', 'mode-leave', mode='passthrough')
-config.set('zoom.default', '150%')
+config.set('zoom.default', '100%')
 
 c.tabs.padding = {'top': 5, 'bottom': 5, 'right': 9, 'left': 5}
 c.tabs.indicator.width = 0 

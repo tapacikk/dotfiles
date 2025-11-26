@@ -66,3 +66,6 @@ tmux
 curl
 bat
 lsd
+udisks2
+udiskie
+xss-lock

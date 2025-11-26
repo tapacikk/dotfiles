@@ -2,7 +2,7 @@ program_options:
   tray: false              # Show tray icon
   notify: true           # Enable notifications
   automount: true        # Enable automatic mounting
-  file_manager: st -e lf # Program to open mounted directories
+  file_manager: xdg-open # Program to open mounted directories
 
 #device_config:
   ## Example: Special options for specific devices
@@ -12,6 +12,8 @@ program_options:
     #automount: false
 
 notifications:
-  timeout: 1.5           # Notification timeout in seconds
-  device_mounted: 5      # Show mount notifications for 5 seconds
+  timeout: 10           # Notification timeout in seconds
+  device_mounted: 20      # Show mount notifications for 5 seconds
 
+  notification_actions:
+    device_mounted:   [browse]

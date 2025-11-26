@@ -5,6 +5,7 @@
 
 
 dwm_cmus () {
+    SEP1="["
     if ps -C cmus > /dev/null; then
         ARTIST=$(cmus-remote -Q | grep -a '^tag artist' | awk '{gsub("tag artist ", "");print}')
         TRACK=$(cmus-remote -Q | grep -a '^tag title' | awk '{gsub("tag title ", "");print}')
@@ -13,11 +14,11 @@ dwm_cmus () {
         STATUS=$(cmus-remote -Q | grep -a '^status' | awk '{gsub("status ", "");print}')
         SHUFFLE=$(cmus-remote -Q | grep -a '^set shuffle' | awk '{gsub("set shuffle ", "");print}')
 
-        if [ ${#TRACK} -gt 12 ]; then
+        if [ ${#TRACK} -gt 8 ]; then
             TRACK="$(printf "%s" "$TRACK" | cut -c1-12)…"
         fi
 
-        if [ ${#ARTIST} -gt 12 ]; then
+        if [ ${#ARTIST} -gt 8 ]; then
             ARTIST="$(printf "%s" "$ARTIST" | cut -c1-12)…"
         fi
 
@@ -33,7 +34,7 @@ dwm_cmus () {
             SHUFFLE=""
         fi
 
-        printf "%s%s %s - %s " ""["$STATUS" "$ARTIST" "$TRACK"
+        printf "%s%s %s - %s " "$SEP1" "$STATUS" "$ARTIST" "$TRACK"
         printf "%0d:%02d/" $((POSITION%3600/60)) $((POSITION%60))
         printf "%0d:%02d" $((DURATION%3600/60)) $((DURATION%60))
         printf "%s%s\n" "$SHUFFLE" "]"
@@ -42,7 +43,7 @@ dwm_cmus () {
 
 
 mem() {
-  printf "  "
+  printf " "
   printf "$(free -h | awk '/^Mem/ { print $3 }' | sed s/i//g)"
 }
 

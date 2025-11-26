@@ -8,6 +8,7 @@ map ; :push $
 map <shift><enter> :push !
 map x !$f
 set icons
+set sortby ext
 map . :set hidden!
 map I $less +G $f
 

@@ -20,6 +20,7 @@ map gy cd /work/yb/
 map gt cd /tmp
 map gd cd /dot
 map gH cd /work/yb/hal
+map gu cd /media/taras/
 cmd extract ${{
     set -f
     case $f in

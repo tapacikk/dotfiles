@@ -55,7 +55,7 @@ clock() {
 
 
 bat() {
-    if [ $HOSTNAME != "yoshipad" ];then return; fi
+    [ -f /sys/class/power_supply/BAT0/capacity ] || return 0
     printf "  $(cat /sys/class/power_supply/BAT0/capacity)/$(cat /sys/class/power_supply/BAT1/capacity) "
 }
 

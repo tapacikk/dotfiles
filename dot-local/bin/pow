@@ -2,7 +2,7 @@
 
 # Simple dmenu power menu
 
-choice=$(printf "reboot\nshutdown\nlock" | dmenu -i -vi -g 1)
+choice=$(printf "lock\nsuspend\nshutdown\nreboot" | dmenu -i -vi -g 1)
 
 case "$choice" in
     lock)
@@ -13,6 +13,9 @@ case "$choice" in
         ;;
     shutdown)
         systemctl poweroff
+        ;;
+    sleep)
+        sleep 0.1; /usr/bin/systemctl suspend
         ;;
     *)
         ;;

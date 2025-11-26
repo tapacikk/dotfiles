@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=lf
+GenericName=List Files
+Comment=Nice file manager
+Icon=lf
+Exec=lf
+Terminal=true
+Categories=System;Monitor;ConsoleOnly;
+Keywords=system;process;task

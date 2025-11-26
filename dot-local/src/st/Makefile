@@ -45,6 +45,7 @@ install: st
 	@echo Please see the README file regarding the terminfo entry of st.
 	mkdir -p $(DESTDIR)$(PREFIX)/share/applications
 	cp -f st.desktop $(DESTDIR)$(PREFIX)/share/applications
+	cp -f lf.desktop $(DESTDIR)$(PREFIX)/share/applications
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st

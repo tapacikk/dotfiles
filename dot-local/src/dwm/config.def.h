@@ -1,4 +1,5 @@
 /* See LICENSE file for copyright and license details. */
+#include <X11/XF86keysym.h>
 
 /* Helper macros for spawning commands */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
@@ -297,11 +298,9 @@ static const char *dmsearchcmd[]  = { "/home/taras/.local/bin/dm-search", NULL }
 static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
 static const char *slockcmd[]  = { "/home/taras/.local/bin/pow", NULL };
 static const char *passcmd[]  = { "passmenu", NULL };
-#if VOLUME_KEYS
 static const char *up_vol[]   = { "/home/taras/.local/bin/vol_bri", "volume_up", NULL };
 static const char *down_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_down", NULL };
 static const char *mute_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_mute", NULL };
-#endif //VOLUME_KEYS
 #if THINKPAD_KEYS
 static const char *brighter[] = { "/home/taras/.local/bin/vol_bri", "brightness_up", NULL };
 static const char *dimmer[]   = { "/home/taras/.local/bin/vol_bri", "brightness_down", NULL };

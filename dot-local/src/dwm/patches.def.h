@@ -28,6 +28,8 @@
  * https://dwm.suckless.org/patches/status2d/
  */
 #define BAR_STATUS2D_XRDB_TERMCOLORS_PATCH 0
+#define INPLACEROTATE_PATCH 1
+#define TOGGLEFULLSCREEN_PATCH 1
 
 /* The systray patch adds systray for the status bar.
  * https://dwm.suckless.org/patches/systray/

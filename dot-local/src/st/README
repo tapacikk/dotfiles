@@ -7,5 +7,5 @@ patches applied
 alpha-focus patch
 blink-cursor
 clipboard
-scroll (no mouse)
+scroll+reflow (no mouse)
 

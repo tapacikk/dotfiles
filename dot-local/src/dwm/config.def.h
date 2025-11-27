@@ -303,7 +303,7 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
 	RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
-	RULE(.class = "St", .isterminal=1)
+	RULE(.class = "st-256color", .isterminal=1)
 	RULE(.instance = "float_video", .isfloating=1)
 };
 

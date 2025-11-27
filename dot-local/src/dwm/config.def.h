@@ -34,7 +34,11 @@ static const int ulineall = 0;                  /* 1 to show underline on all ta
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
 static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
+#ifdef THINKPAD_KEYS
+static const char *fonts[]               = { "FiraMono Nerd Font:size=25" };
+#else
 static const char *fonts[]               = { "FiraMono Nerd Font:size=20" };
+#endif
 static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium";
 
 static char c000000[]                    = "#000000"; // placeholder value
@@ -321,11 +325,9 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
 	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
 	{ MODKEY|ShiftMask,             XK_o,          spawn,                  {.v = dmsearchcmd } },
-    #if VOLUME_KEYS
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
     { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },
-    #endif //VOLUME_KEYS
     #if THINKPAD_KEYS
     { 0,             XF86XK_MonBrightnessDown,     spawn,                  {.v = dimmer } },
     { 0,               XF86XK_MonBrightnessUp,     spawn,                  {.v = brighter } },

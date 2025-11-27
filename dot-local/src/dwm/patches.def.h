@@ -169,10 +169,3 @@
  */
 #define MONOCLE_LAYOUT 1
 
-/* Thinkpad Keys (brightness)
- */
-#define THINKPAD_KEYS 0
-
-/* Volume keys
- */
-#define VOLUME_KEYS 1

@@ -1,4 +1,10 @@
-c.fonts.default_size = '12pt'
+from socket import gethostname
+per_computer_settings = {
+    'yoshipad':       ['20pt', '150%'],
+    'wputer':      ['14pt', '100%'],
+    'number-machine': ['12pt', '100%'],
+}
+c.fonts.default_size = per_computer_settings[gethostname()][0]
 c.fonts.default_family = "FiraMono Nerd Font"
 config.load_autoconfig(False)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
@@ -19,7 +25,7 @@ config.bind(';n', 'hint links spawn --detach mpv {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
-config.set('zoom.default', '100%')
+config.set('zoom.default', per_computer_settings[gethostname()][1])
 
 c.tabs.padding = {'top': 5, 'bottom': 5, 'right': 9, 'left': 5}
 c.tabs.indicator.width = 0 

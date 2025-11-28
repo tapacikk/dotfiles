@@ -30,7 +30,6 @@ static const unsigned int ulinestroke  = 2;     /* thickness / height of the und
 static const unsigned int ulinevoffset = 1;     /* how far above the bottom of the bar the line should appear */
 static const int ulineall = 0;                  /* 1 to show underline on all tags, 0 for just the active ones */
 
-
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
 static int tiledindicatortype            = INDICATOR_NONE;
@@ -87,7 +86,6 @@ static char urgbgcolor[]                 = "#222222";
 static char urgbordercolor[]             = "#ff0000";
 static char urgfloatcolor[]              = "#db8fd9";
 
-
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
 static const unsigned int alphas[][3] = {
@@ -103,7 +101,6 @@ static const unsigned int alphas[][3] = {
 	[SchemeUrg]          = { OPAQUE, baralpha, borderalpha },
 };
 
-
 static char *colors[][ColCount] = {
 	/*                       fg                bg                border                float */
 	[SchemeNorm]         = { normfgcolor,      normbgcolor,      normbordercolor,      normfloatcolor },
@@ -116,8 +113,6 @@ static char *colors[][ColCount] = {
 	[SchemeHidSel]       = { hidselfgcolor,    hidselbgcolor,    c000000,              c000000 },
 	[SchemeUrg]          = { urgfgcolor,       urgbgcolor,       urgbordercolor,       urgfloatcolor },
 };
-
-
 
 /* Tags
  * In a traditional dwm the number of tags in use can be changed simply by changing the number
@@ -153,7 +148,6 @@ static char *tagicons[][NUMTAGS] =
 	[ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
 
-
 /* There are two options when it comes to per-client rules:
  *  - a typical struct table or
  *  - using the RULE macro
@@ -172,7 +166,6 @@ static char *tagicons[][NUMTAGS] =
  * Refer to the Rule struct definition for the list of available fields depending on
  * the patches you enable.
  */
-
 
 static int floatposgrid_x                = 3;  /* float grid columns */
 static int floatposgrid_y                = 3;  /* float grid rows */
@@ -196,7 +189,6 @@ static const Rule rules[] = {
     RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% 100% 200w 200h") // ↓
     RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
 };
-
 
 /* Bar rules allow you to configure what is shown where on the bar, as well as
  * introducing your own bar modules.
@@ -225,53 +217,11 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
-
-
 static const Layout layouts[] = {
 	/* symbol     arrange function */
-	#if TILE_LAYOUT
 	{ "[]=",      tile },    /* first entry is default */
-	#endif
 	{ "><>",      NULL },    /* no layout function means floating behavior */
-	#if MONOCLE_LAYOUT
 	{ "[M]",      monocle },
-	#endif
-	#if BSTACK_LAYOUT
-	{ "TTT",      bstack },
-	#endif
-	#if BSTACKHORIZ_LAYOUT
-	{ "===",      bstackhoriz },
-	#endif
-	#if CENTEREDMASTER_LAYOUT
-	{ "|M|",      centeredmaster },
-	#endif
-	#if CENTEREDFLOATINGMASTER_LAYOUT
-	{ ">M>",      centeredfloatingmaster },
-	#endif
-	#if COLUMNS_LAYOUT
-	{ "|||",      col },
-	#endif
-	#if DECK_LAYOUT
-	{ "[D]",      deck },
-	#endif
-	#if FIBONACCI_SPIRAL_LAYOUT
-	{ "(@)",      spiral },
-	#endif
-	#if FIBONACCI_DWINDLE_LAYOUT
-	{ "[\\]",     dwindle },
-	#endif
-	#if GRIDMODE_LAYOUT
-	{ "HHH",      grid },
-	#endif
-	#if HORIZGRID_LAYOUT
-	{ "---",      horizgrid },
-	#endif
-	#if GAPPLESSGRID_LAYOUT
-	{ ":::",      gaplessgrid },
-	#endif
-	#if NROWGRID_LAYOUT
-	{ "###",      nrowgrid },
-	#endif
 };
 
 /* key definitions */
@@ -281,8 +231,6 @@ static const Layout layouts[] = {
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
-
-
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
@@ -315,9 +263,6 @@ static const char *mute_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_mute
 static const char *brighter[] = { "/home/taras/.local/bin/vol_bri", "brightness_up", NULL };
 static const char *dimmer[]   = { "/home/taras/.local/bin/vol_bri", "brightness_down", NULL };
 #endif //THINKPAD_KEYS
-
-
-
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
@@ -395,5 +340,4 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,              Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,              Button3,        toggletag,      {0} },
 };
-
 

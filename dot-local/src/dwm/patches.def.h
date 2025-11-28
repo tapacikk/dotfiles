@@ -88,7 +88,7 @@
  * This patch interferes with the center transient windows patches.
  * https://dwm.suckless.org/patches/alwayscenter/
  */
-#define ALWAYSCENTER_PATCH 1
+#define ALWAYSCENTER_PATCH 0
 
 /* Adds a keyboard shortcut to restart dwm or alternatively by using kill -HUP dwmpid.
  * Additionally dwm can quit cleanly by using kill -TERM dwmpid.
@@ -169,3 +169,4 @@
  */
 #define MONOCLE_LAYOUT 1
 
+#define FLOATPOS_PATCH 1

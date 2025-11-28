@@ -172,6 +172,11 @@ static char *tagicons[][NUMTAGS] =
  * Refer to the Rule struct definition for the list of available fields depending on
  * the patches you enable.
  */
+
+
+static int floatposgrid_x                = 3;  /* float grid columns */
+static int floatposgrid_y                = 3;  /* float grid rows */
+
 static const Rule rules[] = {
 	/* xprop(1):
 	 *	WM_CLASS(STRING) = instance, class
@@ -185,6 +190,11 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
 	RULE(.class = "st-256color", .isterminal=1)
 	RULE(.instance = "float_video", .isfloating=1)
+    RULE(.class = "btop", .isterminal=1, .isfloating=1, .floatpos="15% 15% 200w 200h") // ↖
+    RULE(.class = "nmtui", .isterminal=1, .isfloating=1, .floatpos="100% 15% 200w 200h") // ↗
+    RULE(.class = "bluetui", .isterminal=1, .isfloating=1, .floatpos="15% 100% 200w 200h") // ↙
+    RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% 100% 200w 200h") // ↓
+    RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
 };
 
 
@@ -287,14 +297,14 @@ static const char *dmenucmd[] = {
 	NULL
 };
 static const char *termcmd[]  = { "st", NULL };
-static const char *ttermcmd[] = { "st", "-e", "tmux", "a", NULL };
+static const char *scratchtermcmd[] = { "st", "-c", "scratch", NULL };
 static const char *calccmd[]  = { "/home/taras/.local/bin/dm-calc", NULL };
 static const char *qutecmd[]  = { "qutebrowser", NULL };
 static const char *wikicmd[]  = { "wiki", NULL };
 static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };
 static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
 static const char *energcmd[]  = { "/home/taras/.local/bin/dm-energ", NULL };
-static const char *dmsearchcmd[]  = { "/home/taras/.local/bin/dm-search", NULL };
+static const char *dmsystemcmd[]  = { "/home/taras/.local/bin/dm-system", NULL };
 static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
 static const char *slockcmd[]  = { "/home/taras/.local/bin/pow", NULL };
 static const char *passcmd[]  = { "passmenu", NULL };
@@ -313,17 +323,17 @@ static const Key keys[] = {
 	/* modifier                     key            function                argument */
 	{ MODKEY,                       XK_d,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY          ,             XK_Return,     spawn,                  {.v = termcmd  } },
-	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = ttermcmd } },
+	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = scratchtermcmd } },
 	{ MODKEY          ,             XK_c,          spawn,                  {.v = calccmd  } },
 	{ MODKEY          ,             XK_o,          spawn,                  {.v = qutecmd  } },
 	{ MODKEY|ShiftMask,             XK_w,          spawn,                  {.v = wikicmd  } },
+	{ MODKEY|ShiftMask,             XK_b,          spawn,                  {.v = dmsystemcmd  } },
 	{ MODKEY          ,             XK_s,          spawn,                  {.v = scrshtdcmd } },
 	{ MODKEY|ShiftMask,             XK_s,          spawn,                  {.v = scrshtcmd } },
 	{ MODKEY|ShiftMask,             XK_l,          spawn,                  {.v = slockcmd } },
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  {.v = energcmd } },
 	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
 	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
-	{ MODKEY|ShiftMask,             XK_o,          spawn,                  {.v = dmsearchcmd } },
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
     { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },

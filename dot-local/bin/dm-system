@@ -11,4 +11,6 @@ declare -a programs=(
 
 choice=$(printf '%s\n' "${programs[@]}" | dmenu -vi -g 1 -l 20 -i -p "program :") || exit
 
-st -f monospace:20 -c $choice -e $choice
+FONTSIZE=8.5
+if [ $(hostname) == "yoshipad" ]; then FONTSIZE=14; fi
+st -f "monospace:size=$FONTSIZE" -c $choice -e $choice

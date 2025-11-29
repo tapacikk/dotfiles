@@ -67,7 +67,7 @@ setxkbmap -option ctrl:nocaps
 WALL=$(ls $HOME/.local/wall | shuf -n 1)
 WALL=$HOME/.local/wall/$WALL
 feh --bg-fill $WALL --no-fehbg
-picom -b --corner-radius 5 --backend glx
+picom -b --corner-radius 5 
 xss-lock -- slock &
 xset r rate 200 35
 dunst &

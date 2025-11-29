@@ -256,29 +256,33 @@ static const char *dmenucmd[] = {
 	"-g", "1",
 	NULL
 };
-static const char *termcmd[]  = { "st", NULL };
-static const char *scratchtermcmd[] = { "st", "-c", "scratch", NULL };
-static const char *calccmd[]  = { "/home/taras/.local/bin/dm-calc", NULL };
-static const char *dmmolcascmd[]  = { "/home/taras/.local/bin/dm-molcas", NULL };
-static const char *qutecmd[]  = { "qutebrowser", NULL };
-static const char *wikicmd[]  = { "wiki", NULL };
-static const char *scrshtdcmd[]  = { "/home/taras/.local/bin/screenshot", "default", NULL };
-static const char *scrshtcmd[]  = { "/home/taras/.local/bin/screenshot", NULL };
-static const char *energcmd[]  = { "/home/taras/.local/bin/dm-energ", NULL };
-static const char *dmsystemcmd[]  = { "/home/taras/.local/bin/dm-system", NULL };
-static const char *dmytcmd[]  = { "/home/taras/.local/bin/dm-youtube", NULL };
-static const char *slockcmd[]  = { "/home/taras/.local/bin/pow", NULL };
-static const char *passcmd[]  = { "passmenu", NULL };
-static const char *up_vol[]   = { "/home/taras/.local/bin/vol_bri", "volume_up", NULL };
-static const char *down_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_down", NULL };
-static const char *mute_vol[] = { "/home/taras/.local/bin/vol_bri", "volume_mute", NULL };
+
+// Custom commands to bind to a key
+static const char *termcmd[]           = { "st", NULL };
+static const char *scratchtermcmd[]    = { "st", "-c", "scratch", NULL };
+static const char *calccmd[]           = { SCRIPTPREFIX "dm-calc", NULL };
+static const char *dmmolcascmd[]       = { SCRIPTPREFIX "dm-molcas", NULL };
+static const char *qutecmd[]           = { SCRIPTPREFIX "qutebrowser", NULL };
+static const char *wikicmd[]           = { SCRIPTPREFIX "wiki", NULL };
+static const char *scrshtdcmd[]        = { SCRIPTPREFIX "screenshot", "default", NULL };
+static const char *scrshtcmd[]         = { SCRIPTPREFIX "screenshot", NULL };
+static const char *energcmd[]          = { SCRIPTPREFIX "dm-energ", NULL };
+static const char *dmsystemcmd[]       = { SCRIPTPREFIX "dm-system", NULL };
+static const char *dmytcmd[]           = { SCRIPTPREFIX "dm-youtube", NULL };
+static const char *dmhomercmd[]        = { SCRIPTPREFIX "dm-homer", NULL };
+static const char *slockcmd[]          = { SCRIPTPREFIX "pow", NULL };
+static const char *passcmd[]           = { SCRIPTPREFIX "passmenu", NULL };
+static const char *up_vol[]            = { SCRIPTPREFIX "vol_bri", "volume_up", NULL };
+static const char *down_vol[]          = { SCRIPTPREFIX "vol_bri", "volume_down", NULL };
+static const char *mute_vol[]          = { SCRIPTPREFIX "vol_bri", "volume_mute", NULL };
 #if THINKPAD_KEYS
-static const char *brighter[] = { "/home/taras/.local/bin/vol_bri", "brightness_up", NULL };
-static const char *dimmer[]   = { "/home/taras/.local/bin/vol_bri", "brightness_down", NULL };
+static const char *brighter[]          = { SCRIPTPREFIX "vol_bri", "brightness_up", NULL };
+static const char *dimmer[]            = { SCRIPTPREFIX "vol_bri", "brightness_down", NULL };
 #endif //THINKPAD_KEYS
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
+    // my scripts
 	{ MODKEY,                       XK_d,          spawn,                  {.v = dmenucmd } },
 	{ MODKEY          ,             XK_Return,     spawn,                  {.v = termcmd  } },
 	{ MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = scratchtermcmd } },
@@ -293,6 +297,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  {.v = energcmd } },
 	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
 	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
+	{ MODKEY,                       XK_h,          spawn,                  {.v = dmhomercmd } },
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
     { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },
@@ -300,11 +305,12 @@ static const Key keys[] = {
     { 0,             XF86XK_MonBrightnessDown,     spawn,                  {.v = dimmer } },
     { 0,               XF86XK_MonBrightnessUp,     spawn,                  {.v = brighter } },
     #endif //THINKPAD_KEYS
+    // dwm system keys
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
 	{ MODKEY,                       XK_j,          focusstack,             {.i = +1 } },
 	{ MODKEY,                       XK_k,          focusstack,             {.i = -1 } },
-	{ MODKEY|ControlMask,           XK_j,          inplacerotate,          {.i = +2 } }, // same as rotatestack
-	{ MODKEY|ControlMask,           XK_k,          inplacerotate,          {.i = -2 } }, // same as reotatestack
+	{ MODKEY|ControlMask,           XK_j,          inplacerotate,          {.i = +2 } },
+	{ MODKEY|ControlMask,           XK_k,          inplacerotate,          {.i = -2 } },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_j,          inplacerotate,          {.i = +1} },
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_k,          inplacerotate,          {.i = -1} },
 	{ MODKEY,                       XK_i,          incnmaster,             {.i = +1 } },
@@ -321,7 +327,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_e,          setlayout,              {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,      setlayout,              {0} },
 	{ MODKEY|ShiftMask,             XK_space,      togglefloating,         {0} },
-	{ MODKEY|ShiftMask,                       XK_f,          togglefullscreen,       {0} },
+	{ MODKEY|ShiftMask,             XK_f,          togglefullscreen,       {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_s,          togglesticky,           {0} },
 	{ MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },

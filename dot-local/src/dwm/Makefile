@@ -59,6 +59,7 @@ endif
 	mkdir -p ${DESTDIR}${PREFIX}/share/xsessions
 	test -f ${DESTDIR}${PREFIX}/share/xsessions/dwm.desktop || cp -n dwm.desktop ${DESTDIR}${PREFIX}/share/xsessions
 	chmod 644 ${DESTDIR}${PREFIX}/share/xsessions/dwm.desktop
+	echo ${SCRIPTPREFIX}
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\

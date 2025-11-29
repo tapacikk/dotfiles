@@ -1,0 +1,16 @@
+#!/bin/bash
+# homeserver menu
+ 
+set -e
+
+declare -a sites=(
+    "transmission -> 192.168.1.9:9091"
+    "jellyfin     -> 192.168.1.9:8096"
+    "radarr       -> 192.168.1.9:7878"
+    "sonarr       -> 192.168.1.9:8989"
+    "immich       -> 192.168.1.9:2283"
+)
+
+LCFGS=$(printf '%s\n' "${sites[@]}" | awk '{print $1}' | dmenu -vi -g 1 -l 20 -i -p "CONFIG :") || exit
+SCFGS=$(printf '%s\n' "${sites[@]}" | grep -i "$LCFGS" | awk '{print $NF}')
+qutebrowser $SCFGS

@@ -8,22 +8,26 @@ static int min_width = 400;                 /* minimum width when centered */
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] =
 {
-    "FiraMono Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium"
+    "FiraMono Nerd Font:pixelsize=25:antialias=true:autohint=true:style=Medium"
 };
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 static const char *symbol_1 = "<";
 static const char *symbol_2 = ">";
 
+static char dmenufg[]              = "#d3c6aa"; //everforest fg
+static char dmenubg[]              = "#232A2E"; //everforest bg5
+static char dmenuselbg[]           = "#56635F"; //everforest fg
+
 static
 const
 char *colors[][2] = {
 	/*               fg         bg       */
-   	[SchemeNorm] = { "#bbbbbb", "#000000" },
-	[SchemeSel]  = { "#eeeeee", "#005577" },
+   	[SchemeNorm] = { dmenufg, dmenubg },
+	[SchemeSel]  = { "#eeeeee", dmenuselbg },
 	[SchemeOut]  = { "#000000", "#00ffff" },
-	[SchemeBorder] = { "#000000", "#005577" },
-	[SchemeSelHighlight]  = { "#ffc978", "#005577" },
-	[SchemeNormHighlight] = { "#ffc978", "#222222" },
+	[SchemeBorder] = { "#000000", dmenuselbg },
+	[SchemeSelHighlight]  = { dmenufg, dmenuselbg },
+	[SchemeNormHighlight] = { dmenufg, dmenuselbg },
 	[SchemeCursor] = { "#222222", "#bbbbbb" },
 };
 /* -l option; if nonzero, dmenu uses vertical list with given number of lines */

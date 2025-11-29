@@ -36,10 +36,11 @@ static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 #ifdef THINKPAD_KEYS
 static const char *fonts[]               = { "FiraMono Nerd Font:size=25" };
+static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=30:antialias=true:autohint=true:style=Medium";
 #else
 static const char *fonts[]               = { "FiraMono Nerd Font:size=20" };
-#endif
 static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium";
+#endif
 
 static char c000000[]                    = "#000000"; // placeholder value
 
@@ -49,7 +50,7 @@ static char normbordercolor[]            = "#444444";
 static char normfloatcolor[]             = "#db8fd9";
 
 static char selfgcolor[]                 = "#d3c6aa";
-static char selbgcolor[]                 = "#005577";
+static char selbgcolor[]                 = "#2d353b"; //everforest bg0
 static char selbordercolor[]             = "#005577";
 static char selfloatcolor[]              = "#005577";
 
@@ -85,6 +86,11 @@ static char urgfgcolor[]                 = "#bbbbbb";
 static char urgbgcolor[]                 = "#222222";
 static char urgbordercolor[]             = "#ff0000";
 static char urgfloatcolor[]              = "#db8fd9";
+
+// dmenu colors
+static char dmenufg[]              = "#d3c6aa"; //everforest fg
+static char dmenubg[]              = "#232A2E"; //everforest bg5
+static char dmenuselbg[]           = "#56635F"; //everforest fg
 
 static const unsigned int baralpha = 0xd0;
 static const unsigned int borderalpha = OPAQUE;
@@ -238,10 +244,15 @@ static const char *dmenucmd[] = {
 	"dmenu_run",
 	"-m", dmenumon,
 	"-fn", dmenufont,
-	"-nb", normbgcolor,
-	"-nf", normfgcolor,
-	"-sb", selbgcolor,
-	"-sf", "#000000",
+	"-nb", dmenubg,
+	"-nf", dmenufg,
+	"-sb", dmenuselbg,
+	"-nhb", dmenuselbg,
+	"-nhf", dmenufg,
+	"-shb", dmenuselbg,
+	"-sf", dmenufg,
+	"-l", "10",
+	"-g", "1",
 	NULL
 };
 static const char *termcmd[]  = { "st", NULL };

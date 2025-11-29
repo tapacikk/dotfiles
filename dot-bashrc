@@ -89,8 +89,8 @@ alias DU="du -hs .;du -hs *"
 export CRYSTAL_ROOT=/opt/crystal/latest
 export MPIROOT=/opt/openmpi/latest
 export CRYSCOR_ROOT=/work/cryscor/bin/Linux-ifx-taras/std
-alias cp='/usr/local/bin/cpg -g'
-alias mv='/usr/local/bin/mvg -g'
+#alias cp='/usr/local/bin/cpg -g'
+#alias mv='/usr/local/bin/mvg -g'
 # nice colored prompt
 GREEN="\[\e[38;5;108m\]"     
 AQUA="\[\e[38;5;108m\]"     

@@ -1,0 +1,46 @@
+#!/bin/bash
+# Molcas help system integrated with dmenu
+ 
+set -e
+
+export MOLCAS=/opt/OpenMolcas/latest
+cd "$MOLCAS" || { echo "Failed to cd into $MOLCAS"; exit 1; }
+
+# Fetch known programs from Molcas help
+programs=$(./sbin/help_doc | grep "Known" -A100)
+
+# Clean and format choices
+format_choices() {
+    printf "%s\n" "$1" | tr '|' '\n' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e '/^$/d' | sed '1d'
+}
+
+CHOICES=$(format_choices "$programs") || exit 0
+
+# Let user pick a program
+PROGRAM=$(printf "%s\n" "$CHOICES" | dmenu -i -g 1 -l 10 -p "Known Modules:")
+
+# Display program help
+PROGRAM_TEXT=$(./sbin/help_doc "$PROGRAM")
+PROGRAM_TEXT_CLEAN=$(echo "$PROGRAM_TEXT" \
+                | sed "/^Module $PROGRAM found$/d" \
+                | sed '1{/^$/d}' \
+                | sed -e '/^Available keywords:/,$d' \
+                | sed ':a;N;$!ba;s/\n/ /g' )
+
+notify-send -t 7000 "$PROGRAM" "$PROGRAM_TEXT_CLEAN"
+
+# Extract keywords from program help
+PROGRAM_KEYWORDS=$(echo "$PROGRAM_TEXT" | grep -i "key" -A100)
+CHOICES=$(format_choices "$PROGRAM_KEYWORDS")
+
+# Let user pick a keyword
+KEYWORD=$(printf "%s\n" "$CHOICES" | dmenu -i -g 1 -l 30 -p "Known Keywords:")
+
+# Show detailed help for program + keyword
+KEYWORD_INFO=$(./sbin/help_doc "$PROGRAM" "$KEYWORD" \
+                | sed '2d' \
+                | sed '1{/^$/d}' \
+                | sed ':a;N;$!ba;s/\n/ /g' )
+
+notify-send -t 15000 "$PROGRAM - $KEYWORD" "$(echo "$KEYWORD_INFO")"
+

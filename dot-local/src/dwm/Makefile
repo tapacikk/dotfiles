@@ -45,6 +45,10 @@ dist: clean
 install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	cp -f dwm ${DESTDIR}${PREFIX}/bin
+ifeq ($(HOSTNAME), yoshipad)
+	rm ${HOME}/.config/dunstrc
+	ln -s ${HOME}/.config/dunstrc.yoshipad ${HOME}/.config/dunstrc
+endif
 ifdef YAJLLIBS
 	cp -f dwm-msg ${DESTDIR}${PREFIX}/bin
 endif
@@ -59,7 +63,6 @@ endif
 	mkdir -p ${DESTDIR}${PREFIX}/share/xsessions
 	test -f ${DESTDIR}${PREFIX}/share/xsessions/dwm.desktop || cp -n dwm.desktop ${DESTDIR}${PREFIX}/share/xsessions
 	chmod 644 ${DESTDIR}${PREFIX}/share/xsessions/dwm.desktop
-	echo ${SCRIPTPREFIX}
 
 uninstall:
 	rm -f ${DESTDIR}${PREFIX}/bin/dwm\

@@ -21,6 +21,7 @@
 #include "togglefullscreen.c"
 #include "vanitygaps.c"
 #include "seamless_restart.c"
+#include "warp.c"
 /* Layouts */
 #include "layout_facts.c"
 #include "layout_monocle.c"

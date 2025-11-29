@@ -21,7 +21,7 @@ c.editor.command = ['st', '-e', 'vim', '{file}']
 # Bindings for normal mode
 config.bind('s', 'cmd-set-text -s :open -t https://scholar.google.com/scholar?q=')
 config.bind('t', 'cmd-set-text -s :open -t')
-config.bind(';n', 'hint links spawn --detach mpv {hint-url}')
+config.bind(';n', 'hint links spawn --detach mpv --geometry=800x500 --ytdl-raw-options="format=bestvideo[height<=720]+bestaudio/best[height<=720]" {hint-url}')
 config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<Ctrl-c>', 'mode-leave', mode='insert')

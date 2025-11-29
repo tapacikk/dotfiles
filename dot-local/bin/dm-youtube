@@ -70,7 +70,7 @@ main() {
 
     if [[ -n ${_video_id} ]]; then
         # After the video is chosen, run it in mpv
-        mpv "https://www.youtube.com/watch?v=${_video_id}"
+        mpv --geometry=800x500 --ytdl-raw-options="format=bestvideo[height<=720]+bestaudio/best[height<=720]" "https://www.youtube.com/watch?v=${_video_id}"
     fi
 }
 

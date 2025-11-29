@@ -70,7 +70,7 @@ main() {
 
     if [[ -n ${_video_id} ]]; then
         # After the video is chosen, run it in mpv
-        st -e mpv "https://www.youtube.com/watch?v=${_video_id}"
+        st -f "monospace:size=10" -c mpv -e mpv --terminal "https://www.youtube.com/watch?v=${_video_id} "
     fi
 }
 

@@ -194,6 +194,7 @@ static const Rule rules[] = {
     RULE(.class = "bluetui", .isterminal=1, .isfloating=1, .floatpos="15% 100% 200w 200h") // ↙
     RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% 100% 200w 200h") // ↓
     RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
+    RULE(.class = "mpv", .isfloating=1, .isterminal=1, .floatpos="100% 110% 50w 50h") 
 };
 
 /* Bar rules allow you to configure what is shown where on the bar, as well as

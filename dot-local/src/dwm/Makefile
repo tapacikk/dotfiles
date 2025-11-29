@@ -46,8 +46,8 @@ install: all
 	mkdir -p ${DESTDIR}${PREFIX}/bin
 	cp -f dwm ${DESTDIR}${PREFIX}/bin
 ifeq ($(HOSTNAME), yoshipad)
-	rm ${HOME}/.config/dunstrc
-	ln -s ${HOME}/.config/dunstrc.yoshipad ${HOME}/.config/dunstrc
+	rm -f ${HOMEDIR}/.config/dunst/dunstrc
+	ln -s ${HOMEDIR}/.config/dunst/dunstrc.yoshipad ${HOMEDIR}/.config/dunst/dunstrc
 endif
 ifdef YAJLLIBS
 	cp -f dwm-msg ${DESTDIR}${PREFIX}/bin

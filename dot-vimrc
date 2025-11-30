@@ -13,7 +13,7 @@ nmap <silent> <c-l> :wincmd l<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-k> :wincmd k<CR>
-noremap <C-n> :set nu!<CR>
+noremap <C-n> :set nu! relativenumber!<CR>
 nnoremap ;w :up<CR>
 nnoremap ;q :q<CR>
 nnoremap ;s :ls<CR>:b<Space>

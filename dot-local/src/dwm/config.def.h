@@ -275,10 +275,8 @@ static const char *passcmd[]           = { SCRIPTPREFIX "passmenu", NULL };
 static const char *up_vol[]            = { SCRIPTPREFIX "vol_bri", "volume_up", NULL };
 static const char *down_vol[]          = { SCRIPTPREFIX "vol_bri", "volume_down", NULL };
 static const char *mute_vol[]          = { SCRIPTPREFIX "vol_bri", "volume_mute", NULL };
-#if THINKPAD_KEYS
 static const char *brighter[]          = { SCRIPTPREFIX "vol_bri", "brightness_up", NULL };
 static const char *dimmer[]            = { SCRIPTPREFIX "vol_bri", "brightness_down", NULL };
-#endif //THINKPAD_KEYS
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
@@ -301,10 +299,8 @@ static const Key keys[] = {
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
     { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },
-    #if THINKPAD_KEYS
     { 0,             XF86XK_MonBrightnessDown,     spawn,                  {.v = dimmer } },
     { 0,               XF86XK_MonBrightnessUp,     spawn,                  {.v = brighter } },
-    #endif //THINKPAD_KEYS
     // dwm system keys
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
 	{ MODKEY,                       XK_j,          focusstack,             {.i = +1 } },

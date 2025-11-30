@@ -63,7 +63,6 @@ while true; do
   sleep 1 && xsetroot -name "$(dwm_cmus)$(bat)$(mem)$(clock)"
 done &
 
-setxkbmap -option ctrl:nocaps
 WALL=$(ls $HOME/.local/wall | shuf -n 1)
 WALL=$HOME/.local/wall/$WALL
 feh --bg-fill $WALL --no-fehbg

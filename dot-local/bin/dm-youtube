@@ -45,6 +45,9 @@ declare -A youtube_channels=(
     ["Mental Outlaw"]="https://www.youtube.com/@MentalOutlaw"
     ["Cozy Rain"]="https://www.youtube.com/@CozyRain"
     ["Ghibli Piano"]="https://www.youtube.com/@SoothingGhibliPiano"
+    ["Markiplier"]="https://www.youtube.com/@Markiplier"
+    ["PewDiePie"]="https://www.youtube.com/@PewDiePie"
+    ["dunkey"]="https://www.youtube.com/@videogamedunkey"
 )
 
 

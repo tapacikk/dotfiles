@@ -259,7 +259,8 @@ static const char *dmenucmd[] = {
 
 // Custom commands to bind to a key
 static const char *termcmd[]           = { "st", NULL };
-static const char *scratchtermcmd[]    = { "st", "-c", "scratch", NULL };
+static const char *scratchtermcmd[]    = { "st", "-c", "scratch", "-e", "tmux", "new", "-A", "-s", "scratchpad", NULL };
+static const char *aerccmd[]           = { "st", "-e", "tmux", "new", "-A", "-s", "aerc", NULL };
 static const char *calccmd[]           = { SCRIPTPREFIX "dm-calc", NULL };
 static const char *dmmolcascmd[]       = { SCRIPTPREFIX "dm-molcas", NULL };
 static const char *qutecmd[]           = { SCRIPTPREFIX "qutebrowser", NULL };
@@ -296,6 +297,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
 	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
 	{ MODKEY,                       XK_h,          spawn,                  {.v = dmhomercmd } },
+	{ MODKEY,                       XK_a,          spawn,                  {.v = aerccmd } },
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
     { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },

@@ -194,7 +194,7 @@ static const Rule rules[] = {
     RULE(.class = "bluetui", .isterminal=1, .isfloating=1, .floatpos="15% 100% 200w 200h") // ↙
     RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% 100% 200w 200h") // ↓
     RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
-    RULE(.class = "mpv", .isfloating=1, .isterminal=1, .floatpos="100% 0%") 
+    RULE(.class = "mpv", .isfloating=1,) 
 };
 
 /* Bar rules allow you to configure what is shown where on the bar, as well as
@@ -296,7 +296,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_e,          spawn,                  {.v = energcmd } },
 	{ MODKEY,                       XK_p,          spawn,                  {.v = passcmd } },
 	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
-	{ MODKEY,                       XK_h,          spawn,                  {.v = dmhomercmd } },
+	{ MODKEY|ShiftMask,             XK_h,          spawn,                  {.v = dmhomercmd } },
 	{ MODKEY,                       XK_a,          spawn,                  {.v = aerccmd } },
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },

@@ -189,10 +189,10 @@ static const Rule rules[] = {
 	RULE(.wintype = WTYPE "SPLASH", .isfloating = 1)
 	RULE(.class = "st-256color", .isterminal=1)
 	RULE(.instance = "float_video", .isfloating=1)
-    RULE(.class = "btop", .isterminal=1, .isfloating=1, .floatpos="15% 15% 200w 200h") // ↖
-    RULE(.class = "nmtui", .isterminal=1, .isfloating=1, .floatpos="100% 15% 200w 200h") // ↗
-    RULE(.class = "bluetui", .isterminal=1, .isfloating=1, .floatpos="15% 100% 200w 200h") // ↙
-    RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% 100% 200w 200h") // ↓
+    RULE(.class = "btop", .isterminal=1, .isfloating=1, .floatpos="+40x +60y 200w 200h") // ↖
+    RULE(.class = "nmtui", .isterminal=1, .isfloating=1, .floatpos="100% +60y 200w 200h") // ↗
+    RULE(.class = "bluetui", .isterminal=1, .isfloating=1, .floatpos="+40x 100% 200w 200h") // ↙
+    RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% +800y 200w 200h") // ↓
     RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
     RULE(.class = "mpv", .isfloating=1,) 
 };

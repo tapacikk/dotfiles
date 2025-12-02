@@ -41,7 +41,7 @@
     # Offset from the origin
     # NOTE: Dunst from version 1.11 and older use this alternative notation
     # offset = 10x50
-    offset = (5, 65)
+    offset = (5, 50)
 
     # Scale factor. It is auto-detected if value is 0.
     scale = 0
@@ -52,7 +52,7 @@
     ### Text ###
 
     # Set font of notifications
-    font = FiraMono Nerd Font 12
+    font = FiraMono Nerd Font 17
     # Markup parsing
     markup = full
     # Message format:

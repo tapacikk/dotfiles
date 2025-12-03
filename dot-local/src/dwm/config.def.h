@@ -35,11 +35,9 @@ static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
 static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 #ifdef THINKPAD_KEYS
-static const char *fonts[]               = { "FiraMono Nerd Font:size=25" };
-static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=30:antialias=true:autohint=true:style=Medium";
+static const char *fonts[]               = { "FiraMono Nerd Font:size=23" };
 #else
 static const char *fonts[]               = { "FiraMono Nerd Font:size=20" };
-static const char dmenufont[]            = "FiraMono Nerd Font:pixelsize=20:antialias=true:autohint=true:style=Medium";
 #endif
 
 static char c000000[]                    = "#000000"; // placeholder value
@@ -244,7 +242,6 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = {
 	"dmenu_run",
 	"-m", dmenumon,
-	"-fn", dmenufont,
 	"-nb", dmenubg,
 	"-nf", dmenufg,
 	"-sb", dmenuselbg,

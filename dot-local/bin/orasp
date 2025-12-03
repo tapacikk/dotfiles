@@ -31,6 +31,8 @@ def parse_arguments(non_interactive_arguments=None):
                         help='only print the g-factors')
     parser.add_argument('--zeta', action='store_true',
                         help='only print the zeta')
+    parser.add_argument('--soc-info', action='store_true',
+                        help='print the soc info for casscf and caspt2')
     if non_interactive_arguments == None:
         args = parser.parse_args()
     else:
@@ -38,7 +40,6 @@ def parse_arguments(non_interactive_arguments=None):
     args.so = False if args.noso else True
     args.filename = args.orca_output.name
     return args
-
 
 def get_roots(args):
     roots = {}
@@ -92,6 +93,65 @@ def get_zeta(args):
     return zeta, list(map(float, root_collection))
 
 
+def seek(file_iterator, target_line):
+    line = next(file_iterator)
+    while target_line not in line:
+        line = next(file_iterator)
+
+def parse_one_soc_state(file_iterator, current_state, states_dict):
+    current_state_dict = states_dict[current_state]
+    line = next(file_iterator)
+    # parse the weights
+    while 'STATE' not in line:
+        weight, real, im, colon, block, root, spin, ms = line.split()
+        if ms == '1/2': current_state_dict[int(root)][1] = float(weight)
+        if ms == '-1/2': current_state_dict[int(root)][0] = float(weight)
+        line = next(file_iterator)
+        if 'Passed SOC' in line: return False
+    return True
+
+
+def get_soc_info(args):
+    """
+    Generates the following datastructure:
+    casscf_states = {
+        1: {'energy': state_energy, 0: [m_s=-1/2 weight, m_s=1/2 weight], 1: [m_s=-1/2 weight, m_s=1/2 weight], 2:............
+        2: {'energy': state_energy, 0: [m_s=-1/2 weight, m_s=1/2 weight], 1: [m_s=-1/2 weight, m_s=1/2 weight], 2:............
+        ........................
+        13: {'energy': state_energy, 0: [m_s=-1/2 weight, m_s=1/2 weight], 1: [m_s=-1/2 weight, m_s=1/2 weight], 2:............
+    }
+    """
+    # initialize the datastructure
+    casscf_states, nevpt2_states = dict(), dict()
+    for root in range(14):
+        casscf_states[root] = {'energy': 0, }
+        nevpt2_states[root] = {'energy': 0, }
+        for r2 in range(7):
+            casscf_states[root][r2] = [0, 0]
+            nevpt2_states[root][r2] = [0, 0]
+    # parse the energies
+    seek(args.orca_output, 'Eigenvalues:')
+    for root in range(14):
+        casscf_states[root]['energy'] = float(next(args.orca_output).split()[1])
+    # parse the weights
+    seek(args.orca_output, 'Eigenvectors:')
+    next(args.orca_output)
+    next(args.orca_output)
+    current_state = 0
+    while parse_one_soc_state(args.orca_output, current_state, casscf_states):
+        current_state += 1
+    seek(args.orca_output, 'Eigenvalues:')
+    for root in range(14):
+        nevpt2_states[root]['energy'] = float(next(args.orca_output).split()[1])
+    seek(args.orca_output, 'Eigenvectors:')
+    next(args.orca_output)
+    next(args.orca_output)
+    current_state = 0
+    while parse_one_soc_state(args.orca_output, current_state, nevpt2_states):
+        current_state += 1
+    return casscf_states, nevpt2_states
+
+
 def parse_orca_spectrum(file_iterator, spec_line):
     spectrum = dict()
     # seek the spectrum desired
@@ -138,6 +198,8 @@ def main(non_interactive_arguments=None):
     if args.g_factors:
         g=get_g_factors(args)
         return g
+    if args.soc_info:
+        return get_soc_info(args)
     roots = get_roots(args)
     roots = get_roots(args)
     if not roots:

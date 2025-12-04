@@ -59,8 +59,16 @@ bat() {
     printf "  $(cat /sys/class/power_supply/BAT0/capacity)/$(cat /sys/class/power_supply/BAT1/capacity) "
 }
 
+syncthing_status() {
+    if systemctl --quiet is-active "syncthing@$USER"; then
+        printf " " 
+    else
+        printf ""   
+    fi
+}
+
 while true; do
-  sleep 1 && xsetroot -name "$(dwm_cmus)$(bat)$(mem)$(clock)"
+  sleep 1 && xsetroot -name "$(dwm_cmus)$(syncthing_status)$(bat) | $(mem)$(clock)"
 done &
 
 WALL=$(ls $HOME/.local/wall | shuf -n 1)

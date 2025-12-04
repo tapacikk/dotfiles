@@ -4,6 +4,7 @@
 set -e
 
 declare -a sites=(
+    "syncthing    -> localhost:8384"
     "transmission -> 192.168.1.9:9091"
     "jellyfin     -> 192.168.1.9:8096"
     "radarr       -> 192.168.1.9:7878"

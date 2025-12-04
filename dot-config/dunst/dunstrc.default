@@ -145,5 +145,5 @@
     icon_position = left
     min_icon_size = 48
     max_icon_size = 128
-    timeout = 1
+    timeout = 3
     

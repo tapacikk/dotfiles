@@ -86,7 +86,7 @@
 
     ### Icons ###
 
-    icon_position = top
+    icon_position = left
 
     ### History ###
 
@@ -124,7 +124,8 @@
     progress_bar = true
 
     ### Icons ###
-    min_icon_size = 32
+    min_icon_size = 48
+    max_icon_size = 128
 
 [urgency_normal]
 
@@ -140,3 +141,9 @@
     foreground = "#232a2e"
     timeout = 0
 
+[cmus_notify]
+    icon_position = left
+    min_icon_size = 48
+    max_icon_size = 128
+    timeout = 1
+    

@@ -23,13 +23,14 @@ menu_entries=$(sed -nE '
 
 menu_entries="Index"$'\n'"$menu_entries"
 # Show only labels in dmenu
-selection=$(printf '%s\n' "$menu_entries" | cut -f1 | dmenu -g 1 -l 10 -p "Choose wiki:") || exit 1
+selection=$(printf '%s\n' "$menu_entries" | cut -f1 | dmenu -vi -g 1 -l 10 -p "Choose wiki:") || exit 1
 
 # Map label back to actual link target
 link=$(printf '%s\n' "$menu_entries" | awk -F'\t' -v sel="$selection" '$1 == sel {print $2; exit}')
 
 # Escape special chars for Vim search
 link_escaped=$(sed -E 's/[\/|]/\\&/g' <<< "$link")
+echo "$link_escaped" > /tmp/sharek
 
 # Final Vim command
 echo $link > /tmp/link
@@ -39,10 +40,14 @@ else
     vim_cmd=(vim "$INDEX_FILE")
 fi
 
-# Launch in terminal if needed
-if [[ $TERM == "st-256color" ]]; then
+# Launch in tmux/terminal
+if tmux has-session -t main; then
+   /usr/bin/tmux new-window -n "wiki" -t main "${vim_cmd[@]}"
+   exit 0
+fi
+
+if [[ $TERM == "st-256color" || $TERM == 'tmux-256color' ]]; then
     "${vim_cmd[@]}"
 else
     st -T wiki -e "${vim_cmd[@]}"
 fi
-

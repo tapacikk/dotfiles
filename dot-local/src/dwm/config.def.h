@@ -275,6 +275,9 @@ static const char *down_vol[]          = { SCRIPTPREFIX "vol_bri", "volume_down"
 static const char *mute_vol[]          = { SCRIPTPREFIX "vol_bri", "volume_mute", NULL };
 static const char *brighter[]          = { SCRIPTPREFIX "vol_bri", "brightness_up", NULL };
 static const char *dimmer[]            = { SCRIPTPREFIX "vol_bri", "brightness_down", NULL };
+static const char *musicplaycmd[]      = { "/usr/bin/cmus-remote", "-C", "player-pause", NULL };
+static const char *musicnextcmd[]      = { "/usr/bin/cmus-remote","-C", "player-next", NULL };
+static const char *musicprevcmd[]      = { "/usr/bin/cmus-remote","-C", "player-prev", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
@@ -285,7 +288,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_m,          spawn,                  {.v = dmmolcascmd } },
 	{ MODKEY          ,             XK_c,          spawn,                  {.v = calccmd  } },
 	{ MODKEY          ,             XK_o,          spawn,                  {.v = qutecmd  } },
-	{ MODKEY|ShiftMask,             XK_w,          spawn,                  {.v = wikicmd  } },
+	{ MODKEY          ,             XK_n,          spawn,                  {.v = wikicmd  } },
 	{ MODKEY|ShiftMask,             XK_b,          spawn,                  {.v = dmsystemcmd  } },
 	{ MODKEY          ,             XK_s,          spawn,                  {.v = scrshtdcmd } },
 	{ MODKEY|ShiftMask,             XK_s,          spawn,                  {.v = scrshtcmd } },
@@ -295,11 +298,16 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_y,          spawn,                  {.v = dmytcmd } },
 	{ MODKEY|ShiftMask,             XK_h,          spawn,                  {.v = dmhomercmd } },
 	{ MODKEY,                       XK_a,          spawn,                  {.v = aerccmd } },
+    // function keys
     { 0,                     XF86XK_AudioMute,     spawn,                  {.v = mute_vol } },
     { 0,              XF86XK_AudioLowerVolume,     spawn,                  {.v = down_vol } },
     { 0,              XF86XK_AudioRaiseVolume,     spawn,                  {.v = up_vol   } },
     { 0,             XF86XK_MonBrightnessDown,     spawn,                  {.v = dimmer } },
     { 0,               XF86XK_MonBrightnessUp,     spawn,                  {.v = brighter } },
+    // music keys
+    { 0,               XF86XK_AudioPlay,              spawn,               {.v = musicplaycmd } },
+    { 0,               XF86XK_AudioNext,              spawn,               {.v = musicnextcmd } },
+    { 0,               XF86XK_AudioPrev,              spawn,               {.v = musicprevcmd } },
     // dwm system keys
 	{ MODKEY,                       XK_b,          togglebar,              {0} },
 	{ MODKEY,                       XK_j,          focusstack,             {.i = +1 } },

@@ -193,6 +193,8 @@ static const Rule rules[] = {
     RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% +800y 200w 200h") // ↓
     RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
     RULE(.class = "mpv", .isfloating=1,) 
+    RULE(.class = "thunderbird-default", .tags = 1 << 3)
+    RULE(.role = "Msgcompose", .isfloating=1, .floatpos="50% 50%")
 };
 
 /* Bar rules allow you to configure what is shown where on the bar, as well as

@@ -82,7 +82,6 @@ udiskie &
 ### Manage tmux
 #
 if ! tmux has-session -t main ; then tmux new -d -s main ; fi
-if ! tmux has-session -t aerc ; then tmux new -d -s aerc aerc; tmux set status off; fi
 if ! tmux has-session -t scratchpad ; then tmux new -d -s scratchpad ; tmux set status off; fi
 
 exec dwm 

@@ -147,3 +147,8 @@
     max_icon_size = 128
     timeout = 3
     
+[thunderbird]
+    icon_position = left
+    min_icon_size = 48
+    max_icon_size = 128
+    timeout = 0

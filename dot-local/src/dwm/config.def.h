@@ -239,6 +239,16 @@ static const Layout layouts[] = {
 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
 
+static const char *const autostart[] = {
+	"thunderbird", NULL,
+	"dunst", NULL,
+	"udiskie", NULL,
+	"xss-lock", "--", "slock", NULL,
+	"picom", NULL,
+	SCRIPTPREFIX "wall", NULL,
+	NULL /* terminate */
+};
+
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = {

@@ -1,0 +1,4 @@
+#!/bin/bash
+WALL=$(ls $HOME/.local/wall | shuf -n 1)
+WALL=$HOME/.local/wall/$WALL
+feh --bg-fill $WALL --no-fehbg

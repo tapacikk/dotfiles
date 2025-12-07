@@ -140,3 +140,14 @@
     foreground = "#232a2e"
     timeout = 0
 
+[cmus_notify]
+    icon_position = left
+    min_icon_size = 48
+    max_icon_size = 128
+    timeout = 2
+
+[thunderbird]
+    icon_position = left
+    min_icon_size = 48
+    max_icon_size = 128
+    timeout = 0

@@ -22,6 +22,7 @@
     sort = yes
     # Idle seconds
     idle_threshold = 10
+    timeout = 5
 
     ### Geometry ###
 
@@ -118,7 +119,6 @@
     mouse_middle_click = do_action
     # Right click
     mouse_right_click = do_action
-
 
     ### Progress Bar ###
     progress_bar = true

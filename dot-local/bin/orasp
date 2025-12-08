@@ -97,6 +97,7 @@ def seek(file_iterator, target_line):
     line = next(file_iterator)
     while target_line not in line:
         line = next(file_iterator)
+    return line
 
 def parse_one_soc_state(file_iterator, current_state, states_dict):
     current_state_dict = states_dict[current_state]
@@ -124,15 +125,18 @@ def get_soc_info(args):
     # initialize the datastructure
     casscf_states, nevpt2_states = dict(), dict()
     for root in range(14):
-        casscf_states[root] = {'energy': 0, }
-        nevpt2_states[root] = {'energy': 0, }
+        casscf_states[root] = {'energy_abs': 0, 'energy': 0,}
+        nevpt2_states[root] = {'energy_abs': 0, 'energy': 0,}
         for r2 in range(7):
             casscf_states[root][r2] = [0, 0]
             nevpt2_states[root][r2] = [0, 0]
-    # parse the energies
+    # parse the abs gs energy
+    casscf_abs_e = float(seek(args.orca_output, 'Lowest eigenvalue of the SOC matrix:').split()[-2]) * 219474.63137
+    # parse the relative energies
     seek(args.orca_output, 'Eigenvalues:')
     for root in range(14):
         casscf_states[root]['energy'] = float(next(args.orca_output).split()[1])
+        casscf_states[root]['energy_abs'] = casscf_states[root]['energy'] + casscf_abs_e
     # parse the weights
     seek(args.orca_output, 'Eigenvectors:')
     next(args.orca_output)
@@ -140,9 +144,14 @@ def get_soc_info(args):
     current_state = 0
     while parse_one_soc_state(args.orca_output, current_state, casscf_states):
         current_state += 1
+    #### NEVPT2 block 
+    # parse the abs energy
+    nevpt2_abs_e = float(seek(args.orca_output, 'Lowest eigenvalue of the SOC matrix:').split()[-2]) * 219474.63137
+    #parse the rel energy
     seek(args.orca_output, 'Eigenvalues:')
     for root in range(14):
         nevpt2_states[root]['energy'] = float(next(args.orca_output).split()[1])
+        nevpt2_states[root]['energy_abs'] = nevpt2_states[root]['energy'] + nevpt2_abs_e
     seek(args.orca_output, 'Eigenvectors:')
     next(args.orca_output)
     next(args.orca_output)

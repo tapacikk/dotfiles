@@ -3,8 +3,7 @@
 INDEX_FILE="/work/notes/wiki/index.wiki"
 
 # Ensure index file exists
-if [[ ! -f $INDEX_FILE ]]; then
-    echo "Error: Index file not found: $INDEX_FILE" >&2 exit 1
+if [[ ! -f $INDEX_FILE ]]; then echo "Error: Index file not found: $INDEX_FILE" >&2 exit 1
 fi
 
 # Extract wikis after "Project based wikis"
@@ -41,7 +40,7 @@ else
 fi
 
 # Launch in tmux/terminal
-if tmux has-session -t main; then
+if [ -v TMUX ]; then
    /usr/bin/tmux new-window -n "wiki" -t main "${vim_cmd[@]}"
    exit 0
 fi

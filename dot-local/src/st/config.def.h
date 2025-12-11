@@ -6,7 +6,12 @@
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 static char *font = "FiraMono Nerd Font:pixelsize=30:antialias=true:autohint=true:style=Medium";
+
 static int borderpx = 2;
+
+/* modkey options: ControlMask, ShiftMask or XK_ANY_MOD */
+static uint url_opener_modkey = XK_ANY_MOD;
+static char *url_opener = "xdg-open";
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -66,6 +71,18 @@ static unsigned int blinktimeout = 800;
  * thickness of underline and bar cursors
  */
 static unsigned int cursorthickness = 2;
+
+/*
+ * 1: render most of the lines/blocks characters without using the font for
+ *    perfect alignment between cells (U2500 - U259F except dashes/diagonals).
+ *    Bold affects lines thickness if boxdraw_bold is not 0. Italic is ignored.
+ * 0: disable (render all U25XX glyphs normally from the font).
+ */
+const int boxdraw = 0;
+const int boxdraw_bold = 0;
+
+/* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
+const int boxdraw_braille = 0;
 
 /*
  * bell volume. It must be a value between -100 and 100. Use 0 for disabling
@@ -129,7 +146,6 @@ static const char *colorname[] = {
     "#add8e6",  // 261 cursor
 };
 
-
 /*
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
@@ -141,16 +157,17 @@ unsigned int defaultrcs = 257;
 unsigned int bg = 259, bgUnfocused = 259;
 
 /*
+ * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81
  * Default style of cursor
- * 0: blinking block
- * 1: blinking block (default)
- * 2: steady block ("â–ˆ")
- * 3: blinking underline
- * 4: steady underline ("_")
- * 5: blinking bar
- * 6: steady bar ("|")
- * 7: blinking st cursor
- * 8: steady st cursor
+ * 0: Blinking block
+ * 1: Blinking block (default)
+ * 2: Steady block ("â–ˆ")
+ * 3: Blinking underline
+ * 4: Steady underline ("_")
+ * 5: Blinking bar
+ * 6: Steady bar ("|")
+ * 7: Blinking st cursor
+ * 8: Steady st cursor
  */
 static unsigned int cursorstyle = 1;
 static Rune stcursor = 0x2603; 
@@ -187,36 +204,48 @@ static uint forcemousemod = ShiftMask;
  * Beware that overloading Button1 will disable the selection.
  */
 static MouseShortcut mshortcuts[] = {
-	/* mask                 button   function        argument       release */
-	{ ShiftMask,            Button4, kscrollup,      {.i = 1} },
-	{ ShiftMask,            Button5, kscrolldown,    {.i = 1} },
-	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
+	/* mask                 button   function        argument       release  screen */
+	{ XK_ANY_MOD,           Button2, clippaste,      {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
-	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
 	{ ShiftMask,            Button5, ttysend,        {.s = "\033[6;2~"} },
-	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
+	{ XK_ANY_MOD,           Button4, kscrollup,      {.i = 1},      0, S_PRI },
+	{ XK_ANY_MOD,           Button5, kscrolldown,    {.i = 1},      0, S_PRI },
+	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"}, 0, S_ALT },
+	{ XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"}, 0, S_ALT },
 };
 
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (ControlMask|ShiftMask)
 
+static char *openurlcmd[] = { "/bin/sh", "-c",
+	"xurls | dmenu -l 10 -w $WINDOWID | xargs -r open",
+	"externalpipe", NULL };
+
+static char *setbgcolorcmd[] = { "/bin/sh", "-c",
+	"printf '\033]11;#008000\007'",
+	"externalpipein", NULL };
+
 static Shortcut shortcuts[] = {
-	/* mask                 keysym          function        argument */
-	{ XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0} },
-	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
-	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
-	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
+	/* mask                 keysym          function         argument   screen */
+	{ XK_ANY_MOD,           XK_Break,       sendbreak,       {.i =  0} },
+	{ ControlMask,          XK_Print,       toggleprinter,   {.i =  0} },
+	{ ShiftMask,            XK_Print,       printscreen,     {.i =  0} },
+	{ XK_ANY_MOD,           XK_Print,       printsel,        {.i =  0} },
 	{ MODKEY|ShiftMask,     XK_K,           zoom,           {.f = +1} },
 	{ MODKEY|ShiftMask,     XK_J,           zoom,           {.f = -1} },
-	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
-	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
-	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
-	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
-	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
-	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
-	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.f = -0.1} },
-	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.f = -0.1} },
+	{ TERMMOD,              XK_Home,        zoomreset,       {.f =  0} },
+	{ TERMMOD,              XK_C,           clipcopy,        {.i =  0} },
+	{ TERMMOD,              XK_V,           clippaste,       {.i =  0} },
+	{ TERMMOD,              XK_O,           changealpha,     {.f = +0.05} },
+	{ TERMMOD,              XK_P,           changealpha,     {.f = -0.05} },
+	//{ TERMMOD,              XK_,           changealphaunfocused, {.f = +0.05} },
+	//{ TERMMOD,              XK_,           changealphaunfocused, {.f = -0.05} },
+	{ ShiftMask,            XK_Page_Up,     kscrollup,       {.i = -1}, S_PRI },
+	{ ShiftMask,            XK_Page_Down,   kscrolldown,     {.i = -1}, S_PRI },
+	{ TERMMOD,              XK_Y,           clippaste,       {.i =  0} },
+	{ ShiftMask,            XK_Insert,      clippaste,       {.i =  0} },
+	{ TERMMOD,              XK_Num_Lock,    numlock,         {.i =  0} },
 };
 
 /*
@@ -488,3 +517,4 @@ static char ascii_printable[] =
 	" !\"#$%&'()*+,-./0123456789:;<=>?"
 	"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
 	"`abcdefghijklmnopqrstuvwxyz{|}~";
+

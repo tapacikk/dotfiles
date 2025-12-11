@@ -1,3 +1,5 @@
 [user]
 	email = xbopoctt@gmail.com
 	name = tapacikk
+[diff]
+	tool = vimdiff

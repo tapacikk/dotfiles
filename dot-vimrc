@@ -15,11 +15,11 @@ nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-k> :wincmd k<CR>
 noremap <C-n> :set nu! relativenumber!<CR>
 nnoremap ;w :up<CR>
-nnoremap ;q :q<CR>
+nnoremap ;q :hide<CR>
 nnoremap ;s :ls<CR>:b<Space>
 nnoremap ;e :e<Space>
 nnoremap ;; :
-nnoremap ;n :NERDTreeToggle<CR>
+nnoremap ;n :NERDTreeToggle<CR> :wincmd =<CR>
 let NERDTreeWinSize=20
 let NERDTreeMinimalUI=1
 let NERDTreeMinimalMenu=1

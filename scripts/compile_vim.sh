@@ -30,6 +30,7 @@ get_plugins() {
     git clone --depth 1 https://github.com/preservim/nerdtree.git "$dir/nerdtree"
     git clone --depth 1 https://github.com/vimwiki/vimwiki.git "$dir/vimwiki"
     git clone --depth 1 https://github.com/sainnhe/everforest.git "$dir/everforest"
+    git clone --depth 1 https://github.com/ervandew/supertab.git "$dir/supertab"
     find "$dir" -name .git -type d -exec rm -rf {} +
     rm -r "$dir/vimwiki/test/resources/testwiki space" 2>/dev/null || true
 }
@@ -40,8 +41,7 @@ build_vim() {
     ./configure --prefix="$INSTALL_PREFIX" \
         --enable-multibyte \
         --with-features=normal \
-        --enable-clipboard \
-        --with-x \
+        --disable-x \
         --disable-gui \
         --disable-mouse \
         --disable-gtk2-check \
@@ -50,10 +50,9 @@ build_vim() {
         --disable-motif-check \
         --disable-athena-check \
         --disable-netbeans \
-        --disable-xsmp \
-        --disable-xsmp-interact \
         --with-compiledby="TARAS" \
-        --with-tlib=ncurses
+        --with-tlib=ncurses \
+        --with-python
     make -j"$(nproc)"
 }
 

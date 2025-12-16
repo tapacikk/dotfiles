@@ -49,3 +49,4 @@ augroup NumberToggle
   " Disable relative numbers (absolute only) when entering Insert mode
   autocmd InsertEnter * set norelativenumber
 augroup END
+set viminfo='100,<50,s10,h,%20

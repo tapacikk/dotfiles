@@ -50,6 +50,7 @@ build_vim() {
         --disable-netbeans \
         --without-x \
         --disable-gui \
+        --without-wayland \
         --disable-mouse \
         --disable-gtk2-check \
         --disable-gtk3-check \

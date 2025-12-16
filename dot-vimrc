@@ -50,3 +50,5 @@ augroup NumberToggle
   autocmd InsertEnter * set norelativenumber
 augroup END
 set viminfo='100,<50,s10,h,%20
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']

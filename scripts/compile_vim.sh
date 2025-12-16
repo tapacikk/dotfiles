@@ -1,7 +1,13 @@
 #!/bin/bash
 set -e
 
-VIM_VERSION="v9.1.0"
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit
+fi
+
+VIM_VERSION="v9.1.1989"
 BUILD_DIR="/opt"
 INSTALL_PREFIX="/usr/local"
 
@@ -39,9 +45,10 @@ build_vim() {
     cd "$BUILD_DIR/vim"
     make distclean 2>/dev/null || true
     ./configure --prefix="$INSTALL_PREFIX" \
-        --enable-multibyte \
         --with-features=normal \
-        --disable-x \
+        --enable-multibyte \
+        --disable-netbeans \
+        --without-x \
         --disable-gui \
         --disable-mouse \
         --disable-gtk2-check \
@@ -49,11 +56,10 @@ build_vim() {
         --disable-gnome-check \
         --disable-motif-check \
         --disable-athena-check \
-        --disable-netbeans \
-        --with-compiledby="TARAS" \
-        --with-tlib=ncurses \
-        --with-python
-    make -j"$(nproc)"
+        --enable-python3interp=yes \
+        --with-python3-config-dir=$(python3-config --configdir) 
+
+    make -j
 }
 
 install_vim() {

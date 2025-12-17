@@ -65,15 +65,6 @@ while [[ $# -gt 0 ]]; do
             PREFIX_GLOBAL="$1"
             shift
             ;;
-        --vasp-tarball)
-            shift
-            if [[ -z "$1" || "$1" == --* ]]; then
-                echo "Error: --vasp-tarball requires a file argument" >&2
-                exit 1
-            fi
-            VASP_TARBALL="$1"
-            shift
-            ;;
         --skip-blas)
             SKIP_BLAS=1
             shift
@@ -107,11 +98,6 @@ while [[ $# -gt 0 ]]; do
 done
 
 
-#if [[ -z "$VASP_TARBALL" ]]; then
-    #echo "Error: --vasp-tarball is required" >&2
-    #print_usage
-    #exit 1
-#fi
 
 # Directory configuration
 export OPENMPI_DIR="$PREFIX_GLOBAL/openmpi"
@@ -122,7 +108,7 @@ export SCALAPACK_DIR="$PREFIX_GLOBAL/scalapack"
 
 # Version configuration
 export OPENMPI_VERSION="4.1.4"
-export HDF5_VERSION="1.10.8"
+export HDF5_VERSION="1.14.5"
 export BLAS_VERSION="0.3.29"
 export FFTW_VERSION="3.3.10"
 export SCALAPACK_VERSION="2.2.2"
@@ -355,6 +341,7 @@ install_hdf5() {
         -DCMAKE_INSTALL_PREFIX="$HDF5_INSTALL_PREFIX"
         -DCMAKE_C_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpicc"
         -DCMAKE_CXX_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpic++"
+        -DHDF5_BUILD_FORTRAN=ON
     )
     
     if cmake .. "${cmake_args[@]}" &> "$log_file"; then
@@ -562,10 +549,11 @@ main() {
     clean_source_directories
     
     # Install packages in dependency order
-    install_openmpi
-    install_blas
-    install_fftw
-    install_scalapack
+    #install_openmpi
+    #install_blas
+    #install_fftw
+    install_hdf5
+    #install_scalapack
     
     log_success "Installation script completed successfully"
     log_info "Installation summary:"
@@ -573,6 +561,7 @@ main() {
     echo "  OpenBLAS: ${BLAS_INSTALL_PREFIX}"
     echo "  FFTW: ${FFTW_INSTALL_PREFIX}"
     echo "  SCALAPACK: ${SCALAPACK_INSTALL_PREFIX}"
+    echo "  HDF5: ${HDF5_INSTALL_PREFIX}"
     echo "  OpenBLAS: ${BLAS_INSTALL_PREFIX}"
 }
 

@@ -25,7 +25,6 @@ Usage: $SCRIPT_NAME [OPTIONS]
 Install VASP
 
 OPTIONS:
-    --vasp-tarball FILE   Path to VASP source tarball (required)
     --prefix DIR          Where to install. Must be writable
     --distclean           Clean all source directories before building
 
@@ -540,7 +539,7 @@ install_scalapack() {
 
 # Main execution
 main() {
-    log_info "Starting VASP installation script"
+    log_info "Starting VASP deps installation script"
     
     print_configuration
 
@@ -549,12 +548,11 @@ main() {
     clean_source_directories
     
     # Install packages in dependency order
-    #install_openmpi
-    #install_blas
-    #install_fftw
+    install_openmpi
+    install_blas
+    install_fftw
     install_hdf5
-    #install_scalapack
-    
+    install_scalapack
     log_success "Installation script completed successfully"
     log_info "Installation summary:"
     echo "  OpenMPI: ${OPENMPI_INSTALL_PREFIX}"

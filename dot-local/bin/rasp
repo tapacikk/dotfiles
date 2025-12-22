@@ -7,6 +7,7 @@ import math
 def parse_arguments(non_interactive_arguments=None):
     parser = argparse.ArgumentParser(prog='rasp',
                                      description='RASSI Parser')
+    parser = argparse.ArgumentParser.add_argument(prog='rasp',
     parser.add_argument('rassi_output', type=open,
                         help='''Output file of the RASSI calculation''')
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),

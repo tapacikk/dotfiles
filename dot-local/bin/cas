@@ -30,6 +30,8 @@ def write_job_script(args):
     BOILERPLATE=f'''#!/bin/bash
 export MOLCAS=/opt/OpenMolcas/latest
 export MOLCAS_WORKDIR=/scratch/{rn}
+export MOLCAS_OUTPUT=./save
+export MOLCAS_SAVE=INCR
 echo "MOLCAS_WORKDIR:" "$MOLCAS_WORKDIR" > SCRATCH_INFO
 export MOLCAS_NPROCS={args.np}
 echo "MOLCAS_NPROCS:" "$MOLCAS_NPROCS" >> SCRATCH_INFO

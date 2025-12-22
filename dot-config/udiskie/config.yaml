@@ -12,8 +12,8 @@ program_options:
     #automount: false
 
 notifications:
-  timeout: 10           # Notification timeout in seconds
-  device_mounted: 20      # Show mount notifications for 5 seconds
+  timeout: 3           # Notification timeout in seconds
+  device_mounted: 8      # Show mount notifications for 5 seconds
 
   notification_actions:
     device_mounted:   [browse]

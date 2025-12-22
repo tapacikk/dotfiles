@@ -176,7 +176,7 @@ def parse_orca_spectrum(file_iterator, spec_line):
         init, arrow, final, e_ev, e_cm, wavelength, fosc, matrix_element, *rest = current_line.split()
         init, final = init[:-5], final[:-5]
         init, final = str(int(init) + 1), str(int(final) + 1)
-        spectrum[init+arrow+final] = (float(e_cm), float(fosc), float(matrix_element))
+        spectrum[init+arrow+final] = {'e_cm': float(e_cm), 'fosc*pop': float(fosc), 'matrix_element': float(matrix_element)}
         current_line = next(file_iterator)
     return spectrum
 

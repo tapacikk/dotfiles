@@ -198,6 +198,7 @@ static const Rule rules[] = {
     RULE(.role = "Msgcompose", .isfloating=1, .floatpos="50% 50%")
     RULE(.role = "EvenDialog", .isfloating=1, .floatpos="50% 50%")
     RULE(.role = "PropertiesDialog", .isfloating=1, .floatpos="50% 50%")
+    RULE(.role = "messageWindow", .isfloating=1, .floatpos="50% 50%")
 };
 
 /* Bar rules allow you to configure what is shown where on the bar, as well as

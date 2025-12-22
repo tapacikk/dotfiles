@@ -1,8 +1,6 @@
 # st version
 VERSION = 0.9.3
 
-# Customize below to fit your system
-
 # paths
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/share/man
@@ -14,9 +12,13 @@ X11LIB = /usr/X11R6/lib
 
 PKG_CONFIG = pkg-config
 
-# Uncomment this for the alpha patch / ALPHA_PATCH
 XRENDER = `$(PKG_CONFIG) --libs xrender`
 
+# hostname detection for fontsize
+HOSTNAME := $(shell hostname)
+ifeq ($(HOSTNAME), yoshipad)
+    CPPFLAGS += -DTHINKPAD
+endif
 
 # includes and libs, uncomment harfbuzz for the ligatures patch
 INCS = -I$(X11INC) \

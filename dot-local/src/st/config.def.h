@@ -5,7 +5,13 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
+
+
+#ifdef THINKPAD
 static char *font = "FiraMono Nerd Font:pixelsize=30:antialias=true:autohint=true:style=Medium";
+#else
+static char *font = "FiraMono Nerd Font:pixelsize=18:antialias=true:autohint=true:style=Medium";
+#endif
 
 static int borderpx = 2;
 

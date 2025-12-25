@@ -34,7 +34,7 @@ set statusline=
 set statusline +=\ %<%F%*            "full path
 set statusline +=%m%*                "modified flag
 "VIMWIKI config
-let g:vimwiki_list = [{ 'path': '/work/notes/wiki'}]
+let g:vimwiki_list = [{ 'path': '/notes/wiki'}]
 "COLORSCHEME
 set termguicolors
 set background=dark
@@ -47,3 +47,24 @@ set viminfo='100,<50,s10,h
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
 let g:lightline = { 'colorscheme': 'one',  }
+
+"select file w/ lf
+function! LF()
+    let temp = tempname()
+    exec 'silent !lf -selection-path=' . shellescape(temp)
+    if !filereadable(temp)
+        redraw!
+        return
+    endif
+    let names = readfile(temp)
+    if empty(names)
+        redraw!
+        return
+    endif
+    exec 'edit ' . fnameescape(names[0])
+    for name in names[1:]
+        exec 'argadd ' . fnameescape(name)
+    endfor
+    redraw!
+endfunction
+command! -bar LF call LF()

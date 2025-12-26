@@ -34,7 +34,10 @@ set statusline=
 set statusline +=\ %<%F%*            "full path
 set statusline +=%m%*                "modified flag
 "VIMWIKI config
-let g:vimwiki_list = [{ 'path': '/notes/wiki'}]
+let g:vimwiki_list = [{'path': '/notes/wiki',
+                      \ 'syntax': 'markdown', 'ext': 'md'}]
+let g:vimwiki_markdown_link_ext=1
+let g:vimwiki_global_ext=1
 "COLORSCHEME
 set termguicolors
 set background=dark
@@ -68,3 +71,6 @@ function! LF()
     redraw!
 endfunction
 command! -bar LF call LF()
+
+
+let g:vimwiki_custom_wiki2html='/home/taras/ass.sh'

@@ -1,7 +1,7 @@
 set nocompatible
 
 filetype plugin on
-set hidden nu relativenumber
+set hidden 
 set incsearch ic wildmenu smartcase noshowmode
 set backspace=indent,eol,start
 set cursorline
@@ -13,7 +13,7 @@ nmap <silent> <c-l> :wincmd l<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-k> :wincmd k<CR>
-noremap <C-n> :set nu! relativenumber!<CR>
+noremap <C-n> :set nu!<CR>
 nnoremap ;w :up<CR>
 nnoremap ;q :hide<CR>
 nnoremap ;s :ls<CR>:b<Space>

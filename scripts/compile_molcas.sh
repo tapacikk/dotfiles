@@ -92,7 +92,7 @@ export BLAS_DIR="$PREFIX_GLOBAL/OpenBLAS"
 export GA_DIR="$PREFIX_GLOBAL/ga"
 
 # Version configuration
-export MOLCAS_VERSION="25.06"
+export MOLCAS_VERSION="25.10"
 export OPENMPI_VERSION="4.1.6"
 export HDF5_VERSION="1.14.5"
 export BLAS_VERSION="0.3.29"
@@ -549,12 +549,12 @@ main() {
 
     check_writable
     
-    clean_source_directories
+    #clean_source_directories
     
     # Install packages in dependency order
-    install_openmpi
-    install_blas
-    install_hdf5
+    #install_openmpi
+    #install_blas
+    #install_hdf5
     install_molcas
     
     log_success "Installation script completed successfully"

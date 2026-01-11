@@ -36,7 +36,7 @@ set statusline +=%m%*                "modified flag
 "VIMWIKI config
 let g:vimwiki_list = [{'path': '/notes/wiki',
                       \ 'syntax': 'markdown', 'ext': 'md'}]
-let g:vimwiki_markdown_link_ext=1
+let g:vimwiki_markdown_link_ext = 0
 let g:vimwiki_global_ext=1
 "COLORSCHEME
 set termguicolors
@@ -55,22 +55,30 @@ let g:lightline = { 'colorscheme': 'one',  }
 function! LF()
     let temp = tempname()
     exec 'silent !lf -selection-path=' . shellescape(temp)
+
     if !filereadable(temp)
         redraw!
         return
     endif
+
     let names = readfile(temp)
     if empty(names)
         redraw!
         return
     endif
-    exec 'edit ' . fnameescape(names[0])
+
+    " Change local directory to the directory of the first selected file
+    let first = names[0]
+    if filereadable(first)
+        exec 'lcd ' . fnameescape(fnamemodify(first, ':p:h'))
+    endif
+
+    exec 'edit ' . fnameescape(first)
     for name in names[1:]
         exec 'argadd ' . fnameescape(name)
     endfor
+
     redraw!
 endfunction
+
 command! -bar LF call LF()
-
-
-let g:vimwiki_custom_wiki2html='/home/taras/ass.sh'

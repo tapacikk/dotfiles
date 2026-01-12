@@ -1,0 +1,42 @@
+# ===== User settings =====
+MOLCAS = ./run.sh
+SCRIPT= /home/taras/.local/bin/cas 
+
+# Input files
+RUN_SCRIPT = run.sh
+GW_INP = gateway.inp
+SW_INP = seward.inp
+SCF_INP = scf.inp
+RASSCF_INP = rasscf.inp
+CASPT2_INP = caspt2.inp
+
+# Output files
+GW_OUT = gateway.out
+SW_OUT = seward.out
+SCF_OUT = scf.out
+RASSCF_OUT = rasscf.out
+CASPT2_OUT = caspt2.out
+
+# Save directory
+
+# ===== Rules =====
+$(RUN_SCRIPT): 
+	$(SCRIPT) shrek
+
+$(GW_OUT): $(GW_INP) $(RUN_SCRIPT)
+	$(MOLCAS) $(GW_INP)
+
+$(SW_OUT): seward.inp gateway.out $(RUN_SCRIPT)
+	$(MOLCAS) $(SW_INP)
+
+$(SCF_OUT): $(SCF_INP) $(GW_OUT) $(SW_OUT) $(RUN_SCRIPT)
+	$(MOLCAS) $(SCF_INP)
+
+$(RASSCF_OUT): $(RASSCF_INP) $(GW_OUT) $(SW_OUT) $(RUN_SCRIPT)
+	$(MOLCAS) $(RASSCF_INP)
+
+$(CASPT2_OUT): $(CASPT2_INP) $(GW_OUT) $(SW_OUT) $(RUN_SCRIPT)
+	$(MOLCAS) $(CASPT2_INP)
+
+clean:
+	rm -f *.out *.log *.status *.err *.xml *.h5 *.JobIph *.RasOrb

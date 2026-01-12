@@ -38,6 +38,7 @@ get_plugins() {
     git clone --depth 1 https://github.com/sainnhe/everforest.git "$dir/everforest"
     git clone --depth 1 https://github.com/ervandew/supertab.git "$dir/supertab"
     git clone --depth 1 https://github.com/itchyny/lightline.vim "$dir/lightline"
+    git clone --depth 1 https://github.com/ryanoasis/vim-devicons.git "$dir/devicons"
     find "$dir" -name .git -type d -exec rm -rf {} +
     rm -r "$dir/vimwiki/test/resources/testwiki space" 2>/dev/null || true
 }

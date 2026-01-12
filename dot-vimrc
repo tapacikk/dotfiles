@@ -16,7 +16,7 @@ nmap <silent> <c-k> :wincmd k<CR>
 noremap <C-n> :set nu!<CR>
 nnoremap ;w :up<CR>
 nnoremap ;q :hide<CR>
-nnoremap ;s :ls<CR>:b<Space>
+nnoremap ;s :ls<CR>:
 nnoremap ;e :e<Space>
 nnoremap ;; :
 nnoremap ;n :NERDTreeToggle<CR> :wincmd =<CR>
@@ -25,6 +25,7 @@ let NERDTreeMinimalUI=1
 let NERDTreeMinimalMenu=1
 let NERDTreeQuitOnOpen=1
 let NERDTreeAutoDeleteBuffer=1
+let NERDTreeWinSizeMax=50
 nnoremap q: <nop>
 nnoremap Q <nop>
 inoremap kj <Esc>

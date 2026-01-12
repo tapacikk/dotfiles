@@ -23,6 +23,8 @@ nnoremap ;n :NERDTreeToggle<CR> :wincmd =<CR>
 let NERDTreeWinSize=20
 let NERDTreeMinimalUI=1
 let NERDTreeMinimalMenu=1
+let NERDTreeQuitOnOpen=1
+let NERDTreeAutoDeleteBuffer=1
 nnoremap q: <nop>
 nnoremap Q <nop>
 inoremap kj <Esc>

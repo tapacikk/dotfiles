@@ -57,6 +57,7 @@ INPUT_FILE=$1
           'rm SAVE/*.molden.*', 
           'rm $Project.status',
           file=args.o, sep='\n')
+    print('#notif\ndunstify "MOLCAS Finished" "$(realpath $1)"', 
     if args.o != sys.stdout:
         os.chmod(args.o.name, 0o775)
 

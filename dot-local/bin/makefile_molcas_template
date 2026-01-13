@@ -6,7 +6,7 @@ SCRIPT := /home/taras/.local/bin/cas
 STATUS_DIR := status
 
 # ================= Steps =================
-STEPS := gateway seward scf rasscf caspt2 loc rassi
+STEPS := gateway seward scf rasscf caspt2
 
 # ================= Optional CASSCF input =================
 # Priority: rasscf.inp > casscf.inp > cas.inp
@@ -27,18 +27,6 @@ LOC_INP := $(firstword \
 	$(wildcard localisation.inp) \
 	$(wildcard localization.inp) \
 	$(wildcard loc.inp))
-
-ifeq ($(CASSCF_INP),)
-$(error No CASSCF input found (rasscf.inp, casscf.inp, or cas.inp))
-endif
-
-ifeq ($(CASPT2_INP),)
-$(error No CASPT2 input found (caspt2.inp, pt2.inp))
-endif
-
-ifeq ($(LOC_INP),)
-$(error No LOCALISATION input found (localisation.inp, localization.inp, loc.inp))
-endif
 
 # ================= Default target =================
 .PHONY: all
@@ -70,6 +58,10 @@ $(STATUS_DIR)/rasscf.done: $(CASSCF_INP) \
 	$(STATUS_DIR)/gateway.done \
 	$(STATUS_DIR)/seward.done \
 	run.sh | $(STATUS_DIR)
+	@if [ -z "$(CASSCF_INP)" ]; then \
+		echo "ERROR: No CASSCF input found (rasscf.inp, casscf.inp, or cas.inp)"; \
+	    exit 1; \
+	fi
 	$(MOLCAS) $(CASSCF_INP)
 	touch $@
 
@@ -78,6 +70,10 @@ $(STATUS_DIR)/caspt2.done: $(CASPT2_INP) \
 	$(STATUS_DIR)/seward.done \
 	$(STATUS_DIR)/rasscf.done \
 	run.sh | $(STATUS_DIR)
+	@if [ -z "$(CASPT2_INP)" ]; then \
+		echo "ERROR: No CASPT2 input found (caspt2.inp, pt2.inp)"; \
+	    exit 1; \
+	fi
 	$(MOLCAS) $(CASPT2_INP)
 	touch $@
 
@@ -85,6 +81,10 @@ $(STATUS_DIR)/loc.done: $(LOC_INP) \
 	$(STATUS_DIR)/gateway.done \
 	$(STATUS_DIR)/seward.done \
 	run.sh | $(STATUS_DIR)
+	@if [ -z "$(LOC_INP)" ]; then \
+	    echo "ERROR: No LOCALISATION input found (localisation.inp, localization.inp, loc.inp)"; \
+	    exit 1; \
+	fi
 	$(MOLCAS) $(LOC_INP)
 	touch $@
 

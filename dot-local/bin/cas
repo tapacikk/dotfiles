@@ -31,12 +31,10 @@ def write_job_script(args):
 export MOLCAS=/opt/OpenMolcas/latest
 export MOLCAS_WORKDIR=/scratch/{rn}
 export MOLCAS_OUTPUT=./save
-export MOLCAS_SAVE=INCR
+export MOLCAS_SAVE=
 echo "MOLCAS_WORKDIR:" "$MOLCAS_WORKDIR" > SCRATCH_INFO
 export MOLCAS_NPROCS={args.np}
-echo "MOLCAS_NPROCS:" "$MOLCAS_NPROCS" >> SCRATCH_INFO
 export Project={args.p}
-echo "Project:" "$Project" >> SCRATCH_INFO
 
 # Check if an input file is provided
 if [ -z "$1" ]; then
@@ -50,11 +48,18 @@ INPUT_FILE=$1
     print('mkdir -p $MOLCAS_WORKDIR', file=args.o)
     print(f'pymolcas -np $MOLCAS_NPROCS $1 2> err ' + '| tee "${INPUT_FILE%.*}.out"', 
           file=args.o)
-    print('rm SAVE/xmldump', 
-          'rm SAVE/*.RasOrb.*', 
-          'rm SAVE/*.SpdOrb.*', 
+    print('''
+if [[ ${PIPESTATUS[0]} -eq 0 ]]; then
+   echo happy landing
+else
+    exit ${PIPESTATUS[0]}
+fi
+''', file=args.o)
+    print('rm $MOLCAS_OUTPUT/xmldump', 
+          'rm $MOLCAS_OUTPUT/*.RasOrb.*', 
+          'rm $MOLCAS_OUTPUT/*.SpdOrb.*', 
           'rm err', 
-          'rm SAVE/*.molden.*', 
+          'rm $MOLCAS_OUTPUT/*.molden.*', 
           'rm $Project.status',
           file=args.o, sep='\n')
     print('#notif\ndunstify "MOLCAS Finished" "$(realpath $1)"', file=args.o)

@@ -1,42 +1,128 @@
-# ===== User settings =====
-MOLCAS = ./run.sh
-SCRIPT= /home/taras/.local/bin/cas 
+# ================= User settings =================
+MOLCAS := ./run.sh
+SCRIPT := /home/taras/.local/bin/cas
 
-# Input files
-RUN_SCRIPT = run.sh
-GW_INP = gateway.inp
-SW_INP = seward.inp
-SCF_INP = scf.inp
-RASSCF_INP = rasscf.inp
-CASPT2_INP = caspt2.inp
+# ================= Directories =================
+STATUS_DIR := status
 
-# Output files
-GW_OUT = gateway.out
-SW_OUT = seward.out
-SCF_OUT = scf.out
-RASSCF_OUT = rasscf.out
-CASPT2_OUT = caspt2.out
+# ================= Steps =================
+STEPS := gateway seward scf rasscf caspt2 loc rassi
 
-# Save directory
+# ================= Optional CASSCF input =================
+# Priority: rasscf.inp > casscf.inp > cas.inp
+CASSCF_INP := $(firstword \
+	$(wildcard rasscf.inp) \
+	$(wildcard casscf.inp) \
+	$(wildcard cas.inp))
 
-# ===== Rules =====
-$(RUN_SCRIPT): 
+
+# Priority: caspt2.inp > pt2.inp
+CASPT2_INP := $(firstword \
+	$(wildcard caspt2.inp) \
+	$(wildcard pt2.inp))
+
+
+# Priority: localisation.inp > localization.inp > loc.inp
+LOC_INP := $(firstword \
+	$(wildcard localisation.inp) \
+	$(wildcard localization.inp) \
+	$(wildcard loc.inp))
+
+ifeq ($(CASSCF_INP),)
+$(error No CASSCF input found (rasscf.inp, casscf.inp, or cas.inp))
+endif
+
+ifeq ($(CASPT2_INP),)
+$(error No CASPT2 input found (caspt2.inp, pt2.inp))
+endif
+
+ifeq ($(LOC_INP),)
+$(error No LOCALISATION input found (localisation.inp, localization.inp, loc.inp))
+endif
+
+# ================= Default target =================
+.PHONY: all
+all: $(STATUS_DIR)/caspt2.done
+
+# ================= Ensure status directory exists =================
+$(STATUS_DIR):
+	mkdir -p $@
+
+# ================= Script generation =================
+run.sh:
 	$(SCRIPT) shrek
+	touch $@
 
-$(GW_OUT): $(GW_INP) $(RUN_SCRIPT)
-	$(MOLCAS) $(GW_INP)
+# ================= Dependency chain =================
+$(STATUS_DIR)/gateway.done: gateway.inp run.sh | $(STATUS_DIR)
+	$(MOLCAS) gateway.inp
+	touch $@
 
-$(SW_OUT): seward.inp gateway.out $(RUN_SCRIPT)
-	$(MOLCAS) $(SW_INP)
+$(STATUS_DIR)/seward.done: seward.inp $(STATUS_DIR)/gateway.done run.sh | $(STATUS_DIR)
+	$(MOLCAS) seward.inp
+	touch $@
 
-$(SCF_OUT): $(SCF_INP) $(GW_OUT) $(SW_OUT) $(RUN_SCRIPT)
-	$(MOLCAS) $(SCF_INP)
+$(STATUS_DIR)/scf.done: scf.inp $(STATUS_DIR)/gateway.done $(STATUS_DIR)/seward.done run.sh | $(STATUS_DIR)
+	$(MOLCAS) scf.inp
+	touch $@
 
-$(RASSCF_OUT): $(RASSCF_INP) $(GW_OUT) $(SW_OUT) $(RUN_SCRIPT)
-	$(MOLCAS) $(RASSCF_INP)
+$(STATUS_DIR)/rasscf.done: $(CASSCF_INP) \
+	$(STATUS_DIR)/gateway.done \
+	$(STATUS_DIR)/seward.done \
+	run.sh | $(STATUS_DIR)
+	$(MOLCAS) $(CASSCF_INP)
+	touch $@
 
-$(CASPT2_OUT): $(CASPT2_INP) $(GW_OUT) $(SW_OUT) $(RUN_SCRIPT)
+$(STATUS_DIR)/caspt2.done: $(CASPT2_INP) \
+	$(STATUS_DIR)/gateway.done \
+	$(STATUS_DIR)/seward.done \
+	$(STATUS_DIR)/rasscf.done \
+	run.sh | $(STATUS_DIR)
 	$(MOLCAS) $(CASPT2_INP)
+	touch $@
 
+$(STATUS_DIR)/loc.done: $(LOC_INP) \
+	$(STATUS_DIR)/gateway.done \
+	$(STATUS_DIR)/seward.done \
+	run.sh | $(STATUS_DIR)
+	$(MOLCAS) $(LOC_INP)
+	touch $@
+
+$(STATUS_DIR)/rassi.done: rassi.inp \
+	$(STATUS_DIR)/gateway.done \
+	$(STATUS_DIR)/seward.done \
+	$(STATUS_DIR)/rasscf.done \
+	run.sh | $(STATUS_DIR)
+	$(MOLCAS) rassi.inp
+	touch $@
+
+# ================= Alias targets =================
+gateway: $(STATUS_DIR)/gateway.done
+seward: $(STATUS_DIR)/seward.done
+scf: $(STATUS_DIR)/scf.done
+rasscf: $(STATUS_DIR)/rasscf.done
+cas: $(STATUS_DIR)/rasscf.done
+caspt2: $(STATUS_DIR)/caspt2.done
+pt2: $(STATUS_DIR)/caspt2.done
+loc: $(STATUS_DIR)/loc.done
+rassi: $(STATUS_DIR)/rassi.done
+
+# ================= Safety =================
+.DELETE_ON_ERROR:
+
+# ================= Cleanup =================
+.PHONY: clean
 clean:
 	rm -f *.out *.log *.status *.err *.xml *.h5 *.JobIph *.RasOrb
+	rm -rf $(STATUS_DIR)
+
+.PHONY: distclean
+distclean:
+	rm -f *.out *.log *.status *.err *.xml *.h5 *.JobIph *.RasOrb 
+	rm -rf $(STATUS_DIR)
+	rm -rf save
+	rm -f run.sh 
+	if [ -f SCRATCH_INFO ]; then \
+	    xargs rm -rf < SCRATCH_INFO; \
+	    rm -f SCRATCH_INFO; \
+	fi

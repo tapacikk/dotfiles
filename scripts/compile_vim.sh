@@ -37,10 +37,22 @@ get_plugins() {
     git clone --depth 1 https://github.com/vimwiki/vimwiki.git "$dir/vimwiki"
     git clone --depth 1 https://github.com/sainnhe/everforest.git "$dir/everforest"
     git clone --depth 1 https://github.com/ervandew/supertab.git "$dir/supertab"
-    git clone --depth 1 https://github.com/itchyny/lightline.vim "$dir/lightline"
     git clone --depth 1 https://github.com/ryanoasis/vim-devicons.git "$dir/devicons"
     find "$dir" -name .git -type d -exec rm -rf {} +
     rm -r "$dir/vimwiki/test/resources/testwiki space" 2>/dev/null || true
+}
+
+install_plugin_help() {
+    local vim_bin="$INSTALL_PREFIX/bin/vim"
+
+    [ -x "$vim_bin" ] || fail "vim binary not found at $vim_bin"
+
+    echo "Generating helptags for plugins…"
+    for plug in nerdtree vimwiki everforest supertab; do
+        $vim_bin -u NONE -c "helptags $INSTALL_PREFIX/share/vim/vim91/pack/dist/start/$plug/doc" -c q
+        ok "Plugin help for $plug installed."
+    done
+
 }
 
 build_vim() {
@@ -85,6 +97,7 @@ main() {
     get_plugins
     build_vim
     install_vim
+    install_plugin_help
     verify
     ok "Vim build complete!"
 }

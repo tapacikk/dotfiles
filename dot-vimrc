@@ -4,8 +4,9 @@ filetype plugin on
 set hidden 
 set incsearch ic wildmenu smartcase noshowmode
 set backspace=indent,eol,start
-set cursorline
+set cursorline laststatus=2
 set nobackup noswapfile
+set wildoptions=pum,fuzzy
 
 syntax enable
 set autoindent expandtab tabstop=4 shiftwidth=4 scrolloff=15
@@ -26,16 +27,13 @@ let NERDTreeMinimalMenu=1
 let NERDTreeQuitOnOpen=1
 let NERDTreeAutoDeleteBuffer=1
 let NERDTreeWinSizeMax=50
+inoremap <C-c> <Esc>
+vnoremap <C-c> <Esc>
 nnoremap q: <nop>
 nnoremap Q <nop>
 inoremap kj <Esc>
 nnoremap n nzzzv
 nnoremap N Nzzzv
-set nowrap
-set laststatus=2
-set statusline=
-set statusline +=\ %<%F%*            "full path
-set statusline +=%m%*                "modified flag
 "VIMWIKI config
 let g:vimwiki_list = [{'path': '/notes/wiki',
                       \ 'syntax': 'markdown', 'ext': 'md'}]
@@ -47,41 +45,62 @@ set background=dark
 let g:everforest_background = 'medium'
 let g:everforest_better_performance = 1
 colorscheme everforest
-inoremap <C-c> <Esc>
 set viminfo='100,<50,s10,h
 
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
-let g:lightline = { 'colorscheme': 'one',  }
 
 "select file w/ lf
 function! LF()
     let temp = tempname()
     exec 'silent !lf -selection-path=' . shellescape(temp)
-
     if !filereadable(temp)
         redraw!
         return
     endif
-
     let names = readfile(temp)
     if empty(names)
         redraw!
         return
     endif
-
-    " Change local directory to the directory of the first selected file
-    let first = names[0]
-    if filereadable(first)
-        exec 'lcd ' . fnameescape(fnamemodify(first, ':p:h'))
-    endif
-
-    exec 'edit ' . fnameescape(first)
+    exec 'edit ' . fnameescape(names[0])
     for name in names[1:]
         exec 'argadd ' . fnameescape(name)
     endfor
-
     redraw!
 endfunction
-
 command! -bar LF call LF()
+
+" statusline
+augroup StatuslineMode
+  autocmd!
+  autocmd ModeChanged *:* call s:UpdateStatuslineColor()
+augroup END
+
+function! s:UpdateStatuslineColor()
+  let m = mode()
+  if m =~# '^i'
+    hi statusline guibg=#A7C080 ctermfg=6 guifg=Black ctermbg=0
+  elseif m =~# '^R'
+    hi statusline guibg=#E67E80 ctermfg=5 guifg=Black ctermbg=0
+  elseif m =~# '^v'
+    hi statusline guibg=#E67E80 ctermfg=15 guifg=Black ctermbg=5
+  elseif m =~# '^V'
+    hi statusline guibg=#E67E80 ctermfg=15 guifg=Black ctermbg=5
+  elseif m =~# "\<C-v>"
+    hi statusline guibg=#D699B6 ctermfg=15 guifg=Black ctermbg=5
+  else
+    hi statusline guibg=#5C6A72 ctermfg=8 guifg=#D3C6AA ctermbg=15
+  endif
+endfunction
+hi statusline guibg=#5C6A72 ctermfg=8 guifg=#D3C6AA ctermbg=15
+
+" Formats the statusline
+set statusline=%t       " file name
+set statusline+=%h      "help file flag
+set statusline+=%m      "modified flag
+set statusline+=%r      "read only flag
+set statusline+=\ %=    " align left
+set statusline+=%y\     " filetype
+set statusline+=%l/%L   " line X of Y 
+set statusline+=\ b:%n  " Buffer number

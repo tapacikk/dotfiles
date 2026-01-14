@@ -36,6 +36,7 @@ nnoremap n nzzzv
 nnoremap N Nzzzv
 inoremap ( ()<Esc>i
 inoremap { {}<Esc>i
+inoremap [ []<Esc>i
 "VIMWIKI config
 let g:vimwiki_list = [{'path': '/notes/wiki',
                       \ 'syntax': 'markdown', 'ext': 'md'}]

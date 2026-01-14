@@ -2,14 +2,14 @@ set nocompatible
 
 filetype plugin on
 set hidden 
-set incsearch ic wildmenu smartcase noshowmode
+set incsearch ic wildmenu smartcase 
 set backspace=indent,eol,start
 set cursorline laststatus=2
 set nobackup noswapfile
 set wildoptions=pum,fuzzy
 
 syntax enable
-set autoindent expandtab tabstop=4 shiftwidth=4 scrolloff=15
+set smartindent expandtab tabstop=4 shiftwidth=4 scrolloff=15
 nmap <silent> <c-l> :wincmd l<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-j> :wincmd j<CR>
@@ -34,6 +34,8 @@ nnoremap Q <nop>
 inoremap kj <Esc>
 nnoremap n nzzzv
 nnoremap N Nzzzv
+inoremap ( ()<Esc>i
+inoremap { {}<Esc>i
 "VIMWIKI config
 let g:vimwiki_list = [{'path': '/notes/wiki',
                       \ 'syntax': 'markdown', 'ext': 'md'}]

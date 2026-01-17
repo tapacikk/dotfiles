@@ -5,7 +5,7 @@ syntax enable
 set incsearch ic wildmenu smartcase hidden
 set backspace=indent,eol,start
 set cursorline laststatus=2
-set nobackup noswapfile
+set nobackup noswapfile nowrap
 set wildoptions=pum,fuzzy
 set smartindent expandtab tabstop=4 shiftwidth=4 scrolloff=15
 set viminfo='100,<50,s10,h

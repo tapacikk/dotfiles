@@ -196,7 +196,8 @@ static const Rule rules[] = {
     // thunderbird windows
     RULE(.class = "thunderbird-default", .tags = 1 << 3)
     RULE(.role = "Msgcompose", .isfloating=1, .floatpos="50% 50%")
-    RULE(.role = "EvenDialog", .isfloating=1, .floatpos="50% 50%")
+    RULE(.role = "EventDialog", .isfloating=1, .floatpos="50% 50%")
+    RULE(.role = "EventSummaryDialog", .isfloating=1, .floatpos="50% 50%")
     RULE(.role = "PropertiesDialog", .isfloating=1, .floatpos="50% 50%")
     RULE(.role = "messageWindow", .isfloating=1, .floatpos="50% 50%")
 };

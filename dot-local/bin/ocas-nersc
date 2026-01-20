@@ -1,0 +1,92 @@
+#!/usr/bin/env python3
+import os 
+import stat
+import argparse
+import sys
+import random
+
+def parse_arguments():
+    parser = argparse.ArgumentParser(prog='ocas',
+                                     description='prep the dir to run orca')
+    parser.add_argument('-o', nargs='?', type=check_existing_file,
+            metavar='OUTFILE', default='run.sh',
+            help='file to write your job script.\
+            Defaults to run.sh')
+    args = parser.parse_args()
+    return args
+
+
+def check_existing_file(output_name):
+    if (os.path.isfile(output_name)):
+        y = input(f'File {output_name} already exists. Overwrite? (y/n) ')
+        if not y.lower() == 'y': 
+            print('Cowardly refusing to overwrite. Exiting now.')
+            exit(0)
+    return os.path.join(output_name)
+
+
+
+def write_job_script(args):
+    rn = random.randint(100000, 1000000)
+    while os.path.isdir(os.path.join('/pscratch', 'sd', 't', 'taras', 'orca', 'fac-modes', str(rn))):
+        rn = random.randint(0, 1000000)
+    BOILERPLATE='''#!/bin/bash
+export SUBMIT_DIR=$(pwd)
+export ORCA=/global/cfs/cdirs/m4482/taras/opt/orca/6.1.0
+export XTB=/global/cfs/cdirs/m4482/taras/opt/xtb/6.7.1
+export XTBEXE=/global/cfs/cdirs/m4482/taras/opt/xtb/6.7.1/bin/xtb
+export ORCA_WORKDIR=/pscratch/sd/t/taras/orca/fac-modes/SHREK
+export MPIROOT=/global/common/software/m4482/openmpi/4.1.6
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MPIROOT/lib
+export PATH=$PATH:$MPIROOT/bin
+echo "ORCA_WORKDIR:" "$ORCA_WORKDIR" > SCRATCH_INFO
+
+VERBOSE=0
+while getopts "v" OPTION; do
+    case $OPTION in
+        v) VERBOSE=1 ;;
+        *)
+            echo "Usage: $0 [-v] input_file.inp"
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+# Check if an input file is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 input_file.inp"
+    exit 1
+fi
+# main script
+INPUT_FILE=$1
+OUTPUT_FILE="$SUBMIT_DIR/${INPUT_FILE%.*}.out"
+mkdir -p $ORCA_WORKDIR
+if [ ! -L workdir ]; then ln -s $ORCA_WORKDIR workdir; fi
+cp $1 $ORCA_WORKDIR
+# cp the geometry here
+cp *.xyz $ORCA_WORKDIR
+# run the calculation
+pushd $ORCA_WORKDIR
+if [ "$VERBOSE" -eq 1 ]; then
+    $ORCA/orca "$INPUT_FILE" 2> err | tee "$OUTPUT_FILE"
+else
+    echo Running in the non-verbose, mode, check "$OUTPUT_FILE".
+    $ORCA/orca "$INPUT_FILE" 2> err > "$OUTPUT_FILE"
+fi
+popd
+'''
+    BOILERPLATE = BOILERPLATE.replace('SHREK', str(rn))
+    with open(args.o, 'w') as f:
+        print(BOILERPLATE, file=f)
+
+
+
+def main():
+    args = parse_arguments()
+    write_job_script(args)
+    os.chmod(args.o,  0o770)
+
+
+if __name__ == '__main__':
+    main()

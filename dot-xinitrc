@@ -55,7 +55,11 @@ clock() {
 
 bat() {
     [ -f /sys/class/power_supply/BAT0/capacity ] || return 0
-    printf "  $(cat /sys/class/power_supply/BAT0/capacity)/$(cat /sys/class/power_supply/BAT1/capacity) "
+    BAT0=$(cat /sys/class/power_supply/BAT0/capacity)
+    BAT1=$(cat /sys/class/power_supply/BAT1/capacity)
+    if [ "$(cat /sys/class/power_supply/BAT0/status)" = "Charging" ];then BAT0_CHRG="";fi
+    if [ "$(cat /sys/class/power_supply/BAT1/status)" = "Charging" ];then BAT1_CHRG="";fi
+    printf "  ${BAT0}${BAT0_CHRG}/${BAT1}${BAT1_CHRG}"
 }
 
 syncthing_status() {
@@ -75,7 +79,7 @@ xset r rate 200 35
 ### Manage tmux
 #
 if ! tmux has-session -t main ; then tmux new -d -s main ; fi
-if ! tmux has-session -t scratchpad ; then tmux new -d -s scratchpad ; tmux set status off; fi
+if ! tmux has-session -t scratchpad ; then tmux new -d -s scratchpad ; fi
 
 if [[ $(hostname) == number-machine ]];then
 xrandr --output DVI-D-0 --mode 1920x1200 --pos 1920x0 --rotate left --output HDMI-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal 

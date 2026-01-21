@@ -33,6 +33,9 @@ inoremap kj <Esc>
 nnoremap n nzzzv
 nnoremap N Nzzzv
 cabbrev lcd lcd %:p:h
+cabbrev !p !tmux split -p25; tmux send-keys -t 2 python3\ % Enter
+cabbrev !b !tmux split -p25; tmux send-keys -t 2 bash\ % Enter
+cabbrev !c !tmux split -p25; tmux send-keys -t 2 cc\ % Enter
 " braces
 inoremap ( ()<Esc>i
 inoremap { {<CR>}<Esc>ko

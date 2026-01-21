@@ -2,7 +2,7 @@
 set nocompatible
 filetype plugin on
 syntax enable
-set incsearch ic wildmenu smartcase hidden
+set incsearch ic wildmenu smartcase hidden title
 set backspace=indent,eol,start
 set cursorline laststatus=2
 set nobackup noswapfile nowrap

@@ -1,5 +1,4 @@
 set shell bash
-map R &./run.sh $f
 set shellopts '-eu'
 set ifs "\n"
 set scrolloff 10
@@ -11,7 +10,8 @@ set icons
 set sortby ext
 map . :set hidden!
 map I $less +G $f
-
+map K :updir; up; open
+map J :updir; down; open
 
 # Path links
 map gw cd /work
@@ -66,18 +66,6 @@ cmd zip ${{
     rm -rf $1
 }}
 
-cmd copy_path ${{
-    fullpath=$(realpath $f) 
-    echo $fullpath | xclip -selection clipboard
-    notify-send "Copied to clipboard:" "$fullpath"
-}}
-
-cmd copy_path ${{
-    fullpath=$(realpath $f) 
-    echo $fullpath | xclip -selection clipboard
-    notify-send "Copied to clipboard:" "$fullpath"
-}}
-
 #Previews
 set previewer ctpv
 set cleaner ctpvclear
@@ -93,14 +81,11 @@ cmd new_node %{{
     fi
 }}
 
-cmd file_size ${{
-    size=$(du -hs $f)
-    lf -remote "send :echo ${size}"
+map a :push :new_node<space>
+cmd on-cd &{{
+    lf -remote "send $id tty-write \"\033]0;lf:$PWD\007\""
 }}
 
+# also run at startup
+on-cd
 
-map m
-map mr &./run.sh $f
-map ma :push :new_node<space>
-map mp :copy_path
-map ms :file_size

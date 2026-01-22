@@ -104,3 +104,6 @@ export PS1="${GREEN}${ITALIC}\u${RESET}${GREY}@${FG}${ITALIC}\h${RESET} \
 ${YELLOW}${BOLD}\w${RESET} ${AQUA}➤ ${RESET}"
 
 #alias tmux="tmux new -A -s main"
+alias v=vim 
+alias vi=vim 
+

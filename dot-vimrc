@@ -36,11 +36,6 @@ cabbrev lcd lcd %:p:h
 cabbrev !p !tmux split -p25; tmux send-keys -t 2 python3\ % Enter
 cabbrev !b !tmux split -p25; tmux send-keys -t 2 bash\ % Enter
 cabbrev !c !tmux split -p25; tmux send-keys -t 2 cc\ % Enter
-" braces
-inoremap ( ()<Esc>i
-inoremap { {<CR>}<Esc>ko
-inoremap [ []<Esc>i
-inoremap /* /*  */<Esc>hhi
 " NERDTree
 let NERDTreeWinSize=20
 let NERDTreeMinimalUI=1

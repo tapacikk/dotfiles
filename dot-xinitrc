@@ -57,9 +57,9 @@ bat() {
     [ -f /sys/class/power_supply/BAT0/capacity ] || return 0
     BAT0=$(cat /sys/class/power_supply/BAT0/capacity)
     BAT1=$(cat /sys/class/power_supply/BAT1/capacity)
-    if [ "$(cat /sys/class/power_supply/BAT0/status)" = "Charging" ];then BAT0_CHRG="";fi
-    if [ "$(cat /sys/class/power_supply/BAT1/status)" = "Charging" ];then BAT1_CHRG="";fi
-    printf "  ${BAT0}${BAT0_CHRG}/${BAT1}${BAT1_CHRG}"
+    if [ "$(cat /sys/class/power_supply/BAT0/status)" = "Charging" ];then BAT0_CHRG="*";fi
+    if [ "$(cat /sys/class/power_supply/BAT1/status)" = "Charging" ];then BAT1_CHRG="*";fi
+    printf "  ${BAT0}${BAT0_CHRG}/${BAT1}${BAT1_CHRG} "
 }
 
 syncthing_status() {

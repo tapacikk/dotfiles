@@ -38,6 +38,7 @@ get_plugins() {
     git clone --depth 1 https://github.com/sainnhe/everforest.git "$dir/everforest"
     git clone --depth 1 https://github.com/ervandew/supertab.git "$dir/supertab"
     git clone --depth 1 https://github.com/ryanoasis/vim-devicons.git "$dir/devicons"
+    git clone --depth 1 https://github.com/jiangmiao/auto-pairs.git "$dir/auto-pairs"
     find "$dir" -name .git -type d -exec rm -rf {} +
     rm -r "$dir/vimwiki/test/resources/testwiki space" 2>/dev/null || true
 }
@@ -48,7 +49,7 @@ install_plugin_help() {
     [ -x "$vim_bin" ] || fail "vim binary not found at $vim_bin"
 
     echo "Generating helptags for plugins…"
-    for plug in nerdtree vimwiki everforest supertab; do
+    for plug in nerdtree vimwiki everforest supertab auto-pairs; do
         $vim_bin -u NONE -c "helptags $INSTALL_PREFIX/share/vim/vim91/pack/dist/start/$plug/doc" -c q
         ok "Plugin help for $plug installed."
     done
@@ -74,7 +75,7 @@ build_vim() {
         --enable-python3interp=yes \
         --with-python3-config-dir=$(python3-config --configdir) 
 
-    make -j
+    make -j8
 }
 
 install_vim() {

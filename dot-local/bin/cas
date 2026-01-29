@@ -15,8 +15,6 @@ def parse_arguments():
                         help='number of MPI processes')
     parser.add_argument('-p', type=str, metavar='PROJECT',
                         help='Project name', default='molcas')
-    <shrek and 
-    donkey>
     parser.add_argument('-o', nargs='?', type=argparse.FileType('w'),
                         metavar='OUTFILE', default='run.sh',
                         help='file to write your job script.\

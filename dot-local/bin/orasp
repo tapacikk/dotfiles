@@ -186,7 +186,7 @@ def print_spectrum(args):
         print(f'transition', f'energy_{args.units}', 'osc_str', '<i|mu|f>^2',
               file=args.o, sep=',')
         for k, v in args.spectrum.items():
-            print(k, v[0], v[1], v[2], file=args.o, sep=',')
+            print(k, v['e_cm'], v['fosc*pop'], v['matrix_element'], file=args.o, sep=',')
         return
     dict_name = args.spectype if args.py == None else args.py
     print(f'data_{dict_name} = ', '{', file=args.o)

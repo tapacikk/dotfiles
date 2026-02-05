@@ -39,6 +39,7 @@ xmlgetnext() {
 
 declare -A youtube_channels=(
     ["Veritasium"]="https://www.youtube.com/c/veritasium"
+    ["BreadOnPenguins"]="https://www.youtube.com/@BreadOnPenguins"
     ["Agadmator"]="https://www.youtube.com/@agadmator"
     ["Steve Mould"]="https://www.youtube.com/@SteveMould"
     ["Vsauce"]="https://www.youtube.com/@Vsauce"

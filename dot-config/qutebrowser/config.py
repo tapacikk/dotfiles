@@ -46,21 +46,19 @@ pallet = {
     'statusline1': '#a7c080',
     'statusline2': '#d3c6aa',
     'statusline3': '#e67e80',
+    'bg_dim': '#232a2e',
+    'bg0': '#2d353b',
+    'bg1': '#343f44',
+    'bg2': '#3d484d',
+    'bg3': '#475258',
+    'bg4': '#4f585e',
+    'bg5': '#56635f',
+    'bg_visual': '#543a48',
+    'bg_red': '#514045',
+    'bg_green': '#425047',
+    'bg_blue': '#3a515d',
+    'bg_yellow': '#4d4c43',
 }
-pallet.update({
-        'bg_dim': '#232a2e',
-        'bg0': '#2d353b',
-        'bg1': '#343f44',
-        'bg2': '#3d484d',
-        'bg3': '#475258',
-        'bg4': '#4f585e',
-        'bg5': '#56635f',
-        'bg_visual': '#543a48',
-        'bg_red': '#514045',
-        'bg_green': '#425047',
-        'bg_blue': '#3a515d',
-        'bg_yellow': '#4d4c43',
-})
 c.colors.webpage.bg = pallet['bg0']
 c.colors.keyhint.fg = pallet['fg']
 c.colors.keyhint.suffix.fg = pallet['red']
@@ -99,13 +97,14 @@ c.colors.statusbar.url.fg = pallet['fg']
 c.colors.statusbar.url.hover.fg = pallet['blue']
 c.colors.statusbar.url.success.http.fg = pallet['green']
 c.colors.statusbar.url.success.https.fg = pallet['green']
+#tabs
 c.colors.tabs.bar.bg = pallet['bg_dim']
 c.colors.tabs.even.bg = pallet['bg0']
 c.colors.tabs.odd.bg = pallet['bg0']
 c.colors.tabs.even.fg = pallet['fg']
 c.colors.tabs.odd.fg = pallet['fg']
-c.colors.tabs.selected.even.bg = pallet['bg2']
-c.colors.tabs.selected.odd.bg = pallet['bg2']
+c.colors.tabs.selected.even.bg = pallet['bg_visual']
+c.colors.tabs.selected.odd.bg = pallet['bg_visual']
 c.colors.tabs.selected.even.fg = pallet['fg']
 c.colors.tabs.selected.odd.fg = pallet['fg']
 c.colors.tabs.indicator.start = pallet['blue']

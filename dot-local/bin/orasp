@@ -76,10 +76,13 @@ def get_zeta(args):
             next(args.orca_output)
             for i in range(7):
                 root_collection.append(next(args.orca_output).split()[2])
+            [next(args.orca_output) for _ in range(6)]
+            reference_e = float(next(args.orca_output).split()[-2])
             if args.zeta == 'cas':
                 break
             elif args.zeta == 'nevpt2':
                 root_collection = [].copy()
+                refrence_e = 0
                 break
     #parse nevpt2 ailft roots
     while 1:
@@ -91,6 +94,8 @@ def get_zeta(args):
             next(args.orca_output)
             for i in range(7):
                 root_collection.append(next(args.orca_output).split()[2])
+            [next(args.orca_output) for _ in range(6)]
+            reference_e = float(next(args.orca_output).split()[-2])
             break
     # parse zeta_f
     while 1:
@@ -98,7 +103,7 @@ def get_zeta(args):
         if 'ZETA_F' in line:
             zeta = float(line.split()[-1])
             break
-    return zeta, list(map(float, root_collection))
+    return zeta, list(map(float, root_collection)), reference_e
 
 
 def seek(file_iterator, target_line):
@@ -209,20 +214,20 @@ def print_spectrum(args):
 
 def main(non_interactive_arguments=None):
     args = parse_arguments(non_interactive_arguments)
+    cas_roots = get_roots(args)
+    nevpt2_roots = get_roots(args)
+    if not cas_roots or not nevpt2_roots:
+        return 1
     if args.zeta:
-        z, ailft_roots = get_zeta(args)
+        z, ailft_roots, reference_e = get_zeta(args)
         if non_interactive_arguments == None:
-            print(z, ailft_roots, file=args.o)
-        return z, ailft_roots
+            print(z, ailft_roots, reference_e, file=args.o)
+        return z, ailft_roots, reference_e
     if args.g_factors:
         g=get_g_factors(args)
         return g
     if args.soc_info:
         return get_soc_info(args)
-    roots = get_roots(args)
-    roots = get_roots(args)
-    if not roots:
-        return 1
     elif args.roots_only:
         #print roots, convert to cm
         args.orca_output.close()

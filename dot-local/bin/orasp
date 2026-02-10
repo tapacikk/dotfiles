@@ -25,7 +25,7 @@ def parse_arguments(non_interactive_arguments=None):
                         help='Output in python format. \
                               Optionally can specify the dict name',
                         nargs='?')
-    parser.add_argument('--roots-only', action='store_true',
+    parser.add_argument('--roots-only', choices=['cas', 'nevpt2'],
                         help='only print the roots')
     parser.add_argument('--g-factors', action='store_true',
                         help='only print the g-factors')
@@ -41,19 +41,17 @@ def parse_arguments(non_interactive_arguments=None):
     args.filename = args.orca_output.name
     return args
 
-def get_roots(args):
+def get_roots(file_iter):
     roots = {}
+    soc_line = 'Lowest eigenvalue of the SOC matrix:'
     started = 0
-    while True: 
-        line = next(args.orca_output)
-        if 'Using One-Photon Spectroscopy Tool' in line: 
-            for i in range(5): next(args.orca_output)
-            break
-    for line in args.orca_output:
+    roots['ref_e'] = float(seek(file_iter, soc_line).split()[-2])
+    seek(file_iter, 'Using One-Photon Spectroscopy Tool')
+    skip(file_iter, 5)
+    for line in file_iter:
         if not line.split(): break
         rootnum, colon, energy, *rest = line.split()
         roots[rootnum] = energy
-    args.roots = roots
     return roots
 
 def get_g_factors(args):
@@ -65,44 +63,31 @@ def get_g_factors(args):
     return next(args.orca_output).split()
 
 
-def get_zeta(args):
+def get_zeta(output_iter, method):
     zeta = 0
     root_collection = []
+    ailft_line = 'The ligand field one electron eigenfunctions:'
+    zeta_line = 'ZETA_F'
     # parse cas ailft roots
-    while 1:
-        line = next(args.orca_output)
-        if 'The ligand field one electron eigenfunctions:' in line:
-            next(args.orca_output)
-            next(args.orca_output)
-            for i in range(7):
-                root_collection.append(next(args.orca_output).split()[2])
-            [next(args.orca_output) for _ in range(6)]
-            reference_e = float(next(args.orca_output).split()[-2])
-            if args.zeta == 'cas':
-                break
-            elif args.zeta == 'nevpt2':
-                root_collection = [].copy()
-                refrence_e = 0
-                break
+    seek(output_iter, ailft_line)
+    skip(output_iter, 2)
+    for i in range(7):
+        root_collection.append(next(output_iter).split()[2])
+    skip(output_iter, 6)
+    reference_e = float(next(output_iter).split()[-2])
+    if method == 'cas':
+        zeta = float(seek(output_iter, zeta_line).split()[-1])
+        return zeta, list(map(float, root_collection)), reference_e
+    root_collection = [].copy()
+    refrence_e = 0
     #parse nevpt2 ailft roots
-    while 1:
-        if args.zeta == 'cas':
-            break
-        line = next(args.orca_output)
-        if 'The ligand field one electron eigenfunctions:' in line:
-            next(args.orca_output)
-            next(args.orca_output)
-            for i in range(7):
-                root_collection.append(next(args.orca_output).split()[2])
-            [next(args.orca_output) for _ in range(6)]
-            reference_e = float(next(args.orca_output).split()[-2])
-            break
-    # parse zeta_f
-    while 1:
-        line = next(args.orca_output)
-        if 'ZETA_F' in line:
-            zeta = float(line.split()[-1])
-            break
+    seek(output_iter, ailft_line)
+    skip(output_iter, 2)
+    for i in range(7):
+        root_collection.append(next(output_iter).split()[2])
+    skip(output_iter, 6)
+    reference_e = float(next(output_iter).split()[-2])
+    zeta = float(seek(output_iter, zeta_line).split()[-1])
     return zeta, list(map(float, root_collection)), reference_e
 
 
@@ -111,6 +96,11 @@ def seek(file_iterator, target_line):
     while target_line not in line:
         line = next(file_iterator)
     return line
+
+# skip: skip n lines in the iterator
+def skip(file_iterator, n):
+    for i in range(n): 
+        next(file_iterator)
 
 def parse_one_soc_state(file_iterator, current_state, states_dict):
     current_state_dict = states_dict[current_state]
@@ -214,25 +204,27 @@ def print_spectrum(args):
 
 def main(non_interactive_arguments=None):
     args = parse_arguments(non_interactive_arguments)
-    cas_roots = get_roots(args)
-    nevpt2_roots = get_roots(args)
+    cas_roots = get_roots(args.orca_output)
+    nevpt2_roots = get_roots(args.orca_output)
     if not cas_roots or not nevpt2_roots:
         return 1
     if args.zeta:
-        z, ailft_roots, reference_e = get_zeta(args)
+        z, ailft_roots, reference_e = get_zeta(args.orca_output, args.zeta)
+        root_dict = cas_roots if args.zeta == 'cas' else nevpt2_roots
+        root00 = root_dict['ref_e']
         if non_interactive_arguments == None:
-            print(z, ailft_roots, reference_e, file=args.o)
-        return z, ailft_roots, reference_e
+            print(z, ailft_roots, reference_e, root00, file=args.o)
+        return z, ailft_roots, reference_e, root00
     if args.g_factors:
         g=get_g_factors(args)
         return g
     if args.soc_info:
         return get_soc_info(args)
     elif args.roots_only:
-        #print roots, convert to cm
         args.orca_output.close()
-        [print(_, file=args.o) for _ in args.roots.values()]
-        return args.roots
+        root_dict = cas_roots if args.roots_only == 'cas' else nevpt2_roots
+        [print(_, file=args.o) for _ in root_dict.values()]
+        return root_dict
     spec_options = {
         'l': 'TRANSITION ELECTRIC DIPOLE MOMENTS',
         'v': 'TRANSITION VELOCITY DIPOLE MOMENTS',

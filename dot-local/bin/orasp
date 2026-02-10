@@ -29,7 +29,7 @@ def parse_arguments(non_interactive_arguments=None):
                         help='only print the roots')
     parser.add_argument('--g-factors', action='store_true',
                         help='only print the g-factors')
-    parser.add_argument('--zeta', action='store_true',
+    parser.add_argument('--zeta', choices=['cas', 'nevpt2'],
                         help='only print the zeta')
     parser.add_argument('--soc-info', action='store_true',
                         help='print the soc info for casscf and caspt2')
@@ -68,6 +68,7 @@ def get_g_factors(args):
 def get_zeta(args):
     zeta = 0
     root_collection = []
+    # parse cas ailft roots
     while 1:
         line = next(args.orca_output)
         if 'The ligand field one electron eigenfunctions:' in line:
@@ -75,9 +76,15 @@ def get_zeta(args):
             next(args.orca_output)
             for i in range(7):
                 root_collection.append(next(args.orca_output).split()[2])
-            root_collection = [].copy()
-            break
+            if args.zeta == 'cas':
+                break
+            elif args.zeta == 'nevpt2':
+                root_collection = [].copy()
+                break
+    #parse nevpt2 ailft roots
     while 1:
+        if args.zeta == 'cas':
+            break
         line = next(args.orca_output)
         if 'The ligand field one electron eigenfunctions:' in line:
             next(args.orca_output)
@@ -85,6 +92,7 @@ def get_zeta(args):
             for i in range(7):
                 root_collection.append(next(args.orca_output).split()[2])
             break
+    # parse zeta_f
     while 1:
         line = next(args.orca_output)
         if 'ZETA_F' in line:
@@ -203,6 +211,8 @@ def main(non_interactive_arguments=None):
     args = parse_arguments(non_interactive_arguments)
     if args.zeta:
         z, ailft_roots = get_zeta(args)
+        if non_interactive_arguments == None:
+            print(z, ailft_roots, file=args.o)
         return z, ailft_roots
     if args.g_factors:
         g=get_g_factors(args)

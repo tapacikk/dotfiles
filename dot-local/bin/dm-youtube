@@ -78,7 +78,7 @@ main() {
     fi
 }
 
-MENU="dmenu -i -g 1 -p "
-MENU_VI="dmenu -vi -i -g 1 -p "
+MENU="dmenu -i -g 1 -l 15 -p "
+MENU_VI="dmenu -vi -i -g 1 -l 15 -p "
 [[ "${BASH_SOURCE[0]}" == "${0}" ]] && main
 

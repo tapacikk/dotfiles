@@ -1,18 +1,19 @@
 from socket import gethostname
 per_computer_settings = {
-    'yoshipad':       ['20pt', '150%'],
-    'wputer':         ['14pt', '100%'],
-    'number-machine': ['12pt', '100%'],
+    'yoshipad':       ['20pt', '150%', '16pt default_family'],
+    'wputer':         ['14pt', '100%', '12pt default_family'],
+    'number-machine': ['12pt', '100%', '10pt default_family'],
 }
 c.fonts.default_size = per_computer_settings[gethostname()][0]
 c.fonts.default_family = "FiraMono Nerd Font"
+c.fonts.tabs.selected = c.fonts.tabs.unselected = per_computer_settings[gethostname()][2]
 config.load_autoconfig(False)
 config.set('content.cookies.accept', 'never', 'chrome-devtools://*')
 config.set('content.headers.accept_language', '', 'https://matchmaker.krunker.io/*')
 config.set('scrolling.smooth', True)
-config.set('downloads.remove_finished', 1000)
+config.set('downloads.remove_finished', 5000)
 config.set('tabs.show', 'always')
-config.set('tabs.position', 'top')
+config.set('tabs.position', 'left')
 config.set('tabs.title.alignment', 'left')
 config.set('content.images', True, 'chrome-devtools://*')
 config.set('content.javascript.enabled', True, 'qute://*/*')
@@ -27,8 +28,7 @@ config.unbind('<ctrl+n>')
 config.bind('<ctrl+n>', 'config-cycle tabs.show never always')
 config.bind('<Ctrl-c>', 'mode-leave', mode='insert')
 config.set('zoom.default', per_computer_settings[gethostname()][1])
-
-c.tabs.padding = {'top': 5, 'bottom': 5, 'right': 9, 'left': 5}
+c.tabs.padding = {'top': 2, 'bottom': 2, 'right': 9, 'left': 1}
 c.tabs.indicator.width = 0 
 # Everforest Colorscheme
 pallet = {
@@ -59,7 +59,7 @@ pallet = {
     'bg_blue': '#3a515d',
     'bg_yellow': '#4d4c43',
 }
-c.colors.webpage.bg = pallet['bg0']
+#c.colors.webpage.bg = pallet['bg0']
 c.colors.keyhint.fg = pallet['fg']
 c.colors.keyhint.suffix.fg = pallet['red']
 c.colors.messages.error.bg = pallet['bg_red']

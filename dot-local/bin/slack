@@ -1,0 +1,7 @@
+#!/bin/bash
+
+mkdir -p $HOME/.cache/slack
+echo "set guinavbar=never" > $HOME/.cache/slack/viebrc
+echo "set guitabbar=never" >> $HOME/.cache/slack/viebrc
+echo "set nativenotification=always" >> $HOME/.cache/slack/viebrc
+/usr/bin/vieb --erwic=$HOME/.config/Vieb/slack.json --datafolder=$HOME/.cache/slack/ 

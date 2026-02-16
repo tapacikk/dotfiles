@@ -80,8 +80,8 @@ static char hidselfgcolor[]              = "#2d353b";
 static char hidnormbgcolor[]             = "#222222";
 static char hidselbgcolor[]              = "#222222";
 
-static char urgfgcolor[]                 = "#bbbbbb";
-static char urgbgcolor[]                 = "#222222";
+static char urgfgcolor[]                 = "#d3c6aa";
+static char urgbgcolor[]                 = "#e67e80";
 static char urgbordercolor[]             = "#ff0000";
 static char urgfloatcolor[]              = "#db8fd9";
 
@@ -147,7 +147,7 @@ static char *colors[][ColCount] = {
  */
 static char *tagicons[][NUMTAGS] =
 {
-	[DEFAULT_TAGS]        = {"", "", "󰄻", "", "󰏆", "", "7", "8", "9"},
+	[DEFAULT_TAGS]        = {"", "", "󰄻", "", "󰏆", "", "7", "8", "m"},
 	[ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
 	[ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
@@ -193,6 +193,7 @@ static const Rule rules[] = {
     RULE(.class = "battop", .isterminal=1, .isfloating=1, .floatpos="50% +800y 200w 200h") // ↓
     RULE(.class = "scratch", .isterminal=1, .isfloating=1, .floatpos="50% 50%") // center
     RULE(.class = "mpv", .isfloating=1,) 
+    RULE(.class = "Slack", .tags = 1 << 5)
     // thunderbird windows
     RULE(.class = "thunderbird-default", .tags = 1 << 3)
     RULE(.role = "Msgcompose", .isfloating=1, .floatpos="50% 50%")

@@ -1,7 +1,10 @@
 " Options
 set adblockernotifications=error
 set externalcommand=mpv
-set searchwords={"yt":"youtube.com/results?search_query=%s", "s":"scholar.google.com/scholar?q=%s", "arch":"wiki.archlinux.org/index.php?search=%s"}
+set searchwords+=yt~youtube.com/results?search_query=%s
+set searchwords+=s~scholar.google.com/scholar?q=%s
+set searchwords+=arch~wiki.archlinux.org/index.php?search=%s
+set searchwords+=w~en.wikipedia.org/wiki/Special:Search?search=%s
 set shell=/bin/bash
 set suggestcommands=900
 set suggesttopsites=0

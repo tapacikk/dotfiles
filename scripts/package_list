@@ -1,8 +1,7 @@
-nala
-stow
-build-essential
 gcc
 gfortran
+stow
+build-essential
 xorg
 git
 libx11-dev

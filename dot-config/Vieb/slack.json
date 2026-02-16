@@ -1,0 +1,9 @@
+{
+    "name": "Slack",
+    "apps": [
+        {
+            "container": "slack",
+            "url": "https://ucla.slack.com"
+        }
+    ]
+}

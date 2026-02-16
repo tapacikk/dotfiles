@@ -106,4 +106,5 @@ ${YELLOW}${BOLD}\w${RESET} ${AQUA}➤ ${RESET}"
 #alias tmux="tmux new -A -s main"
 alias v=vim 
 alias vi=vim 
+alias slack="/usr/bin/vieb --erwic=$HOME/.config/Vieb/slack.json --datafolder=$HOME/.cache/slack"
 

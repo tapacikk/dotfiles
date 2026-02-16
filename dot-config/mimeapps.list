@@ -5,6 +5,11 @@ inode/directory=lf.desktop
 x-scheme-handler/mailto=userapp-Thunderbird-3W8HH3.desktop
 message/rfc822=userapp-Thunderbird-3W8HH3.desktop
 x-scheme-handler/mid=userapp-Thunderbird-3W8HH3.desktop
+text/html=vieb.desktop
+x-scheme-handler/http=vieb.desktop
+x-scheme-handler/https=vieb.desktop
+x-scheme-handler/about=vieb.desktop
+x-scheme-handler/unknown=vieb.desktop
 
 [Added Associations]
 x-scheme-handler/mailto=userapp-Thunderbird-3W8HH3.desktop;

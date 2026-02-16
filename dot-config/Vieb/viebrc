@@ -17,6 +17,7 @@ set followelement=["url", "onclick", "inputs-click"]
 set followlabelposition=insidetopleft
 set permissionsallowed=[".*zoom.us.*~mediadevices~microphone~camera"]
 set permissionopenexternal=block
+set nativenotification=always
 colorscheme compact
 
 " Mappings

@@ -21,7 +21,7 @@ colorscheme compact
 
 " Mappings
 fmap <C-n> <:set externalcommand=mpv><p.externalLink>
-nmap ;n <:set ternalcommand=mpv><p.start><startFollowCurrentTab>
+nmap ;n <:set externalcommand=mpv><p.start><startFollowCurrentTab>
 nmap t <:tabnew><toExploreMode>
 nmap o <toExploreMode><BS>
 pmap xx <p.externalLink><toNormalMode>

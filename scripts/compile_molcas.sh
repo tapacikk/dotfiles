@@ -25,7 +25,6 @@ OPTIONS:
     --skip-mpi      Skip OpenMPI compilation
     --skip-hdf5     Skip HDF5 compilation  
     --skip-blas     Skip OpenBLAS compilation
-    --distclean     Clean all source directories before building
     --prefix        Where to install. Must be writable
     --help          Show this help message
 
@@ -43,10 +42,6 @@ while [[ $# -gt 0 ]]; do
         arg="$1"  
     fi
     case $arg in
-        --distclean)
-            DISTCLEAN=1
-            shift
-            ;;
         --prefix)
             shift
             if [[ -z "$1" || "$1" == --* ]]; then
@@ -89,31 +84,27 @@ export MOLCAS_DIR="$PREFIX_GLOBAL/OpenMolcas"
 export OPENMPI_DIR="$PREFIX_GLOBAL/openmpi"
 export HDF5_DIR="$PREFIX_GLOBAL/hdf5"
 export BLAS_DIR="$PREFIX_GLOBAL/OpenBLAS"
-export GA_DIR="$PREFIX_GLOBAL/ga"
 
 # Version configuration
-export MOLCAS_VERSION="25.10"
+export MOLCAS_VERSION="26.02"
 export OPENMPI_VERSION="4.1.6"
 export HDF5_VERSION="1.14.5"
-export BLAS_VERSION="0.3.29"
-export GA_VERSION="5.8.2"
+export OPENBLAS_VERSION="0.3.29"
 
 # URLS
 readonly MOLCAS_URL="https://gitlab.com/Molcas/OpenMolcas/-/archive/v${MOLCAS_VERSION}/OpenMolcas-v${MOLCAS_VERSION}.tar.gz"
-readonly OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-4.1.6.tar.gz"
-readonly HDF5_URL="https://github.com/HDFGroup/hdf5/releases/download/hdf5_1.14.5/hdf5-1.14.5.tar.gz"
-readonly BLAS_URL="https://github.com/OpenMathLib/OpenBLAS/releases/download/v0.3.29/OpenBLAS-0.3.29.tar.gz"
-readonly GA_URL="https://github.com/GlobalArrays/ga/archive/refs/tags/v5.8.2.tar.gz"
+readonly OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-${OPENMPI_VERSION}.tar.gz"
+readonly HDF5_URL="https://github.com/HDFGroup/hdf5/releases/download/hdf5_${HDF5_VERSION}/hdf5-${HDF5_VERSION}.tar.gz"
+readonly BLAS_URL="https://github.com/OpenMathLib/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}.tar.gz"
 
 # Installation prefixes
 export MOLCAS_INSTALL_PREFIX="${MOLCAS_DIR}/${MOLCAS_VERSION}"
 export OPENMPI_INSTALL_PREFIX="${OPENMPI_DIR}/${OPENMPI_VERSION}"
 export HDF5_INSTALL_PREFIX="${HDF5_DIR}/${HDF5_VERSION}"
-export BLAS_INSTALL_PREFIX="${BLAS_DIR}/${BLAS_VERSION}"
-export GA_INSTALL_PREFIX="${GA_DIR}/${GA_VERSION}"
+export BLAS_INSTALL_PREFIX="${BLAS_DIR}/${OPENBLAS_VERSION}"
 
 
-# PATH
+# PATH (for openmpi)
 export PATH=$PATH:${OPENMPI_INSTALL_PREFIX}/bin
 
 # Logging functions
@@ -215,29 +206,6 @@ check_writable() {
     fi
 }
 
-clean_source_directories() {
-    if [[ $DISTCLEAN -eq 1 ]]; then
-        log_info "DISTCLEAN requested - removing source directories"
-        local dirs=(
-            "${HDF5_DIR}/src"
-            "${MOLCAS_DIR}/src"
-            "${OPENMPI_DIR}/src"
-            "${BLAS_DIR}/src"
-            "${GA_DIR}/src"
-        )
-        
-        for dir in "${dirs[@]}"; do
-            if [[ -d "$dir" ]]; then
-                log_info "Removing: $dir"
-                rm -rf "$dir" || log_error "Failed to remove: $dir"
-            fi
-        done
-        
-        log_success "Source directories cleaned"
-    else
-        log_info "Skipping DISTCLEAN"
-    fi
-}
 
 install_openmpi() {
     if [[ $SKIP_MPI -eq 1 ]]; then
@@ -369,10 +337,10 @@ if [[ $SKIP_BLAS -eq 1 ]]; then
 
     # Download and extract
     download_file "$BLAS_URL" "${BLAS_DIR}/tarballs"
-    extract_tarball "${BLAS_DIR}/tarballs/OpenBLAS-${BLAS_VERSION}.tar.gz" "${BLAS_DIR}/src"
+    extract_tarball "${BLAS_DIR}/tarballs/OpenBLAS-${OPENBLAS_VERSION}.tar.gz" "${BLAS_DIR}/src"
 
     # Compile and install
-    local build_dir="${BLAS_DIR}/src/OpenBLAS-${BLAS_VERSION}"
+    local build_dir="${BLAS_DIR}/src/OpenBLAS-${OPENBLAS_VERSION}"
     local log_file="${build_dir}/make_${LOG_DATE}.log"
 
     log_info "Compiling OpenBLAS (log: $log_file)"
@@ -403,70 +371,6 @@ if [[ $SKIP_BLAS -eq 1 ]]; then
         return 1
     fi
 
-    popd > /dev/null
-}
-
-
-
-install_ga() {
-    if [[ $SKIP_GA -eq 1 ]]; then
-        log_info "Skipping GlobalArrays compilation"
-        return 0
-    fi
-    export PATH=$PATH:${OPENMPI_INSTALL_PREFIX}/bin
-    
-    log_info "Starting GloabalArrays compilation"
-    
-    # Create directories
-    create_directory "${GA_DIR}/src"
-    create_directory "${GA_DIR}/tarballs"
-    create_directory "$GA_INSTALL_PREFIX"
-    
-    # Download and extract
-    download_file "$GA_URL" "${GA_DIR}/tarballs"
-    extract_tarball "${GA_DIR}/tarballs/v${GA_VERSION}.tar.gz" "${GA_DIR}/src"
-
-
-    # Configure with CMake
-    local build_dir="${GA_DIR}/src/ga-${GA_VERSION}/build"
-    local log_file="${build_dir}/cmake_${LOG_DATE}.log"
-    create_directory $build_dir
-
-    pushd $build_dir > /dev/null
-
-
-    local cmake_args=(
-        -DCMAKE_INSTALL_PREFIX="$GA_INSTALL_PREFIX"
-        -DENABLE_BLAS="ON"
-        -DENABLE_CXX="OFF"
-        -DCMAKE_C_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpicc"
-        -DCMAKE_Fortran_COMPILER="${OPENMPI_INSTALL_PREFIX}/bin/mpifort"
-        -DLINALG_VENDOR="OpenBLAS"
-        -DLINALG_PREFIX="${BLAS_INSTALL_PREFIX}"
-    )
-    
-    log_info "Configuring GA. Log file: $log_file"
-    
-    if cmake .. "${cmake_args[@]}" &> "$log_file"; then
-        log_success "GA configured successfully"
-    else
-        log_error "GA configuration failed. Check: $log_file"
-        popd > /dev/null
-        return 1
-    fi
-
-
-    # Install
-    local log_file="${build_dir}/make_${LOG_DATE}.log"
-    log_info "Compiling and installing GlobalArrays log: $log_file"
-    if make -j"$(nproc)" &> "$log_file" && make install &>> "$log_file"; then
-        log_success "GlobalArrays compiled and installed successfully"
-    else
-        log_error "GlobalArrays compilation/installation failed. Check: $log_file"
-        popd > /dev/null
-        return 1
-    fi
-    
     popd > /dev/null
 }
 
@@ -510,7 +414,6 @@ install_molcas() {
     
     log_info "Configuring GA. Log file: $log_file"
     
-    export GAROOT=$GA_INSTALL_PREFIX
     if cmake .. "${cmake_args[@]}" &> "$log_file"; then
         log_success "GA configured successfully"
     else

@@ -13,7 +13,7 @@ SKIP_HDF5=0
 SKIP_BLAS=0
 DISTCLEAN=0
 SKIP_GA=0
-PREFIX_GLOBAL=/opt
+PREFIX_GLOBAL=/tmp
 
 print_usage() {
     cat << EOF
@@ -84,28 +84,36 @@ export MOLCAS_DIR="$PREFIX_GLOBAL/OpenMolcas"
 export OPENMPI_DIR="$PREFIX_GLOBAL/openmpi"
 export HDF5_DIR="$PREFIX_GLOBAL/hdf5"
 export BLAS_DIR="$PREFIX_GLOBAL/OpenBLAS"
+export CHEMPS2_DIR="$PREFIX_GLOBAL/CheMPS2"
 
 # Version configuration
 export MOLCAS_VERSION="26.02"
 export OPENMPI_VERSION="4.1.6"
 export HDF5_VERSION="1.14.5"
 export OPENBLAS_VERSION="0.3.29"
+export CHEMPS2_VERSION="1.8.2"
 
 # URLS
 readonly MOLCAS_URL="https://gitlab.com/Molcas/OpenMolcas/-/archive/v${MOLCAS_VERSION}/OpenMolcas-v${MOLCAS_VERSION}.tar.gz"
 readonly OPENMPI_URL="https://download.open-mpi.org/release/open-mpi/v4.1/openmpi-${OPENMPI_VERSION}.tar.gz"
 readonly HDF5_URL="https://github.com/HDFGroup/hdf5/releases/download/hdf5_${HDF5_VERSION}/hdf5-${HDF5_VERSION}.tar.gz"
 readonly BLAS_URL="https://github.com/OpenMathLib/OpenBLAS/releases/download/v${OPENBLAS_VERSION}/OpenBLAS-${OPENBLAS_VERSION}.tar.gz"
+readonly CHEMPS2_URL="https://github.com/SebWouters/CheMPS2/archive/refs/tags/v${CHEMPS2_VERSION}.tar.gz"
 
 # Installation prefixes
 export MOLCAS_INSTALL_PREFIX="${MOLCAS_DIR}/${MOLCAS_VERSION}"
 export OPENMPI_INSTALL_PREFIX="${OPENMPI_DIR}/${OPENMPI_VERSION}"
 export HDF5_INSTALL_PREFIX="${HDF5_DIR}/${HDF5_VERSION}"
 export BLAS_INSTALL_PREFIX="${BLAS_DIR}/${OPENBLAS_VERSION}"
+export CHEMPS2_INSTALL_PREFIX="${CHEMPS2_DIR}/${CHEMPS2_VERSION}"
 
 
 # PATH (for openmpi)
 export PATH=$PATH:${OPENMPI_INSTALL_PREFIX}/bin
+
+#cmake
+CMAKE_INCLUDE_PATH=${OPENMPI_INSTALL_PREFIX}/include:${BLAS_INSTALL_PREFIX}/include:${HDF5_INSTALL_PREFIX}/include
+CMAKE_LIBRARY_PATH=${OPENMPI_INSTALL_PREFIX}/lib:${BLAS_INSTALL_PREFIX}/lib:${HDF5_INSTALL_PREFIX}/lib
 
 # Logging functions
 log_info() {
@@ -375,6 +383,58 @@ if [[ $SKIP_BLAS -eq 1 ]]; then
 }
 
 
+install_chemps2() {
+    log_info "Starting CheMPS2 compilation"
+    # Create directories
+    create_directory "${CHEMPS2_DIR}/src"
+    create_directory "${CHEMPS2_DIR}/tarballs"
+    create_directory "$CHEMPS2_INSTALL_PREFIX"
+    # Download and extract
+    download_file "$CHEMPS2_URL" "${CHEMPS2_DIR}/tarballs"
+    extract_tarball "${CHEMPS2_DIR}/tarballs/v${CHEMPS2_VERSION}.tar.gz" "${CHEMPS2_DIR}/src"
+    # Configure with CMake
+    local build_dir="${CHEMPS2_DIR}/src/CheMPS2-${CHEMPS2_VERSION}/build"
+    local log_file="${build_dir}/cmake_${LOG_DATE}.log"
+    create_directory $build_dir
+
+    local cmake_args=(
+          -DCMAKE_INSTALL_PREFIX="$CHEMPS2_INSTALL_PREFIX"
+          -DCMAKE_C_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpicc 
+          -DCMAKE_CXX_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpic++ 
+          -DBLAS_openblas_LIBRARY=${BLAS_INSTALL_PREFIX}/libopenblas.so
+          -DCMAKE_Fortran_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpifort 
+          -DOPENBLASROOT=${BLAS_INSTALL_PREFIX}
+          -DHDF5_DIR=${HDF5_INSTALL_PREFIX}/cmake
+          -DWITH_MPI=OFF
+          -DENABLE_OPENMP=ON
+    )
+
+    pushd $build_dir > /dev/null
+
+    log_info "Configuring CheMPS2. Log file: $log_file"
+    
+    if cmake .. "${cmake_args[@]}" &> "$log_file"; then
+        log_success "CheMPS2 configured successfully"
+    else
+        log_error "CheMPS2 configuration failed. Check: $log_file"
+        popd > /dev/null
+        return 1
+    fi
+
+    # Install
+    local log_file="${build_dir}/make_${LOG_DATE}.log"
+    log_info "Compiling and installing CheMPS2 log: $log_file"
+    if make -j"$(nproc)" &> "$log_file" && make install &>> "$log_file"; then
+        log_success "CheMPS2 compiled and installed successfully"
+    else
+        log_error "CheMPS2 compilation/installation failed. Check: $log_file"
+        popd > /dev/null
+        return 1
+    fi
+    popd > /dev/null
+    echo yep.
+}
+
 install_molcas() {
     log_info "Starting OpenMolcas compilation"
     
@@ -403,6 +463,8 @@ install_molcas() {
           -DCMAKE_Fortran_COMPILER=${OPENMPI_INSTALL_PREFIX}/bin/mpifort 
           -DOPENBLASROOT=${BLAS_INSTALL_PREFIX}
           -DLINALG=OpenBLAS  
+          -DCHEMPS2=ON
+          -DCHEMPS2_DIR=${CHEMPS2_INSTALL_PREFIX}/bin/chemps2
           -DHDF5_DIR=${HDF5_INSTALL_PREFIX}/cmake
           -DDEFMOLCASDISK=50000  
           -DDEFMOLCASMEM=20000  
@@ -412,7 +474,7 @@ install_molcas() {
           -DTOOLS=ON 
     )
     
-    log_info "Configuring GA. Log file: $log_file"
+    log_info "Configuring OpenMOLCAS. Log file: $log_file"
     
     if cmake .. "${cmake_args[@]}" &> "$log_file"; then
         log_success "GA configured successfully"
@@ -458,6 +520,7 @@ main() {
     #install_openmpi
     #install_blas
     #install_hdf5
+    install_chemps2
     install_molcas
     
     log_success "Installation script completed successfully"

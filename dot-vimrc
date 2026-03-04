@@ -108,3 +108,6 @@ set statusline+=\ %=    " align left
 set statusline+=%y\     " filetype
 set statusline+=%l/%L   " line X of Y 
 set statusline+=\ b:%n  " Buffer number
+
+" Molcas
+autocmd BufNewFile,BufRead *.input setlocal syntax=emil

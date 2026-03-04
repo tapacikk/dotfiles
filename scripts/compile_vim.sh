@@ -41,6 +41,12 @@ get_plugins() {
     git clone --depth 1 https://github.com/jiangmiao/auto-pairs.git "$dir/auto-pairs"
     find "$dir" -name .git -type d -exec rm -rf {} +
     rm -r "$dir/vimwiki/test/resources/testwiki space" 2>/dev/null || true
+    # get custom syntax
+    local EMIL_URL="https://gitlab.com/Molcas/OpenMolcas/-/raw/master/Tools/syntax/emil.vim"
+    local MO_URL="https://gitlab.com/Molcas/OpenMolcas/-/raw/master/Tools/syntax/molcasoutput.vim"
+    wget "$EMIL_URL" -O "$BUILD_DIR/vim/runtime/syntax/emil.vim"
+    wget "$MO_URL"   -O "$BUILD_DIR/vim/runtime/syntax/molcasoutput.vim"
+
 }
 
 install_plugin_help() {

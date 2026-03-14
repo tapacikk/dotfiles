@@ -56,6 +56,8 @@ let g:everforest_better_performance = 1
 " SuperTab
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCompletionContexts = ['s:ContextText', 's:ContextDiscover']
+" AutoPairs
+let g:AutoPairsShortcutToggle = '<leader>ap'
 "select file w/ lf
 function! LF()
     let temp = tempname()
